@@ -500,7 +500,7 @@
 <!-- ========================= PLAYER · REVEAL ========================= -->
 <div class="screen" id="s-player-reveal">
   <div class="presult">Tu resultado</div>
-  <div class="staffwrap" id="pMelWrap" style="display:none;width:100%;max-width:660px;height:clamp(120px,30vh,170px);flex:0 0 auto"><div class="staffbox" id="pMelStaff"></div></div>
+  <div class="staffwrap" id="pMelWrap" style="display:none;width:100%;max-width:720px;height:clamp(158px,46vh,220px);flex:0 0 auto"><div class="staffbox" id="pMelStaff"></div></div>
   <div class="pscore" id="pScore">0%</div>
   <div class="prank" id="pRank">—</div>
   <div class="mini-rank" id="pMini"></div>
@@ -892,8 +892,8 @@ const TON_SCALES={major:[0,2,4,5,7,9,11], minor:[0,2,3,5,7,8,10]};
 const TON_COMPAS=[
   {ts:'2/4',beats:2,comp:false,bpm:92},
   {ts:'3/4',beats:3,comp:false,bpm:104},
-  {ts:'6/8',beats:2,comp:true, bpm:56},
-  {ts:'9/8',beats:3,comp:true, bpm:56},
+  {ts:'6/8',beats:2,comp:true, bpm:40},
+  {ts:'9/8',beats:3,comp:true, bpm:40},
 ];
 const ARM_WHEEL=[{v:2,t:'2♯'},{v:1,t:'1♯'},{v:0,t:'—'},{v:-1,t:'1♭'},{v:-2,t:'2♭'}];
 const TON_NOTES=['Do','Re','Mi','Fa','Sol','La','Si'];
@@ -901,29 +901,71 @@ const TON_NOTE_WHEEL=['Si','La','Sol','Fa','Mi','Re','Do','—'];   // '—' aba
 const TON_NOTE_PC={'Do':0,'Re':2,'Mi':4,'Fa':5,'Sol':7,'La':9,'Si':11};
 function tonKeyPC(note,acc){ let pc=TON_NOTE_PC[note]; if(acc==='#')pc++; else if(acc==='b')pc--; return ((pc%12)+12)%12; }
 function genTonCom(){ const key=pick(TON_KEYS), compas=pick(TON_COMPAS); return {key, compas, dict:genTonDictado(key,compas)}; }
-// dictado tonal: 4 compases, diatónico, empieza y acaba en tónica; onsets marcan el compás
+// acorde (pitch-classes desde la tónica) de un grado (motor DICTADO AT HOME)
+function chordSemis(grade, mode){
+  const major=[0,4,7], minor=[0,3,7], degRoot={1:0,2:2,4:5,5:7,6:9};
+  const root=degRoot[grade]||0;
+  if(grade===5) return major.map(iv=>(root+iv)%12);                       // dominante mayor (sensible)
+  if(mode==='minor') return (grade===1||grade===4?minor:(grade===6?major:minor)).map(iv=>(root+iv)%12);
+  return (grade===2||grade===6?minor:major).map(iv=>(root+iv)%12);        // en mayor: ii y vi menores
+}
+// menor: alza el VII a sensible cuando sube a la tónica por 2ª
+function applyLeadingTone(events, tpc){
+  const reals=events.filter(e=>!e.rest);
+  for(let i=0;i<reals.length-1;i++){ const n=reals[i], nx=reals[i+1];
+    const relN=(((n.midi%12)-tpc)+12)%12, relNx=(((nx.midi%12)-tpc)+12)%12;
+    if(relN===10 && relNx===0 && nx.midi>n.midi && (nx.midi-n.midi)<=2) n.midi+=1;   // VII -> VII# -> I
+  }
+}
+// DICTADO tonal de calidad: 8 compases = 2 frases de 4 (esquema 3º/4º GE de DICTADO AT HOME).
+// Frase 1: I · V · [IV/II/VI] · V(semicadencia + silencio) · Frase 2: I · IV · V · I(cierre en tónica).
+// Parte fuerte de cada pulso = nota del acorde de su grado; partes débiles = notas de paso conjuntas.
 function genTonDictado(key, compas){
-  const tpc=TON_TPC[key.tonic], sc=TON_SCALES[key.mode];
-  const scale=[]; for(let m=57;m<=76;m++){ if(sc.includes(((m-tpc)%12+12)%12)) scale.push(m); }
-  const tonicMidi=scale.filter(m=>((m%12)===((tpc%12+12)%12))).sort((a,b)=>Math.abs(a-65)-Math.abs(b-65))[0]||scale[0];
-  const events=[]; let cur=tonicMidi; const NB=4, pulseSec=(compas.comp?1.5:1)*(60/compas.bpm);
-  for(let b=0;b<NB;b++){
-    for(let k=0;k<compas.beats;k++){
-      // dos frases: la 1ª (compases 0-1) termina en un pulso de SILENCIO (último pulso del compás 1)
-      if(b===1 && k===compas.beats-1){ events.push({rest:true, durSec:pulseSec, bar:b, beat:k, beatStart:true}); continue; }
-      let subs;
-      if(compas.comp){ subs = Math.random()<0.5?[1]:(Math.random()<0.6?[1/3,1/3,1/3]:[2/3,1/3]); }
-      else { subs = Math.random()<0.55?[1]:(Math.random()<0.7?[0.5,0.5]:[0.5,0.25,0.25]); }
-      subs.forEach((frac,si)=>{
-        let midi;
-        if(b===0&&k===0&&si===0) midi=tonicMidi;
-        else if(b===NB-1&&k===compas.beats-1&&si===subs.length-1) midi=tonicMidi;    // acaba en tónica
-        else { const idx=scale.indexOf(cur); let st=pick([-2,-1,-1,1,1,2]); midi=scale[Math.max(0,Math.min(scale.length-1,idx+st))]; }
-        cur=midi;
-        events.push({midi, durSec:frac*pulseSec, bar:b, beat:k, strong:(k===0&&si===0), beatStart:(si===0)});
+  const tpc=((TON_TPC[key.tonic])%12+12)%12, sc=TON_SCALES[key.mode], mode=key.mode;
+  const pulseSec=(compas.comp?1.5:1)*(60/compas.bpm), LO=57, HI=76;
+  const scale=[]; for(let m=LO;m<=HI;m++){ if(sc.includes(((m-tpc)%12+12)%12)) scale.push(m); }
+  const tonics=scale.filter(m=>((m%12)+12)%12===tpc), floors=tonics.filter(t=>t>=58 && t+11<=76);
+  const winFloor=floors.length?pick(floors):(tonics[0]||60);
+  const win=scale.filter(m=>m>=Math.max(LO,winFloor-2) && m<=Math.min(HI,winFloor+11));   // ventana ~1 octava
+  const idxOf=m=>{ let bi=0,bd=1e9; win.forEach((x,i)=>{const d=Math.abs(x-m);if(d<bd){bd=d;bi=i;}}); return bi; };
+  const startTonic=win.find(m=>((m%12)+12)%12===tpc) || win[0];
+  const chordTonesOf=grade=>{ const pcs=chordSemis(grade,mode).map(s=>((tpc+s)%12)); return win.filter(m=>pcs.includes(((m%12)+12)%12)); };
+  const nearestChordTone=(grade,ref)=>{ const c=chordTonesOf(grade); return c.length? c.reduce((a,b)=>Math.abs(b-ref)<Math.abs(a-ref)?b:a) : ref; };
+  const c3=(()=>{const r=Math.random();return r<0.5?4:(r<0.75?2:6);})();
+  const plan=[1,5,c3,5, 1,4,5,1];
+  const pulseSubs=()=>{ if(compas.comp){ const r=Math.random(); return r<0.5?[1]:(r<0.82?[1/3,1/3,1/3]:[2/3,1/3]); }
+    const r=Math.random(); return r<0.5?[1]:(r<0.8?[0.5,0.5]:(r<0.92?[0.75,0.25]:[0.25,0.25,0.25,0.25])); };
+  // contorno de arco por frase (en pasos de escala sobre la tónica): sube al centro y vuelve
+  const arch=[0,2,4,3, 0,3,5,0], baseIdx=idxOf(startTonic);
+  const targetOf=(b,k,beats)=>{ const a0=arch[b], a1=(b<7?arch[b+1]:0), t=beats>1?k/beats:0;
+    return Math.max(0,Math.min(win.length-1, baseIdx+Math.round(a0+(a1-a0)*t))); };
+  const events=[]; let cur=startTonic;
+  for(let b=0;b<8;b++){
+    const grade=plan[b], beats=compas.beats;
+    if(b===3){ const v=nearestChordTone(5,cur); cur=v; events.push({midi:v,durSec:pulseSec,bar:b,beat:0,strong:true,beatStart:true});   // semicadencia
+      for(let k=1;k<beats;k++) events.push({rest:true,durSec:pulseSec,bar:b,beat:k,beatStart:true}); continue; }
+    const strongs=[]; let c=cur;
+    for(let k=0;k<beats;k++){ let s;
+      if(b===0&&k===0) s=startTonic;
+      else if(b===7&&k===beats-1) s=win.find(m=>((m%12)+12)%12===tpc && Math.abs(m-c)<=9) || startTonic;   // cierre en tónica
+      else { const target=win[targetOf(b,k,beats)];                              // objetivo del contorno de arco
+        s=nearestChordTone(grade,target);
+        if(s===c){ const alt=chordTonesOf(grade).filter(m=>m!==c); if(alt.length) s=alt.reduce((a,x)=>Math.abs(x-target)<Math.abs(a-target)?x:a); }  // no repetir la nota anterior
+      }
+      strongs.push(s); c=s; }
+    for(let k=0;k<beats;k++){
+      const subs=(b===7&&k===beats-1)?[1]:pulseSubs();
+      const strong=strongs[k], nextStrong=(k+1<beats)?strongs[k+1]:(b<7?nearestChordTone(plan[b+1],strong):strong);
+      const i0=idxOf(strong), i1=idxOf(nextStrong);
+      subs.forEach((frac,si)=>{ let midi;
+        if(si===0) midi=strong;
+        else { const iC=idxOf(cur); const dir=(i1>iC)?1:(i1<iC?-1:(Math.random()<0.5?1:-1)); let idx=Math.max(0,Math.min(win.length-1,iC+dir)); midi=win[idx];
+          if(midi===cur){ idx=Math.max(0,Math.min(win.length-1,iC-dir)); midi=win[idx]; } }   // paso conjunto sin repetir
+        cur=midi; events.push({midi,durSec:frac*pulseSec,bar:b,beat:k,strong:(k===0&&si===0),beatStart:(si===0)});
       });
     }
   }
+  if(mode==='minor') applyLeadingTone(events, tpc);
   return {events, beatSec:60/compas.bpm};
 }
 // referencia tonal (cadencia) — devuelve duración
@@ -943,10 +985,13 @@ function voiceUnderTop(chord, topMidi){
   pcs.forEach(pc=>{ let x=topMidi-1; while(((x%12)+12)%12!==pc) x--; if(topMidi-x>12) x+=12; voices.push(x); });
   return voices.sort((a,b)=>a-b);
 }
-// dictado: SOLO la melodía a piano (sin claqueta ni clics: el compás se deduce de la música)
+// dictado: melodía a piano + claqueta MUY suave con acento en el 1 de cada compás (sin cuenta previa)
 async function playTonDict(dict, compas, onBeat){ const c=actx(); if(c.state==='suspended')await c.resume();
   let bt=c.currentTime+0.35;
-  dict.events.forEach(ev=>{ if(!ev.rest) pianoTone(ev.midi, bt, Math.max(0.22,ev.durSec*0.96)); bt+=ev.durSec; });
+  dict.events.forEach(ev=>{
+    if(ev.beatStart) click(bt, !!ev.strong, ev.strong?0.30:0.12);          // muy suave; acento en el pulso 1 del compás
+    if(!ev.rest) pianoTone(ev.midi, bt, Math.max(0.22,ev.durSec*0.96));
+    bt+=ev.durSec; });
   return bt-c.currentTime+0.5;
 }
 // puntuación TonCom: tonalidad 25 + armadura 25 + compás 50
@@ -983,9 +1028,8 @@ async function playTonSequence(ex, onLabel){
   onLabel&&onLabel('dictado'); const d=await playTonDict(ex.dict, ex.compas, null); await tonWait(d*1000);
   onLabel&&onLabel('idle'); }
 async function hostListenTon(){ await ensureAudio(); const btn=$('#hListen'); if(btn.disabled)return; btn.disabled=true;
-  const sw=$('#s-host-round .staffwrap'); sw&&sw.classList.add('listening');
-  try{ await playTonSequence(H.exercise, hostTonLabel); }catch(e){}
-  sw&&sw.classList.remove('listening'); btn.disabled=false; }
+  try{ await playTonSequence(H.exercise, hostTonLabel); }catch(e){}   // sin animación de "listening" (evita que parezca el pulso)
+  btn.disabled=false; }
 
 /* =========================================================================
    UTIL

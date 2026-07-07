@@ -172,6 +172,33 @@
   #s-host-round.mel .mel-only{display:inline-flex}
   #s-host-round.mel .melspeed.mel-only{display:inline-flex}
   #s-host-reveal.mel .staffwrap{height:clamp(150px,30vh,232px)}
+  /* ===== TONCOM (móvil) ===== */
+  #s-player-toncom{flex-direction:column;gap:8px;height:100dvh;padding:8px max(12px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+  .tc-grid{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;min-height:0}
+  .tc-card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:10px 10px 12px;display:flex;flex-direction:column;align-items:center;gap:9px;min-height:0}
+  .tc-h{font-size:12px;letter-spacing:.14em;color:var(--gold-soft);font-weight:800}
+  .tc-spin{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:100%;min-height:0;user-select:none}
+  .tc-spin-prev,.tc-spin-next{font-size:clamp(13px,3.4vw,18px);color:var(--muted2);font-weight:700;opacity:.5;cursor:pointer;padding:3px 14px;border-radius:8px}
+  .tc-spin-prev:active,.tc-spin-next:active{background:var(--gold-soft)}
+  .tc-spin-cur{font-size:clamp(26px,7vw,40px);font-weight:900;color:var(--ink);border:1.5px solid var(--gold-soft);border-radius:12px;padding:2px 22px;min-width:96px;text-align:center;background:rgba(212,175,55,.05)}
+  .tc-spin.arm .tc-spin-cur{color:var(--gold)}
+  .tc-accrow,.tc-mmrow{display:flex;gap:8px;width:100%;justify-content:center}
+  .tc-acc,.tc-mm{flex:1;max-width:70px;background:var(--paper);border:1px solid var(--line);color:#2a2005;border-radius:10px;padding:8px 0;font-size:19px;font-weight:800;cursor:pointer}
+  .tc-acc.on,.tc-mm.on{background:linear-gradient(180deg,var(--gold),var(--gold2));border-color:transparent;color:#2a2005;box-shadow:0 3px 12px rgba(212,175,55,.4)}
+  .tc-compas{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:8px;width:100%;min-height:0}
+  .tc-compas button{background:var(--paper);border:1px solid var(--line);color:#2a2005;border-radius:12px;font-size:clamp(18px,4.5vw,26px);font-weight:800;cursor:pointer}
+  .tc-compas button.on{background:linear-gradient(180deg,var(--gold),var(--gold2));border-color:transparent;box-shadow:0 3px 12px rgba(212,175,55,.4)}
+  .tc-foot{flex:0 0 auto;display:flex;align-items:stretch;gap:10px;height:clamp(52px,11vh,66px)}
+  .tc-ans{flex:1;background:rgba(255,255,255,.02);border:1px solid var(--line);border-radius:12px;padding:5px 12px;display:flex;flex-direction:column;justify-content:center;gap:2px}
+  .tc-ans-l{font-size:10px;letter-spacing:.14em;color:var(--muted2);font-weight:700}
+  .tc-ansrow{display:flex;gap:16px}
+  .tc-ansrow b{color:var(--gold);font-size:clamp(15px,3.6vw,20px)}
+  #s-player-toncom .mel-send{flex:0 0 clamp(130px,26vw,190px)}
+  /* reveal TonCom (iPad) */
+  .tcrev{display:flex;gap:16px;width:100%;justify-content:center;align-items:stretch}
+  .tcrev .tcr-card{flex:1;max-width:230px;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px}
+  .tcrev .tcr-h{font-size:13px;letter-spacing:.12em;color:var(--gold-soft);font-weight:800}
+  .tcrev .tcr-v{font-size:38px;font-weight:900;color:var(--ink)}
 
   .rotate-hint{display:none}
   @media (orientation:portrait){
@@ -313,6 +340,7 @@
     <div class="seg" id="exMode">
       <button data-x="ritmico" class="on">Rítmico</button>
       <button data-x="melodico">Melódico</button>
+      <button data-x="toncom">TonCom</button>
     </div>
     <div class="kick" style="align-self:center" id="compLbl">Compás</div>
     <div class="seg" id="compMode">
@@ -396,6 +424,37 @@
   <span class="pr-you">tú: <b id="prAlias">—</b> · <span id="prHint">0/8</span></span>
   <div class="staffwrap"><div class="staffbox" id="prStaff"></div></div>
   <div class="palette" id="prPalette"></div>
+</div>
+
+<!-- ========================= PLAYER · TONCOM ========================= -->
+<div class="screen" id="s-player-toncom">
+  <div class="rotate-hint"><div class="big">📱↻</div><div style="font-size:17px;font-weight:800;color:var(--ink)">Gira el móvil</div><div>Se juega en horizontal.</div></div>
+  <span class="pr-you">tú: <b id="tcAlias">—</b></span>
+  <div class="tc-grid">
+    <div class="tc-card">
+      <div class="tc-h">TONALIDAD</div>
+      <div class="tc-spin" id="tcNote"></div>
+      <div class="tc-accrow"><button class="tc-acc" data-a="b">♭</button><button class="tc-acc" data-a="#">♯</button></div>
+      <div class="tc-mmrow"><button class="tc-mm" data-m="M">M</button><button class="tc-mm" data-m="m">m</button></div>
+    </div>
+    <div class="tc-card">
+      <div class="tc-h">ARMADURA</div>
+      <div class="tc-spin arm" id="tcArm"></div>
+    </div>
+    <div class="tc-card">
+      <div class="tc-h">COMPÁS</div>
+      <div class="tc-compas" id="tcCompas">
+        <button data-c="2/4">2/4</button><button data-c="3/4">3/4</button>
+        <button data-c="6/8">6/8</button><button data-c="9/8">9/8</button>
+      </div>
+    </div>
+  </div>
+  <div class="tc-foot">
+    <div class="tc-ans"><span class="tc-ans-l">TU RESPUESTA</span>
+      <div class="tc-ansrow"><b id="tcAnsTon">—</b><b id="tcAnsArm">—</b><b id="tcAnsComp">—</b></div>
+    </div>
+    <button class="mel-send" id="tcSend">Enviar</button>
+  </div>
 </div>
 
 <!-- ========================= PLAYER · SENT ========================= -->
@@ -771,6 +830,96 @@ async function playMelody(midis, speed, onNote){ const c=actx(); if(c.state==='s
   const sp=MEL_SPEEDS[speed]||1, noteSec=MEL_NOTE_SEC*sp, step=(MEL_NOTE_SEC+MEL_GAP_SEC)*sp, t0=c.currentTime+0.28;
   midis.forEach((m,i)=>{ pianoTone(m,t0+i*step,noteSec); if(onNote) setTimeout(()=>onNote(i),Math.max(0,(t0+i*step-c.currentTime)*1000)); });
   return midis.length*step+0.4; }
+
+/* =========================================================================
+   MOTOR TONCOM  (tonalidad + armadura + compás) — de LMPRO/PREDICT PRO
+   El iPad reproduce: (1) referencia tonal La→tónica→cadencia I-IV-V-I,
+   (2) dictado en la tonalidad y compás. El alumno identifica las 3 cosas.
+   ========================================================================= */
+const TON_KEYS=[
+  {name:'Do M', tonic:'C', mode:'major', sig:0,  note:'Do', acc:'', mm:'M'},
+  {name:'La m', tonic:'A', mode:'minor', sig:0,  note:'La', acc:'', mm:'m'},
+  {name:'Sol M',tonic:'G', mode:'major', sig:1,  note:'Sol',acc:'', mm:'M'},
+  {name:'Mi m', tonic:'E', mode:'minor', sig:1,  note:'Mi', acc:'', mm:'m'},
+  {name:'Re M', tonic:'D', mode:'major', sig:2,  note:'Re', acc:'', mm:'M'},
+  {name:'Si m', tonic:'B', mode:'minor', sig:2,  note:'Si', acc:'', mm:'m'},
+  {name:'Fa M', tonic:'F', mode:'major', sig:-1, note:'Fa', acc:'', mm:'M'},
+  {name:'Re m', tonic:'D', mode:'minor', sig:-1, note:'Re', acc:'', mm:'m'},
+  {name:'Sib M',tonic:'Bb',mode:'major', sig:-2, note:'Si', acc:'b',mm:'M'},
+  {name:'Sol m',tonic:'G', mode:'minor', sig:-2, note:'Sol',acc:'', mm:'m'},
+];
+const TON_TPC={'C':0,'D':2,'E':4,'F':5,'G':7,'A':9,'B':11,'Bb':10};
+const TON_SCALES={major:[0,2,4,5,7,9,11], minor:[0,2,3,5,7,8,10]};
+const TON_COMPAS=[
+  {ts:'2/4',beats:2,comp:false,bpm:92},
+  {ts:'3/4',beats:3,comp:false,bpm:104},
+  {ts:'6/8',beats:2,comp:true, bpm:56},
+  {ts:'9/8',beats:3,comp:true, bpm:56},
+];
+const ARM_WHEEL=[{v:2,t:'2♯'},{v:1,t:'1♯'},{v:0,t:'—'},{v:-1,t:'1♭'},{v:-2,t:'2♭'}];
+const TON_NOTES=['Do','Re','Mi','Fa','Sol','La','Si'];
+const TON_NOTE_PC={'Do':0,'Re':2,'Mi':4,'Fa':5,'Sol':7,'La':9,'Si':11};
+function tonKeyPC(note,acc){ let pc=TON_NOTE_PC[note]; if(acc==='#')pc++; else if(acc==='b')pc--; return ((pc%12)+12)%12; }
+function genTonCom(){ const key=pick(TON_KEYS), compas=pick(TON_COMPAS); return {key, compas, dict:genTonDictado(key,compas)}; }
+// dictado tonal: 4 compases, diatónico, empieza y acaba en tónica; onsets marcan el compás
+function genTonDictado(key, compas){
+  const tpc=TON_TPC[key.tonic], sc=TON_SCALES[key.mode];
+  const scale=[]; for(let m=57;m<=76;m++){ if(sc.includes(((m-tpc)%12+12)%12)) scale.push(m); }
+  const tonicMidi=scale.filter(m=>((m%12)===((tpc%12+12)%12))).sort((a,b)=>Math.abs(a-65)-Math.abs(b-65))[0]||scale[0];
+  const events=[]; let cur=tonicMidi; const NB=4;
+  for(let b=0;b<NB;b++){
+    const beatSec=60/compas.bpm;                              // duración de pulso/negra
+    for(let k=0;k<compas.beats;k++){
+      // subdivisión del pulso
+      let subs;
+      if(compas.comp){ subs = Math.random()<0.5?[1]:(Math.random()<0.6?[1/3,1/3,1/3]:[2/3,1/3]); }
+      else { subs = Math.random()<0.55?[1]:(Math.random()<0.7?[0.5,0.5]:[0.5,0.25,0.25]); }
+      let off=0;
+      subs.forEach((frac,si)=>{
+        let midi;
+        if(b===0&&k===0&&si===0) midi=tonicMidi;
+        else if(b===NB-1&&k===compas.beats-1&&si===subs.length-1) midi=tonicMidi;
+        else { const idx=scale.indexOf(cur); let st=pick([-2,-1,-1,1,1,2]); midi=scale[Math.max(0,Math.min(scale.length-1,idx+st))]; }
+        cur=midi;
+        events.push({midi, durSec:frac*beatSec*(compas.comp?1.5:1), bar:b, beat:k, strong:(k===0&&si===0), beatStart:(si===0)});
+        off+=frac;
+      });
+    }
+  }
+  return {events, beatSec:60/compas.bpm};
+}
+// referencia tonal (cadencia) — devuelve duración
+function tonChord(key, degree, nearTop){
+  const tpc=TON_TPC[key.tonic]; const rootSemi={0:0,3:5,4:7}[degree]; const rootPc=(tpc+rootSemi)%12;
+  let third = key.mode==='major'?4:(degree===4?4:3);        // V mayor en menor (sensible)
+  let root=null,best=1e9; for(let m=48;m<=72;m++){ if(((m%12)+12)%12===rootPc){ const d=Math.abs(m-(nearTop-7)); if(d<best){best=d;root=m;} } }
+  return [root, root+third, root+7];
+}
+async function playTonRef(key){ const c=actx(); if(c.state==='suspended')await c.resume();
+  let t=c.currentTime+0.2;
+  pianoTone(69,t,1.2); t+=1.6;                                // La de referencia
+  const tonM=(function(){ const tpc=TON_TPC[key.tonic]; for(let m=60;m<=71;m++) if(((m%12)+12)%12===((tpc%12+12)%12)) return m; return 60; })();
+  pianoTone(tonM,t,1.2); t+=1.6;                              // tónica
+  [0,3,4,0].forEach(deg=>{ tonChord(key,deg,tonM).forEach(m=>pianoTone(m,t,1.0)); t+=1.15; });   // I-IV-V-I
+  return t-c.currentTime+0.3;
+}
+async function playTonDict(dict, compas, onBeat){ const c=actx(); if(c.state==='suspended')await c.resume();
+  let t=c.currentTime+0.3; const beatSec=60/compas.bpm;
+  // claqueta de un compás (acento en el 1)
+  for(let k=0;k<compas.beats;k++){ click(t+k*beatSec, k===0, k===0?1:0.5); } t+=compas.beats*beatSec;
+  let bt=t; dict.events.forEach(ev=>{ pianoTone(ev.midi, bt, Math.max(0.22,ev.durSec*0.96));
+    if(ev.beatStart) click(bt, ev.strong, ev.strong?0.9:0.42);   // clic de pulso marca el compás
+    bt+=ev.durSec; });
+  return bt-c.currentTime+0.4;
+}
+// puntuación TonCom: tonalidad 25 + armadura 25 + compás 50
+function tonScore(ans, key, compas){
+  if(!ans) return {pct:0, tonOk:false, armOk:false, compOk:false};
+  const tonOk = ans.tonPC===tonKeyPC(key.note,key.acc) && ans.mm===key.mm;
+  const armOk = ans.arm===key.sig;
+  const compOk = ans.compas===compas.ts;
+  return {pct:(tonOk?25:0)+(armOk?25:0)+(compOk?50:0), tonOk, armOk, compOk};
+}
 
 /* =========================================================================
    UTIL
@@ -1155,6 +1304,62 @@ function playerSend(){
 function playerReveal(p){
   const arr=p.ranking||[]; const me=arr.find(r=>r.id===PL.id); const pos=arr.findIndex(r=>r.id===PL.id);
   showScreen('s-player-reveal'); const w=$('#pMelWrap'); if(w) w.style.display='none';
+  $('#pScore').textContent='0%'; countUp($('#pScore'), me?me.last:0, 850, '%');
+  const emoji = pos===0?'🥇 ¡Ganas!' : pos===1?'🥈 ¡Casi!' : pos===2?'🥉 ¡Podio!' : '';
+  $('#pRank').textContent = pos>=0 ? (emoji+'  Puesto '+(pos+1)+' de '+arr.length+' · '+(me?me.points:0)+' pts') : 'Sin respuesta esta ronda';
+  $('#pMini').innerHTML = arr.slice(0,3).map((r,i)=>['🥇','🥈','🥉'][i]+' '+escapeHtml(r.alias)+' ('+r.points+')').join(' &nbsp; ');
+  if(pos===0){ sfx('winner'); confettiBurst(); } else if(pos>=0 && me && me.last>=75){ sfx('winner'); } else sfx('reveal');
+}
+/* ---- TONCOM (móvil): ruedas de tonalidad/armadura + botones de compás ---- */
+function startPlayerRoundTon(){
+  PL.tc={noteI:0, acc:'', mm:'', armI:2, compas:''};   // armI 2 = "—" (0 alteraciones)
+  PL.sent=false; PL.roundStart=Date.now();
+  if(PL.channel) try{ PL.channel.track({alias:PL.alias, rid:PL.roundId}); }catch(_){}
+  showScreen('s-player-toncom'); $('#tcAlias').textContent=PL.alias;
+  buildTonComUI();
+}
+function renderSpin(container, items, idx, onStep, isArm){
+  const N=items.length, prev=(idx-1+N)%N, next=(idx+1)%N;
+  const showPrev = isArm ? (idx>0?items[idx-1]:'') : items[prev];
+  const showNext = isArm ? (idx<N-1?items[idx+1]:'') : items[next];
+  container.innerHTML='<div class="tc-spin-prev">'+(showPrev||'&nbsp;')+'</div><div class="tc-spin-cur">'+items[idx]+'</div><div class="tc-spin-next">'+(showNext||'&nbsp;')+'</div>';
+  const p=container.querySelector('.tc-spin-prev'), n=container.querySelector('.tc-spin-next');
+  if(showPrev) p.onclick=()=>onStep(isArm?idx-1:prev);
+  if(showNext) n.onclick=()=>onStep(isArm?idx+1:next);
+}
+function buildTonComUI(){
+  renderSpin($('#tcNote'), TON_NOTES, PL.tc.noteI, i=>{ PL.tc.noteI=(i+TON_NOTES.length)%TON_NOTES.length; buildTonComUI(); sfx('nav'); });
+  renderSpin($('#tcArm'), ARM_WHEEL.map(o=>o.t), PL.tc.armI, i=>{ PL.tc.armI=Math.max(0,Math.min(ARM_WHEEL.length-1,i)); buildTonComUI(); sfx('nav'); }, true);
+  $('#s-player-toncom').querySelectorAll('.tc-acc').forEach(b=>{ b.classList.toggle('on',PL.tc.acc===b.dataset.a);
+    b.onclick=()=>{ PL.tc.acc=(PL.tc.acc===b.dataset.a?'':b.dataset.a); buildTonComUI(); sfx('place'); }; });
+  $('#s-player-toncom').querySelectorAll('.tc-mm').forEach(b=>{ b.classList.toggle('on',PL.tc.mm===b.dataset.m);
+    b.onclick=()=>{ PL.tc.mm=b.dataset.m; buildTonComUI(); sfx('place'); }; });
+  $('#tcCompas').querySelectorAll('button').forEach(b=>{ b.classList.toggle('on',PL.tc.compas===b.dataset.c);
+    b.onclick=()=>{ PL.tc.compas=b.dataset.c; buildTonComUI(); sfx('place'); }; });
+  $('#tcSend').onclick=playerSend;
+  tcUpdateAns();
+}
+function tcAccSym(a){ return a==='#'?'♯':a==='b'?'♭':''; }
+function tcTonLabel(){ const t=PL.tc; return TON_NOTES[t.noteI]+tcAccSym(t.acc)+(t.mm?(' '+t.mm):''); }
+function tcUpdateAns(){ const t=PL.tc;
+  $('#tcAnsTon').textContent = TON_NOTES[t.noteI]+tcAccSym(t.acc)+(t.mm?(' '+t.mm):' ?');
+  $('#tcAnsArm').textContent = ARM_WHEEL[t.armI].t;
+  $('#tcAnsComp').textContent = t.compas||'—';
+}
+function playerRevealTon(p){
+  const arr=p.ranking||[]; const me=arr.find(r=>r.id===PL.id); const pos=arr.findIndex(r=>r.id===PL.id);
+  showScreen('s-player-reveal'); const w=$('#pMelWrap'); if(w) w.style.display='none';
+  const g=p.gt||{}; const t=PL.tcSentAns||{};
+  const tonOk = t.tonPC===g.tonPC && t.mm===g.mm;
+  const armOk = t.arm===g.sig;
+  const compOk = t.compas===g.ts;
+  const mk=(lab,mine,ok,corr)=>'<div style="display:flex;flex-direction:column;align-items:center;gap:3px;min-width:96px"><div style="font-size:11px;letter-spacing:.12em;color:var(--muted2)">'+lab+'</div><div style="font-size:24px;font-weight:900;color:'+(ok?'#37b26a':'#d9694a')+'">'+(mine||'—')+'</div>'+(ok?'<div style="font-size:13px;color:#37b26a">✓</div>':'<div style="font-size:14px;color:var(--gold-soft)">'+corr+'</div>')+'</div>';
+  const box=$('#pMelWrap');
+  if(box){ box.style.display=''; box.className=''; box.style.height='auto';
+    box.innerHTML='<div style="display:flex;gap:26px;justify-content:center;padding:8px 0">'+
+      mk('TONALIDAD', (t.label&&t.label.ton)||'—', tonOk, g.ton)+
+      mk('ARMADURA', (t.label&&t.label.arm)||'—', armOk, g.arm)+
+      mk('COMPÁS', (t.label&&t.label.comp)||'—', compOk, g.comp)+'</div>'; }
   $('#pScore').textContent='0%'; countUp($('#pScore'), me?me.last:0, 850, '%');
   const emoji = pos===0?'🥇 ¡Ganas!' : pos===1?'🥈 ¡Casi!' : pos===2?'🥉 ¡Podio!' : '';
   $('#pRank').textContent = pos>=0 ? (emoji+'  Puesto '+(pos+1)+' de '+arr.length+' · '+(me?me.points:0)+' pts') : 'Sin respuesta esta ronda';

@@ -134,6 +134,11 @@
   .pr-you b{color:var(--gold)}
   #prHint{color:var(--gold);font-weight:800}
   .palette{flex:1;display:flex;flex-wrap:wrap;gap:7px;padding:2px 0;overflow-y:auto;align-content:flex-start;justify-content:flex-start;align-items:flex-start;-webkit-overflow-scrolling:touch}
+  /* rítmico: cartas scrolleables + Enviar fijo abajo */
+  .palette-wrap{flex:1;display:flex;flex-direction:column;gap:6px;min-height:0}
+  .palette-cards{flex:1;display:flex;flex-wrap:wrap;gap:7px;padding:2px 2px 8px;overflow-y:auto;align-content:flex-start;justify-content:flex-start;align-items:flex-start;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+  .rit-bar{flex:0 0 auto;display:flex}
+  .rit-bar .cell-send{flex:1;min-width:0;height:clamp(48px,10.5vh,62px);font-size:18px}
   .cell-ctrl{color:var(--gold)}
   .cell-send{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a2005;border-color:transparent;font-weight:800;font-size:17px;min-width:104px}
   .cell-send:disabled{background:var(--paper);color:#9a8a5a}
@@ -243,8 +248,9 @@
   .autocorr.on{display:inline-block}
   @keyframes acpulse{0%,100%{opacity:.75}50%{opacity:1}}
   /* salir del juego (móvil) */
-  .exit-btn{position:fixed;top:calc(6px + env(safe-area-inset-top));left:calc(8px + env(safe-area-inset-left));z-index:400;display:none;width:42px;height:42px;border-radius:12px;background:rgba(18,12,3,.6);border:1px solid var(--line);color:var(--gold-soft);font-size:20px;cursor:pointer;align-items:center;justify-content:center;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+  .exit-btn{position:fixed;top:calc(5px + env(safe-area-inset-top));left:calc(6px + env(safe-area-inset-left));z-index:400;display:none;width:26px;height:26px;border-radius:8px;background:rgba(18,12,3,.35);border:1px solid rgba(233,201,106,.28);color:var(--muted2);font-size:15px;line-height:1;cursor:pointer;align-items:center;justify-content:center;padding:0}
   .exit-btn.on{display:flex}
+  .exit-btn:hover{color:var(--gold-soft);background:rgba(18,12,3,.6)}
   .exit-btn:active{transform:scale(.92)}
   .exit-confirm{position:fixed;inset:0;z-index:6000;display:none;align-items:center;justify-content:center;background:rgba(6,4,2,.84);padding:20px}
   .exit-confirm.on{display:flex}
@@ -254,7 +260,7 @@
   .exit-btns button{padding:12px 22px;border-radius:11px;font-size:15px;font-weight:800;cursor:pointer;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink)}
   .exit-btns .btn-gold{border:none}
   /* recordatorio "pulsa Enviar" + resplandor */
-  .send-remind{position:fixed;left:50%;bottom:calc(6px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:390;display:none;background:linear-gradient(180deg,#ffbf3f,#ef8f22);color:#3a2600;font-weight:800;font-size:14px;padding:8px 18px;border-radius:999px;box-shadow:0 4px 18px rgba(238,139,28,.6);animation:acpulse .8s ease-in-out infinite}
+  .send-remind{position:fixed;left:50%;bottom:calc(70px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:390;display:none;background:linear-gradient(180deg,#ffbf3f,#ef8f22);color:#3a2600;font-weight:800;font-size:13px;padding:7px 16px;border-radius:999px;box-shadow:0 4px 18px rgba(238,139,28,.7);animation:acpulse .8s ease-in-out infinite;white-space:nowrap}
   .send-remind.on{display:block}
   .send-remind b{color:#3a2600}
   .cell-send.remind,.mel-send.remind{animation:sendGlow .7s ease-in-out infinite}
@@ -374,7 +380,7 @@
 <canvas class="fx-confetti" id="confetti"></canvas>
 <div class="countdown" id="countdown"></div>
 <div id="exIntro" class="ex-intro"><div class="ex-intro-inner"><div class="ex-intro-kick">a continuación</div><div class="ex-intro-name"></div><div class="ex-intro-sub"></div></div></div>
-<button id="exitBtn" class="exit-btn" title="Salir del juego">🚪</button>
+<button id="exitBtn" class="exit-btn" title="Salir del juego">✕</button>
 <div id="sendRemind" class="send-remind">Pulsa <b>Enviar</b> si aún no lo has hecho</div>
 <div id="exitConfirm" class="exit-confirm"><div class="exit-box"><div class="exit-q">¿Seguro que quieres volver a la pantalla de inicio?</div><div class="exit-btns"><button id="exitYes" class="btn-gold">Sí, salir</button><button id="exitNo">Cancelar</button></div></div></div>
 <button id="fsBtn" class="fs-btn" title="Pantalla completa">⛶</button>
@@ -884,10 +890,13 @@ function renderMelStaffSVG(midis, W, H, opts){ opts=opts||{};
   new VF.Formatter().joinVoices([voice]).format([voice], LW-x0-pad-66);
   voice.draw(ctx,stave);
   const xs=notes.map(n=>{ try{return n.getAbsoluteX();}catch(e){return x0;} });
-  if(opts.intervals){ for(let i=1;i<N;i++){ if(midis[i]!=null&&midis[i-1]!=null){ const iv=ivLabel(midis[i-1],midis[i]);
-    const xm=(xs[i-1]+xs[i])/2, col=(opts.ivColors&&opts.ivColors[i-1])||'#8a7638';
-    ctx.save&&ctx.save(); try{ctx.setFont('Georgia',opts.ivFont||15);}catch(_){}
-    ctx.fillStyle=col; ctx.fillText(iv.txt, xm-15, staveY-9); ctx.restore&&ctx.restore(); } } }
+  if(opts.intervals){ const bw=52, bh=21, by=Math.max(1, staveY-30);   // etiquetas de intervalo (misma posición fija)
+    for(let i=1;i<N;i++){ if(midis[i]!=null&&midis[i-1]!=null){ const iv=ivLabel(midis[i-1],midis[i]);
+      const xm=(xs[i-1]+xs[i])/2, bg=(opts.ivColors&&opts.ivColors[i-1])||'#b8860b';
+      ctx.save&&ctx.save();
+      ctx.fillStyle=bg; if(ctx.fillRect) ctx.fillRect(xm-bw/2, by, bw, bh);
+      ctx.fillStyle='#fff'; try{ctx.setFont('Arial',opts.ivFont||14,'bold');}catch(_){}
+      ctx.fillText(iv.txt, xm-bw/2+9, by+bh-6); ctx.restore&&ctx.restore(); } } }
   const svg=holder.querySelector('svg'); svg.setAttribute('viewBox','0 0 '+LW+' '+LH); svg.setAttribute('width',W); svg.setAttribute('height',H); svg.setAttribute('preserveAspectRatio','none'); svg.style.width='100%'; svg.style.height='100%'; svg.style.display='block';
   const boxes=[]; for(let i=0;i<N;i++){ const xL=(i===0?x0:(xs[i-1]+xs[i])/2), xR=(i===N-1?LW-pad:(xs[i]+xs[i+1])/2); boxes.push({slot:i,x:xL,w:Math.max(12,xR-xL)}); }
   return {svg,boxes,LW,LH};
@@ -1151,6 +1160,19 @@ const CAD_SH_ORD=['f','c','g','d','a','e','b'], CAD_FL_ORD=['b','e','a','d','g',
 function cadSigAcc(sharps,letter){ letter=letter.toLowerCase();
   if(sharps>0) return CAD_SH_ORD.slice(0,sharps).includes(letter)?'#':'';
   if(sharps<0) return CAD_FL_ORD.slice(0,-sharps).includes(letter)?'b':''; return ''; }
+// DELETREO DIATÓNICO real: elige la letra correcta según la tonalidad (sensible = alteración de su grado,
+// no la enarmonía). Devuelve {key:'f#/4', letter:'f', acc:'#'}.
+const CAD_LTR=['c','d','e','f','g','a','b'], CAD_LTR_PC={c:0,d:2,e:4,f:5,g:7,a:9,b:11};
+function cadSpell(m, tonicName, sharps){
+  const pc=((m%12)+12)%12, oct=Math.floor(m/12)-1;
+  const tl=(tonicName||'C')[0].toLowerCase(), start=CAD_LTR.indexOf(tl), order=[];
+  for(let i=0;i<7;i++) order.push(CAD_LTR[(start+i)%7]);
+  const dp=L=>{ const sa=cadSigAcc(sharps,L); return {sa, p:((CAD_LTR_PC[L]+(sa==='#'?1:sa==='b'?-1:0))%12+12)%12}; };
+  for(const L of order){ const d=dp(L); if(d.p===pc) return {letter:L, acc:d.sa, key:L+(d.sa||'')+'/'+oct}; }   // diatónica
+  for(const L of order){ const d=dp(L); if(((d.p+1)%12)===pc){ const na=d.sa===''?'#':(d.sa==='b'?'':'#'); return {letter:L, acc:na, key:L+(na||'')+'/'+oct}; } }  // alterada al alza (sensible)
+  for(const L of order){ const d=dp(L); if(((d.p+11)%12)===pc){ const na=d.sa===''?'b':(d.sa==='#'?'':'b'); return {letter:L, acc:na, key:L+(na||'')+'/'+oct}; } }  // alterada a la baja
+  const nm=(sharps<0?CAD_FLAT_NM:CAD_SHARP_NM)[pc]; return {letter:nm[0], acc:nm.length>1?nm[1]:'', key:nm+'/'+oct};
+}
 function genCadencia(){
   const type=pick(CAD_TYPES).id, base=CAD_BASES[type], mode=base.refMode;
   const keyNames=Object.keys(CAD_TARGET[mode]); const tonicName=pick(keyNames);
@@ -1175,14 +1197,13 @@ function renderCadScore(container, gen, colorMode){
   new VF.StaveConnector(top,bot).setType(VF.StaveConnector.type.BRACE).setContext(ctx).draw();
   new VF.StaveConnector(top,bot).setType(VF.StaveConnector.type.SINGLE_LEFT).setContext(ctx).draw();
   const durOf=q=> q>=4?'w':q>=3?'hd':q>=2?'h':'q';
-  const flats=gen.prefersFlats, sharps=gen.sharps, N=gen.events.length;
-  const addAcc=(sn,vk)=>{ const letter=vk[0], acc=vk.indexOf('#')>=0?'#':(vk.indexOf('b')>=0?'b':''); if(acc!==cadSigAcc(sharps,letter)){ try{ sn.addModifier(new VF.Accidental(acc===''?'n':acc),0); }catch(e){} } };
+  const sharps=gen.sharps, N=gen.events.length;
   // escritura a 4 voces: en cada clave, la voz superior con plicas ↑ y la inferior con plicas ↓
   function mkVoiceNotes(vIdx, clef, stemDir){
-    return gen.events.map((e,i)=>{ const vk=cadMidiVex(e.midi[vIdx],flats);
-      const sn=new VF.StaveNote({clef, keys:[vk], duration:durOf(e.q), stem_direction:stemDir});
+    return gen.events.map((e,i)=>{ const sp=cadSpell(e.midi[vIdx], gen.tonicName, sharps);
+      const sn=new VF.StaveNote({clef, keys:[sp.key], duration:durOf(e.q), stem_direction:stemDir});
       if(e.q>=3&&e.q<4) VF.Dot.buildAndAttach([sn],{all:true});
-      addAcc(sn,vk);
+      if(sp.acc!==cadSigAcc(sharps, sp.letter)){ try{ sn.addModifier(new VF.Accidental(sp.acc===''?'n':sp.acc),0); }catch(err){} }   // solo alteración accidental real
       if(colorMode && i>=N-2){ const col=colorMode==='green'?'#1e9e57':'#c0563a'; sn.setStyle({fillStyle:col,strokeStyle:col}); }
       return sn; }); }
   const nS=mkVoiceNotes(0,'treble',1), nA=mkVoiceNotes(1,'treble',-1), nT=mkVoiceNotes(2,'bass',1), nB=mkVoiceNotes(3,'bass',-1);
@@ -1588,9 +1609,8 @@ function playerConnect(){
         showScreen('s-player-wait'); PL.channel.send({type:'broadcast',event:'hello',payload:{id:PL.id}}); } });
 }
 // aviso de "pulsa Enviar" (cuando arranca la cuenta atrás en el iPad)
-function playerWarn(){ if(PL.sent) return; const on=!$('#s-player-sent').classList.contains('on');
-  if(!on) return; ['btnSend','tcSend','cadSend'].forEach(id=>{ const b=document.getElementById(id); if(b) b.classList.add('remind'); });
-  const r=$('#sendRemind'); if(r) r.classList.add('on'); }
+function playerWarn(){ if(PL.sent) return;   // móvil: solo el resplandor del botón Enviar (el texto va en el iPad)
+  ['btnSend','tcSend','cadSend'].forEach(id=>{ const b=document.getElementById(id); if(b) b.classList.add('remind'); }); }
 function clearSendRemind(){ ['btnSend','tcSend','cadSend'].forEach(id=>{ const b=document.getElementById(id); if(b) b.classList.remove('remind'); });
   const r=$('#sendRemind'); if(r) r.classList.remove('on'); }
 function playerOnPhase(p){
@@ -1667,14 +1687,18 @@ function playerSet(i,cell){
 }
 function refreshPlayerSlots(){ for(let i=0;i<8;i++){ const h=pslot(i); if(h) h.classList.toggle('current',i===PL.current); } }
 function buildPlayerPalette(){
-  const box=$('#prPalette'); box.innerHTML='';
+  const box=$('#prPalette'); box.className='palette-wrap'; box.innerHTML='';
+  const cards=document.createElement('div'); cards.className='palette-cards';   // zona scrolleable (las cartas y el fondo)
   paletteFor(PL.compound).forEach(cell=>{
     const card=document.createElement('div'); card.className='cell-card';
     const svg=drawCellMini(cell,PL.compound,'#241a06'); svg.style.width='auto'; svg.style.height='100%';
     const mini=document.createElement('div'); mini.className='mini'; mini.appendChild(svg);
-    card.appendChild(mini); attachPointer(card,cell); box.appendChild(card);
+    card.appendChild(mini); attachPointer(card,cell); cards.appendChild(card);
   });
-  const send=document.createElement('button'); send.className='cell-card cell-send'; send.id='btnSend'; send.textContent='Enviar'; send.addEventListener('click',playerSend); box.appendChild(send);
+  box.appendChild(cards);
+  const bar=document.createElement('div'); bar.className='rit-bar';           // Enviar fijo abajo (siempre visible)
+  const send=document.createElement('button'); send.className='cell-send'; send.id='btnSend'; send.textContent='Enviar'; send.addEventListener('click',playerSend);
+  bar.appendChild(send); box.appendChild(bar);
 }
 function attachPointer(card,cell){
   let sx=0,sy=0,dragging=false,ghost=null,overEl=null;
@@ -1846,7 +1870,7 @@ function playerRevealMel(p){
   showScreen('s-player-reveal');
   const sol=p.sol||[]; const mine=(PL.melMidis||new Array(8).fill(null)).slice();
   const ivColors=[]; for(let i=1;i<sol.length;i++){ ivColors[i-1]=(mine[i]!=null&&mine[i-1]!=null&&(mine[i]-mine[i-1])===(sol[i]-sol[i-1]))?'#2f8f4f':'#c0563a'; }
-  const noteColors=mine.map((m,i)=> i===0?'#b8860b' : (m!=null&&sol[i]!=null&&m===sol[i])?'#2f8f4f':'#241a06');
+  const noteColors=mine.map((m,i)=> i===0?'#b8860b':'#241a06');   // todas negras salvo la 1ª (dada); el acierto lo marca la etiqueta del intervalo
   const box=pRevealStaffBox(); if(box) mountMelStaff(box, mine, {given:true, intervals:true, ivColors, colors:noteColors, ivFont:13});
   $('#pScore').textContent='0%'; countUp($('#pScore'), me?me.last:0, 850, '%');
   const emoji = pos===0?'🥇 ¡Ganas!' : pos===1?'🥈 ¡Casi!' : pos===2?'🥉 ¡Podio!' : '';

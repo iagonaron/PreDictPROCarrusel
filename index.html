@@ -199,6 +199,34 @@
   .tcrev .tcr-card{flex:1;max-width:230px;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px}
   .tcrev .tcr-h{font-size:13px;letter-spacing:.12em;color:var(--gold-soft);font-weight:800}
   .tcrev .tcr-v{font-size:38px;font-weight:900;color:var(--ink)}
+  #s-host-round.toncom .rit-only,#s-host-round.toncom .mel-only{display:none}
+  .tc-hostcard{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-size:26px;color:var(--ink);text-align:center;padding:14px}
+  .tc-hostcard b{color:var(--gold)}
+  .tc-hostcard span{font-size:15px;color:var(--muted);font-weight:500;max-width:580px}
+  #s-host-reveal.toncom .staffwrap{height:auto;align-self:center;padding:22px 20px}
+  #s-host-reveal.toncom .tcrev{height:auto}
+  .tcrev .tcr-card{padding:20px 16px}
+  /* ENVIAR destacado (tono ámbar cálido, distinto del oro del resto) */
+  .cell-send,.mel-send,.btn-send,.tc-foot .mel-send{background:linear-gradient(180deg,#ffc93f,#ee8b1c);color:#3a2600;border:none;box-shadow:0 5px 20px rgba(238,139,28,.5),inset 0 1px 0 rgba(255,255,255,.4);letter-spacing:.02em}
+  .cell-send:active,.mel-send:active{filter:brightness(1.06)}
+  .cell-send:disabled,.mel-send:disabled{background:var(--paper);color:#9a8a5a;box-shadow:none}
+  /* SETLIST (lobby) */
+  .setlist{width:100%;max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:14px;align-items:center}
+  .exlist{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
+  .exrow{display:flex;align-items:center;justify-content:space-between;gap:8px;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:13px;padding:11px 14px}
+  .exrow.locked{opacity:.38}
+  .exname{font-weight:800;color:var(--ink);font-size:15px}
+  .exrow.locked .exname{color:var(--muted2)}
+  .soon{font-size:10px;color:var(--muted2);text-transform:uppercase;letter-spacing:.09em}
+  .stepper{display:flex;align-items:center;gap:9px}
+  .stepper .st{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--gold);font-size:20px;font-weight:800;cursor:pointer;display:grid;place-items:center;line-height:1}
+  .stepper .st:active{transform:scale(.92)}
+  .stepper b{min-width:18px;text-align:center;color:var(--gold);font-size:18px;font-weight:900}
+  /* host TonCom: mensaje grande + subtítulo */
+  .tc-hoststep{font-size:44px;font-weight:900;color:var(--gold);letter-spacing:.01em;min-height:52px}
+  .tc-hoststep b{color:var(--ink);font-size:60px}
+  .tc-hostsub{font-size:15px;color:var(--muted);font-weight:500}
+  .hp-prog{color:var(--gold-soft);font-size:13px;font-weight:700;letter-spacing:.03em}
 
   .rotate-hint{display:none}
   @media (orientation:portrait){
@@ -328,27 +356,23 @@
       <div class="kick">Código de sala</div>
       <div class="code" id="codeTxt">····</div>
       <p>Los alumnos <b>escanean el QR</b> con el móvil, ponen un alias y entran. No se guarda nada.</p>
-      <p style="color:var(--muted2);font-size:13px">Ronda: <b style="color:var(--gold-soft)">Rítmico</b> · reconstruir 8 células (4 compases).</p>
       <div id="joinUrl" style="font-size:12px;color:var(--muted2);margin-top:8px;word-break:break-all"></div>
       <div id="fileWarn" style="display:none;margin-top:10px;padding:9px 11px;border:1px solid #7a3b12;background:rgba(255,120,60,.12);border-radius:10px;color:#ffcaa8;font-size:12.5px;line-height:1.35"></div>
     </div>
   </div>
   <div class="kick">Conectados</div>
   <div class="roster" id="roster"><span style="color:var(--muted2)">esperando alumnos…</span></div>
-  <div class="lobby-ctl">
-    <div class="kick" style="align-self:center">Ejercicio</div>
-    <div class="seg" id="exMode">
-      <button data-x="ritmico" class="on">Rítmico</button>
-      <button data-x="melodico">Melódico</button>
-      <button data-x="toncom">TonCom</button>
+  <div class="setlist">
+    <div class="kick" style="align-self:center">Ejercicios de la partida · elige cuántas rondas de cada uno</div>
+    <div class="exlist" id="exList">
+      <div class="exrow" data-x="ritmico"><span class="exname">Rítmico</span><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-ritmico">1</b><button class="st" data-d="1">+</button></div></div>
+      <div class="exrow" data-x="melodico"><span class="exname">Melódico</span><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-melodico">1</b><button class="st" data-d="1">+</button></div></div>
+      <div class="exrow" data-x="toncom"><span class="exname">TonCom</span><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-toncom">1</b><button class="st" data-d="1">+</button></div></div>
+      <div class="exrow locked"><span class="exname">Armonía</span><span class="soon">pronto</span></div>
+      <div class="exrow locked"><span class="exname">Modos</span><span class="soon">pronto</span></div>
+      <div class="exrow locked"><span class="exname">Cadencias</span><span class="soon">pronto</span></div>
     </div>
-    <div class="kick" style="align-self:center" id="compLbl">Compás</div>
-    <div class="seg" id="compMode">
-      <button data-m="random" class="on">Aleatorio</button>
-      <button data-m="simple">2/4</button>
-      <button data-m="compound">6/8</button>
-    </div>
-    <button class="btn-gold" id="btnStart" disabled>Empezar ronda</button>
+    <button class="btn-gold" id="btnStart" disabled>Empezar partida</button>
   </div>
   <div class="joinline">¿Alumno sin cámara? Código:
     <input type="text" id="manualCode" maxlength="4" placeholder="XXXX">
@@ -360,7 +384,7 @@
 <div class="screen host-play" id="s-host-round">
   <div class="hp-top">
     <h2 class="brand">Rítmico <span class="b" id="hrTs">2/4</span></h2>
-    <span class="kick">escucha y reconstruye · el móvil responde</span>
+    <span class="hp-prog" id="hProg"></span>
     <div class="spacer"></div>
     <div class="counter" id="counter">Respondidos <b>0</b> / 0</div>
   </div>
@@ -920,6 +944,32 @@ function tonScore(ans, key, compas){
   const compOk = ans.compas===compas.ts;
   return {pct:(tonOk?25:0)+(armOk?25:0)+(compOk?50:0), tonOk, armOk, compOk};
 }
+// --- secuencia sonora en el iPad: La→Tónica→Acordes tonales (x2), cuenta atrás 10s, dictado x1 ---
+function tonWait(ms){ return new Promise(r=>setTimeout(r,Math.max(0,ms))); }
+function hostTonLabel(kind,val){ const el=document.getElementById('tcHostMsg'), sub=document.getElementById('tcHostSub'); if(!el)return;
+  if(kind==='la'){ el.textContent='La'; if(sub)sub.textContent='referencia de afinación'; }
+  else if(kind==='tonica'){ el.textContent='Tónica'; if(sub)sub.textContent=''; }
+  else if(kind==='acordes'){ el.textContent='Acordes tonales'; if(sub)sub.textContent=''; }
+  else if(kind==='count'){ el.innerHTML='Dictado en <b>'+val+'</b>'; if(sub)sub.textContent='prepárate'; }
+  else if(kind==='dictado'){ el.textContent='🎵 Dictado'; if(sub)sub.textContent='escucha y responde en el móvil'; }
+  else { el.textContent='🎼 Identifica tonalidad, armadura y compás'; if(sub)sub.textContent=''; } }
+async function playTonRefLabeled(key, onLabel){ const c=actx(); if(c.state==='suspended')await c.resume();
+  onLabel&&onLabel('la'); pianoTone(69, c.currentTime+0.05, 1.3); await tonWait(1650);
+  const tonM=(function(){ const tpc=TON_TPC[key.tonic]; for(let m=60;m<=71;m++) if(((m%12)+12)%12===((tpc%12+12)%12)) return m; return 60; })();
+  onLabel&&onLabel('tonica'); pianoTone(tonM, c.currentTime+0.05, 1.3); await tonWait(1650);
+  onLabel&&onLabel('acordes'); let t=actx().currentTime+0.05;
+  [0,3,4,0].forEach(deg=>{ tonChord(key,deg,tonM).forEach(m=>pianoTone(m,t,1.05)); t+=1.15; });
+  await tonWait(4*1150+300); }
+async function tonHostCountdown(sec, onLabel){ for(let s=sec;s>=1;s--){ onLabel&&onLabel('count',s); try{sfx(s<=3?'tick':'nav');}catch(_){}; await tonWait(1000); } }
+async function playTonSequence(ex, onLabel){
+  for(let rep=0; rep<MEL_MAX_LISTENS; rep++){ await playTonRefLabeled(ex.key, onLabel); await tonWait(600); }
+  await tonHostCountdown(10, onLabel);
+  onLabel&&onLabel('dictado'); const d=await playTonDict(ex.dict, ex.compas, null); await tonWait(d*1000);
+  onLabel&&onLabel('idle'); }
+async function hostListenTon(){ await ensureAudio(); const btn=$('#hListen'); if(btn.disabled)return; btn.disabled=true;
+  const sw=$('#s-host-round .staffwrap'); sw&&sw.classList.add('listening');
+  try{ await playTonSequence(H.exercise, hostTonLabel); }catch(e){}
+  sw&&sw.classList.remove('listening'); btn.disabled=false; }
 
 /* =========================================================================
    UTIL
@@ -980,7 +1030,8 @@ function toggleFS(){ if(_canFS){ if(_isFS()){ (document.exitFullscreen||document
    HOST
    ========================================================================= */
 let H={code:null, channel:null, roster:{}, answers:{}, players:{}, phase:'lobby',
-       exercise:null, bpm:72, metro:true, listens:2, compMode:'random', exType:'ritmico', melSpeed:'Normal', roundId:0};
+       exercise:null, bpm:72, metro:true, listens:2, compMode:'random', exType:'ritmico', melSpeed:'Normal', roundId:0,
+       setlist:{ritmico:1, melodico:1, toncom:1}, queue:[], qIndex:0, gameDone:false};
 
 function initHost(){
   document.addEventListener('pointerdown',()=>ensureAudio(),{once:true});
@@ -993,21 +1044,18 @@ function initHost(){
   showScreen('s-host-lobby');
   hostConnect();
   // controles
-  $('#compMode').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
-    $('#compMode').querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');H.compMode=b.dataset.m;sfx('nav');});
-  $('#exMode').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
-    $('#exMode').querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');H.exType=b.dataset.x;sfx('nav');
-    const rit=H.exType==='ritmico'; $('#compMode').style.display=rit?'':'none'; $('#compLbl').style.display=rit?'':'none'; });
+  $('#exList').addEventListener('click',e=>{ const b=e.target.closest('.st'); if(!b)return; const row=b.closest('.exrow'); const x=row&&row.dataset.x; if(!x)return;
+    H.setlist[x]=Math.max(0,Math.min(9,(H.setlist[x]||0)+ +b.dataset.d)); $('#cnt-'+x).textContent=H.setlist[x]; sfx('nav'); updateStartBtn(); });
   $('#hMelSpeed').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
     $('#hMelSpeed').querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');H.melSpeed=b.dataset.sp;sfx('nav');});
-  $('#btnStart').addEventListener('click',hostStartRound);
+  $('#btnStart').addEventListener('click',hostStartGame);
   $('#hTest').addEventListener('click',()=>testAudio(H.bpm));
   $('#hListen').addEventListener('click',hostListen);
   $('#hBpmDown').addEventListener('click',()=>{H.bpm=Math.max(30,H.bpm-4);$('#hBpm').textContent=H.bpm;});
   $('#hBpmUp').addEventListener('click',()=>{H.bpm=Math.min(160,H.bpm+4);$('#hBpm').textContent=H.bpm;});
   $('#hMetro').addEventListener('change',e=>H.metro=e.target.checked);
   $('#btnResults').addEventListener('click',hostShowResults);
-  $('#btnAgain').addEventListener('click',hostStartRound);
+  $('#btnAgain').addEventListener('click',hostAdvance);
   $('#btnReset').addEventListener('click',hostReset);
   $('#btnRankMode').addEventListener('click',()=>{ const next=H.rankMode==='exercise'?'general':'exercise'; renderRanking(next,'flip'); $('#btnRankMode').textContent = next==='exercise'?'Ranking general →':'← Ranking del ejercicio'; sfx('nav'); });
   $('#manualGo').addEventListener('click',()=>{const c=$('#manualCode').value.trim().toUpperCase(); if(c.length>=3) location.href=location.origin+location.pathname+'?room='+c;});
@@ -1028,6 +1076,7 @@ function hostSyncRoster(){
     if(H.phase==='round' && meta.rid===H.roundId && !H.answers[id]){
       if(meta.ans) H.answers[id]={placedIds:meta.ans, ms:meta.ms, alias:meta.alias||'—'};
       else if(meta.mans) H.answers[id]={midis:meta.mans, ms:meta.ms, alias:meta.alias||'—'};
+      else if(meta.tans) H.answers[id]={tans:meta.tans, ms:meta.ms, alias:meta.alias||'—'};
     }
   });
   const nuevos=Object.keys(H.roster).some(id=>!prev.has(id));
@@ -1037,11 +1086,26 @@ function hostSyncRoster(){
 function renderRoster(){
   const ids=Object.keys(H.roster);
   const box=$('#roster');
-  if(!ids.length){ box.innerHTML='<span style="color:var(--muted2)">esperando alumnos…</span>'; $('#btnStart').disabled=true; return; }
-  box.innerHTML=ids.map(id=>'<span class="chip"><span class="dot"></span>'+escapeHtml(H.roster[id].alias)+'</span>').join('');
-  $('#btnStart').disabled=false;
+  if(!ids.length){ box.innerHTML='<span style="color:var(--muted2)">esperando alumnos…</span>'; }
+  else box.innerHTML=ids.map(id=>'<span class="chip"><span class="dot"></span>'+escapeHtml(H.roster[id].alias)+'</span>').join('');
+  updateStartBtn();
 }
-function hostOnAnswer(p){ if(H.phase!=='round')return; H.answers[p.id]={placedIds:p.placedIds,midis:p.midis,ms:p.ms,alias:p.alias};
+function totalRounds(){ return (H.setlist.ritmico||0)+(H.setlist.melodico||0)+(H.setlist.toncom||0); }
+function updateStartBtn(){ const b=$('#btnStart'); if(!b)return; const ok=Object.keys(H.roster).length>0 && totalRounds()>0; b.disabled=!ok;
+  b.textContent = totalRounds()>0 ? ('Empezar partida · '+totalRounds()+' ronda'+(totalRounds()>1?'s':'')) : 'Añade alguna ronda'; }
+function buildQueue(){ const q=[]; ['ritmico','melodico','toncom'].forEach(x=>{ for(let i=0;i<(H.setlist[x]||0);i++) q.push(x); }); return q; }
+function hostStartGame(){ H.queue=buildQueue(); if(!H.queue.length) return; H.qIndex=0; H.gameDone=false; H.players={}; H.answers={}; hostStartRound(); }
+function hostAdvance(){ if(H.gameDone){ hostReset(); return; }
+  if(H.qIndex < H.queue.length-1){ H.qIndex++; hostStartRound(); } else hostFinishGame(); }
+function hostFinishGame(){ H.gameDone=true; H.rankMode='general';
+  $('#s-host-reveal .brand').innerHTML='🏆 Clasificación <span class="b">final</span>';
+  renderRanking('general','flip');
+  const rm=$('#btnRankMode'); if(rm) rm.style.display='none';
+  $('#btnAgain').textContent='Nueva partida'; }
+function hostRevealButtons(){ const rm=$('#btnRankMode'); if(rm) rm.style.display='';
+  $('#btnAgain').textContent = (H.qIndex>=H.queue.length-1) ? 'Ver clasificación final →' : 'Siguiente ejercicio →'; }
+function updateRoundProgress(){ const p=$('#hProg'); if(p) p.textContent = H.queue.length? ('Ronda '+(H.qIndex+1)+' / '+H.queue.length) : ''; }
+function hostOnAnswer(p){ if(H.phase!=='round')return; H.answers[p.id]={placedIds:p.placedIds,midis:p.midis,tans:p.tans,ms:p.ms,alias:p.alias};
   if(!H.players[p.id])H.players[p.id]={alias:p.alias,points:0}; updateCounter(); }
 function updateCounter(){
   const conn=Object.keys(H.roster).length, resp=Object.keys(H.answers).length;
@@ -1050,25 +1114,36 @@ function updateCounter(){
 }
 function chosenCompound(){ if(H.compMode==='simple')return false; if(H.compMode==='compound')return true; return Math.random()<0.5; }
 function hostStartRound(){
-  H.answers={}; H.phase='round'; H.roundId++;
-  H.listens=MEL_MAX_LISTENS; $('#hLeft').textContent=H.listens; $('#hListen').disabled=false;
-  showScreen('s-host-round'); const rs=$('#s-host-round');
+  if(H.queue.length) H.exType=H.queue[H.qIndex];
+  H.answers={}; H.phase='round'; H.roundId++; H.gameDone=false;
+  H.listens=MEL_MAX_LISTENS; $('#hListen').disabled=false;
+  const rmk=$('#btnRankMode'); if(rmk) rmk.style.display='';
+  showScreen('s-host-round'); const rs=$('#s-host-round'); rs.classList.remove('mel','toncom');
   if(H.exType==='melodico'){
     rs.classList.add('mel');
+    $('#hListen').innerHTML='▶ Escuchar (<span id="hLeft">'+H.listens+'</span>)';
     const sol=genMel8(); H.exercise={type:'melodico', sol, first:sol[0]};
     $('#s-host-round .brand').innerHTML='Melódico <span class="b">atonal</span>';
     const shown=new Array(8).fill(null); shown[0]=sol[0];
     mountMelStaff($('#hrStaff'), shown, {given:true, tall:true});   // sólo la 1ª nota dada (dictado)
+  } else if(H.exType==='toncom'){
+    rs.classList.add('toncom');
+    $('#hListen').innerHTML='▶ Reproducir';
+    H.exercise=Object.assign({type:'toncom'}, genTonCom());
+    $('#s-host-round .brand').innerHTML='TonCom <span class="b">tonalidad · armadura · compás</span>';
+    $('#hrStaff').innerHTML='<div class="tc-hostcard"><div class="tc-hoststep" id="tcHostMsg">🎼 Identifica tonalidad, armadura y compás</div><div class="tc-hostsub" id="tcHostSub">Pulsa ▶ Reproducir</div></div>';
   } else {
     rs.classList.remove('mel');
+    $('#hListen').innerHTML='▶ Escuchar (<span id="hLeft">'+H.listens+'</span>)';
     const compound=chosenCompound(); H.exercise={type:'ritmico', compound, solution:gen8(compound)};
     H.bpm=compound?50:60; $('#hBpm').textContent=H.bpm;
     $('#s-host-round .brand').innerHTML='Rítmico <span class="b" id="hrTs">'+(compound?'6/8':'2/4')+'</span>';
     mountStaff($('#hrStaff'), compound, new Array(8).fill(null), {interactive:false, indicator:'number', tall:true}); // pentagrama vacío
   }
-  updateCounter(); hostBroadcastPhase();
+  updateRoundProgress(); updateCounter(); hostBroadcastPhase();
 }
 async function hostListen(){
+  if(H.exercise && H.exercise.type==='toncom'){ return hostListenTon(); }
   if(H.listens<=0)return; await ensureAudio();
   const primera=(H.listens===MEL_MAX_LISTENS);
   const go=async()=>{
@@ -1085,6 +1160,7 @@ async function hostListen(){
 }
 function hostShowResults(){
   if(H.exercise.type==='melodico'){ hostShowResultsMel(); return; }
+  if(H.exercise.type==='toncom'){ hostShowResultsTon(); return; }
   const sol=H.exercise.solution.map(c=>c.id);
   Object.keys(H.answers).forEach(id=>{ const a=H.answers[id]; let ok=0;
     for(let i=0;i<8;i++){ if(a.placedIds && a.placedIds[i]===sol[i]) ok++; }
@@ -1093,13 +1169,13 @@ function hostShowResults(){
     H.players[id].lastMs=(a.ms!=null?a.ms:9e9); H.players[id].totalMs=(H.players[id].totalMs||0)+(a.ms!=null?a.ms:9e9); });
   Object.keys(H.players).forEach(id=>{ if(!H.answers[id]){ H.players[id].lastPct=0; H.players[id].lastMs=9e9; } });
   H.phase='reveal'; H.rankMode='exercise'; showScreen('s-host-reveal'); sfx('reveal');
-  const rev=$('#s-host-reveal'); rev.classList.remove('mel');
+  const rev=$('#s-host-reveal'); rev.classList.remove('mel','toncom');
   $('#s-host-reveal .brand').innerHTML='Solución <span class="b" id="hvTs">'+(H.exercise.compound?'6/8':'2/4')+'</span>';
   const rm=$('#btnRankMode'); if(rm) rm.textContent='Ranking general →';
   mountStaff($('#hvStaff'), H.exercise.compound, new Array(8).fill(null), {interactive:false, indicator:'', tall:true});
   $('#rankList').innerHTML='';
   animateSolutionReveal(()=>renderRanking('exercise',true));
-  hostBroadcastPhase();
+  hostRevealButtons(); hostBroadcastPhase();
 }
 function hostShowResultsMel(){
   const sol=H.exercise.sol;
@@ -1108,18 +1184,38 @@ function hostShowResultsMel(){
     H.players[id].lastMs=(a.ms!=null?a.ms:9e9); H.players[id].totalMs=(H.players[id].totalMs||0)+(a.ms!=null?a.ms:9e9); });
   Object.keys(H.players).forEach(id=>{ if(!H.answers[id]){ H.players[id].lastPct=0; H.players[id].lastMs=9e9; } });
   H.phase='reveal'; H.rankMode='exercise'; showScreen('s-host-reveal'); sfx('reveal');
-  $('#s-host-reveal').classList.add('mel');
+  $('#s-host-reveal').classList.remove('toncom'); $('#s-host-reveal').classList.add('mel');
   $('#s-host-reveal .brand').innerHTML='Solución <span class="b">melódica</span>';
   const rm=$('#btnRankMode'); if(rm) rm.textContent='Ranking general →';
   $('#rankList').innerHTML='';
   animateMelReveal(()=>renderRanking('exercise',true));
-  hostBroadcastPhase();
+  hostRevealButtons(); hostBroadcastPhase();
 }
 function animateMelReveal(done){ const sol=H.exercise.sol; let i=0;
   (function step(){ if(i>=sol.length){ mountMelStaff($('#hvStaff'), sol.slice(), {given:true, intervals:true, tall:true}); done&&done(); return; }
     mountMelStaff($('#hvStaff'), sol.map((m,k)=>k<=i?m:null), {given:true, tall:true});
     pianoTone(sol[i], actx().currentTime+0.02, 0.5); sfx('correctTick',i); i++; setTimeout(step,300);
   })(); }
+function armLabelTon(v){ const o=ARM_WHEEL.find(x=>x.v===v); return v===0?'Sin armadura':(o?o.t:'—'); }
+function hostShowResultsTon(){
+  const key=H.exercise.key, compas=H.exercise.compas;
+  Object.keys(H.answers).forEach(id=>{ const a=H.answers[id]; const sc=tonScore(a.tans, key, compas); a.pct=sc.pct;
+    if(!H.players[id])H.players[id]={alias:a.alias,points:0}; H.players[id].points+=sc.pct; H.players[id].lastPct=sc.pct;
+    H.players[id].lastMs=(a.ms!=null?a.ms:9e9); H.players[id].totalMs=(H.players[id].totalMs||0)+(a.ms!=null?a.ms:9e9); });
+  Object.keys(H.players).forEach(id=>{ if(!H.answers[id]){ H.players[id].lastPct=0; H.players[id].lastMs=9e9; } });
+  H.phase='reveal'; H.rankMode='exercise'; showScreen('s-host-reveal'); sfx('reveal');
+  const rev=$('#s-host-reveal'); rev.classList.remove('mel'); rev.classList.add('toncom');
+  $('#s-host-reveal .brand').innerHTML='Solución <span class="b">TonCom</span>';
+  const rm=$('#btnRankMode'); if(rm) rm.textContent='Ranking general →';
+  $('#hvStaff').innerHTML='<div class="tcrev">'+
+    '<div class="tcr-card"><div class="tcr-h">TONALIDAD</div><div class="tcr-v">'+key.name+'</div></div>'+
+    '<div class="tcr-card"><div class="tcr-h">ARMADURA</div><div class="tcr-v">'+armLabelTon(key.sig)+'</div></div>'+
+    '<div class="tcr-card"><div class="tcr-h">COMPÁS</div><div class="tcr-v">'+compas.ts+'</div></div>'+
+  '</div>';
+  $('#rankList').innerHTML='';
+  renderRanking('exercise',true);
+  hostRevealButtons(); hostBroadcastPhase();
+}
 function rankingArr(mode){
   const arr=Object.keys(H.players).filter(id=>H.roster[id]||H.players[id].points>0||H.answers[id])
     .map(id=>({id,alias:H.players[id].alias,points:H.players[id].points||0,last:H.players[id].lastPct||0,lastMs:H.players[id].lastMs||9e9,totalMs:H.players[id].totalMs||9e9}));
@@ -1147,15 +1243,21 @@ function renderRanking(mode,animate){
     }, 220+i*150));
   } else { rows.forEach(r=>r.classList.add('in')); }
 }
-function hostReset(){ H.players={}; H.answers={}; H.phase='lobby'; $('#s-host-round').classList.remove('mel'); $('#s-host-reveal').classList.remove('mel'); showScreen('s-host-lobby'); renderRoster(); hostBroadcastPhase(); }
+function hostReset(){ H.players={}; H.answers={}; H.phase='lobby'; H.queue=[]; H.qIndex=0; H.gameDone=false;
+  $('#s-host-round').classList.remove('mel','toncom'); $('#s-host-reveal').classList.remove('mel','toncom');
+  const rm=$('#btnRankMode'); if(rm) rm.style.display='';
+  showScreen('s-host-lobby'); renderRoster(); hostBroadcastPhase(); }
 function hostBroadcastPhase(){
   if(!H.channel)return;
   let payload;
   if(H.phase==='round'){
     if(H.exercise.type==='melodico') payload={phase:'round',ex:'melodico',roundId:H.roundId,first:H.exercise.first};
+    else if(H.exercise.type==='toncom') payload={phase:'round',ex:'toncom',roundId:H.roundId};
     else payload={phase:'round',ex:'ritmico',roundId:H.roundId,compound:H.exercise.compound};
   } else if(H.phase==='reveal'){
     if(H.exercise.type==='melodico') payload={phase:'reveal',ex:'melodico',roundId:H.roundId,sol:H.exercise.sol,ranking:rankingArr('exercise')};
+    else if(H.exercise.type==='toncom'){ const k=H.exercise.key, cp=H.exercise.compas;
+      payload={phase:'reveal',ex:'toncom',roundId:H.roundId,gt:{ton:k.name,arm:armLabelTon(k.sig),comp:cp.ts,tonPC:tonKeyPC(k.note,k.acc),mm:k.mm,sig:k.sig,ts:cp.ts},ranking:rankingArr('exercise')}; }
     else payload={phase:'reveal',ex:'ritmico',roundId:H.roundId,compound:H.exercise.compound,solutionIds:H.exercise.solution.map(c=>c.id),ranking:rankingArr('exercise')};
   } else payload={phase:'lobby'};
   H.channel.send({type:'broadcast',event:'phase',payload});
@@ -1191,8 +1293,11 @@ function playerConnect(){
 }
 function playerOnPhase(p){
   if(p.phase==='round'){ if(p.roundId && p.roundId===PL.roundId) return; PL.roundId=p.roundId||0; PL.exType=p.ex||'ritmico';
-    if(PL.exType==='melodico'){ PL.melFirst=p.first; startPlayerRoundMel(); } else { PL.compound=p.compound; startPlayerRound(); } }
-  else if(p.phase==='reveal'){ PL.roundId=p.roundId||PL.roundId; if((p.ex||'ritmico')==='melodico') playerRevealMel(p); else playerReveal(p); }
+    if(PL.exType==='melodico'){ PL.melFirst=p.first; startPlayerRoundMel(); }
+    else if(PL.exType==='toncom'){ startPlayerRoundTon(); }
+    else { PL.compound=p.compound; startPlayerRound(); } }
+  else if(p.phase==='reveal'){ PL.roundId=p.roundId||PL.roundId; const ex=p.ex||'ritmico';
+    if(ex==='melodico') playerRevealMel(p); else if(ex==='toncom') playerRevealTon(p); else playerReveal(p); }
   else if(p.phase==='lobby'){ if(!$('#s-player-join').classList.contains('on')) showScreen('s-player-wait'); }
 }
 function startPlayerRound(){
@@ -1290,7 +1395,13 @@ function attachPointer(card,cell){
 function playerSend(){
   if(PL.sent) return;
   const ms=Date.now()-PL.roundStart;
-  if(PL.exType==='melodico'){
+  if(PL.exType==='toncom'){
+    const t=PL.tc; const ans={tonPC:tonKeyPC(TON_NOTES[t.noteI],t.acc), mm:t.mm, arm:ARM_WHEEL[t.armI].v, compas:t.compas,
+      label:{ton:tcTonLabel(), arm:ARM_WHEEL[t.armI].t, comp:t.compas||'—'}};
+    PL.tcSentAns=ans;
+    try{ PL.channel.track({alias:PL.alias, rid:PL.roundId, tans:ans, ms}); }catch(_){}
+    try{ PL.channel.send({type:'broadcast',event:'answer',payload:{id:PL.id,alias:PL.alias,tans:ans,ms}}); }catch(_){}
+  } else if(PL.exType==='melodico'){
     const midis=PL.melMidis.slice();
     try{ PL.channel.track({alias:PL.alias, rid:PL.roundId, mans:midis, ms}); }catch(_){}
     try{ PL.channel.send({type:'broadcast',event:'answer',payload:{id:PL.id,alias:PL.alias,midis,ms}}); }catch(_){}

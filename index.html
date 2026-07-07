@@ -637,7 +637,7 @@ function drawCellMini(cell,compound,color){
   return svg;
 }
 /* ---- PENTAGRAMA real (clave de sol, compás, 4 compases) + zonas de colocación ---- */
-function renderStaffSVG(spec,slots,W,H){
+function renderStaffSVG(spec,slots,W,H,colors){
   W=Math.max(280,Math.round(W)); H=Math.max(60,Math.round(H));
   const s=Math.max(1.0,Math.min(2.2,H/125));            // el pentagrama crece con la altura de su tarjeta
   const LW=Math.max(240,Math.round(W/s)), LH=Math.max(96,Math.round(H/s));
@@ -654,11 +654,11 @@ function renderStaffSVG(spec,slots,W,H){
     stave.setContext(ctx).draw();
     const notes=[],beams=[],tuplets=[];
     for(let p=0;p<spec.pulsos;p++){ const gi=slotIndex+p, cell=slots[gi];
-      if(cell){ const grp=[];
+      if(cell){ const grp=[]; const col=(colors&&colors[gi])||'#241a06';
         cell.notes.forEach(n=>{ const rest=isRest(n); let dur=String(n.dur);
           const sn=new VF.StaveNote({keys:['b/4'],duration:rest&&!/r$/.test(dur)?dur+'r':dur,stem_direction:1});
           if(n.dots)for(let d=0;d<n.dots;d++)VF.Dot.buildAndAttach([sn],{all:true});
-          sn.setStyle({fillStyle:'#241a06',strokeStyle:'#241a06'}); notes.push(sn);grp.push(sn); });
+          sn.setStyle({fillStyle:col,strokeStyle:col}); notes.push(sn);grp.push(sn); });
         if(cell.tuplet) tuplets.push(new VF.Tuplet(grp,{num_notes:cell.tuplet,notes_occupied:cell.tuplet===3?2:3}));
         if(cell.beam){const g=beamableGroup(grp,cell.notes);if(g.length>1)beams.push(new VF.Beam(g));}
       } else { const sn=new VF.StaveNote({keys:['b/4'],duration:'qr',stem_direction:1});
@@ -682,7 +682,7 @@ function mountStaff(container,compound,slots,opts){ opts=opts||{};
     let W=Math.round(container.clientWidth), H=Math.round(container.clientHeight);
     if(W<240||H<50){ const rc=container.getBoundingClientRect(); W=Math.round(rc.width); H=Math.round(rc.height); }
     if(W<240||H<50) return;   // aún sin layout: el ResizeObserver reintentará
-    const res=renderStaffSVG(specOf(cfg.compound),cfg.slots,W,H); const LW=res.LW, LH=res.LH;
+    const res=renderStaffSVG(specOf(cfg.compound),cfg.slots,W,H,cfg.opts.cellColors); const LW=res.LW, LH=res.LH;
     const numTop=((res.staffTop-24)/LH*100).toFixed(1), arrTop=((res.staffTop+44)/LH*100).toFixed(1);
     const inner=document.createElement('div'); inner.className='staff-inner'; inner.appendChild(res.svg);
     res.boxes.forEach(b=>{ const z=document.createElement('div'); z.className='hit'+(cfg.slots[b.slot]?' filled':''); z.dataset.slot=b.slot;
@@ -875,27 +875,38 @@ async function playMelody(midis, speed, onNote){ const c=actx(); if(c.state==='s
    El iPad reproduce: (1) referencia tonal La→tónica→cadencia I-IV-V-I,
    (2) dictado en la tonalidad y compás. El alumno identifica las 3 cosas.
    ========================================================================= */
-const TON_KEYS=[
-  {name:'Do M', tonic:'C', mode:'major', sig:0,  note:'Do', acc:'', mm:'M'},
-  {name:'La m', tonic:'A', mode:'minor', sig:0,  note:'La', acc:'', mm:'m'},
-  {name:'Sol M',tonic:'G', mode:'major', sig:1,  note:'Sol',acc:'', mm:'M'},
-  {name:'Mi m', tonic:'E', mode:'minor', sig:1,  note:'Mi', acc:'', mm:'m'},
-  {name:'Re M', tonic:'D', mode:'major', sig:2,  note:'Re', acc:'', mm:'M'},
-  {name:'Si m', tonic:'B', mode:'minor', sig:2,  note:'Si', acc:'', mm:'m'},
-  {name:'Fa M', tonic:'F', mode:'major', sig:-1, note:'Fa', acc:'', mm:'M'},
-  {name:'Re m', tonic:'D', mode:'minor', sig:-1, note:'Re', acc:'', mm:'m'},
-  {name:'Sib M',tonic:'Bb',mode:'major', sig:-2, note:'Si', acc:'b',mm:'M'},
-  {name:'Sol m',tonic:'G', mode:'minor', sig:-2, note:'Sol',acc:'', mm:'m'},
+const TON_KEYS=[   // tonalidades hasta 5 alteraciones (tpc = altura de la tónica)
+  {name:'Do M', tpc:0,  mode:'major', sig:0,  note:'Do', acc:'', mm:'M'},
+  {name:'La m', tpc:9,  mode:'minor', sig:0,  note:'La', acc:'', mm:'m'},
+  {name:'Sol M',tpc:7,  mode:'major', sig:1,  note:'Sol',acc:'', mm:'M'},
+  {name:'Mi m', tpc:4,  mode:'minor', sig:1,  note:'Mi', acc:'', mm:'m'},
+  {name:'Re M', tpc:2,  mode:'major', sig:2,  note:'Re', acc:'', mm:'M'},
+  {name:'Si m', tpc:11, mode:'minor', sig:2,  note:'Si', acc:'', mm:'m'},
+  {name:'La M', tpc:9,  mode:'major', sig:3,  note:'La', acc:'', mm:'M'},
+  {name:'Fa# m',tpc:6,  mode:'minor', sig:3,  note:'Fa', acc:'#',mm:'m'},
+  {name:'Mi M', tpc:4,  mode:'major', sig:4,  note:'Mi', acc:'', mm:'M'},
+  {name:'Do# m',tpc:1,  mode:'minor', sig:4,  note:'Do', acc:'#',mm:'m'},
+  {name:'Si M', tpc:11, mode:'major', sig:5,  note:'Si', acc:'', mm:'M'},
+  {name:'Sol# m',tpc:8, mode:'minor', sig:5,  note:'Sol',acc:'#',mm:'m'},
+  {name:'Fa M', tpc:5,  mode:'major', sig:-1, note:'Fa', acc:'', mm:'M'},
+  {name:'Re m', tpc:2,  mode:'minor', sig:-1, note:'Re', acc:'', mm:'m'},
+  {name:'Sib M',tpc:10, mode:'major', sig:-2, note:'Si', acc:'b',mm:'M'},
+  {name:'Sol m',tpc:7,  mode:'minor', sig:-2, note:'Sol',acc:'', mm:'m'},
+  {name:'Mib M',tpc:3,  mode:'major', sig:-3, note:'Mi', acc:'b',mm:'M'},
+  {name:'Do m', tpc:0,  mode:'minor', sig:-3, note:'Do', acc:'', mm:'m'},
+  {name:'Lab M',tpc:8,  mode:'major', sig:-4, note:'La', acc:'b',mm:'M'},
+  {name:'Fa m', tpc:5,  mode:'minor', sig:-4, note:'Fa', acc:'', mm:'m'},
+  {name:'Reb M',tpc:1,  mode:'major', sig:-5, note:'Re', acc:'b',mm:'M'},
+  {name:'Sib m',tpc:10, mode:'minor', sig:-5, note:'Si', acc:'b',mm:'m'},
 ];
-const TON_TPC={'C':0,'D':2,'E':4,'F':5,'G':7,'A':9,'B':11,'Bb':10};
 const TON_SCALES={major:[0,2,4,5,7,9,11], minor:[0,2,3,5,7,8,10]};
 const TON_COMPAS=[
-  {ts:'2/4',beats:2,comp:false,bpm:92},
-  {ts:'3/4',beats:3,comp:false,bpm:104},
-  {ts:'6/8',beats:2,comp:true, bpm:40},
-  {ts:'9/8',beats:3,comp:true, bpm:40},
+  {ts:'2/4',beats:2,comp:false,bpm:70},   // negra = 70
+  {ts:'3/4',beats:3,comp:false,bpm:70},
+  {ts:'6/8',beats:2,comp:true, bpm:60},   // negra con puntillo = 60
+  {ts:'9/8',beats:3,comp:true, bpm:60},
 ];
-const ARM_WHEEL=[{v:2,t:'2♯'},{v:1,t:'1♯'},{v:0,t:'—'},{v:-1,t:'1♭'},{v:-2,t:'2♭'}];
+const ARM_WHEEL=[{v:7,t:'7♯'},{v:6,t:'6♯'},{v:5,t:'5♯'},{v:4,t:'4♯'},{v:3,t:'3♯'},{v:2,t:'2♯'},{v:1,t:'1♯'},{v:0,t:'—'},{v:-1,t:'1♭'},{v:-2,t:'2♭'},{v:-3,t:'3♭'},{v:-4,t:'4♭'},{v:-5,t:'5♭'},{v:-6,t:'6♭'},{v:-7,t:'7♭'}];
 const TON_NOTES=['Do','Re','Mi','Fa','Sol','La','Si'];
 const TON_NOTE_WHEEL=['Si','La','Sol','Fa','Mi','Re','Do','—'];   // '—' abajo (por defecto); Do justo encima
 const TON_NOTE_PC={'Do':0,'Re':2,'Mi':4,'Fa':5,'Sol':7,'La':9,'Si':11};
@@ -921,7 +932,7 @@ function applyLeadingTone(events, tpc){
 // Frase 1: I · V · [IV/II/VI] · V(semicadencia + silencio) · Frase 2: I · IV · V · I(cierre en tónica).
 // Parte fuerte de cada pulso = nota del acorde de su grado; partes débiles = notas de paso conjuntas.
 function genTonDictado(key, compas){
-  const tpc=((TON_TPC[key.tonic])%12+12)%12, sc=TON_SCALES[key.mode], mode=key.mode;
+  const tpc=((key.tpc)%12+12)%12, sc=TON_SCALES[key.mode], mode=key.mode;
   const pulseSec=(compas.comp?1.5:1)*(60/compas.bpm), LO=57, HI=76;
   const scale=[]; for(let m=LO;m<=HI;m++){ if(sc.includes(((m-tpc)%12+12)%12)) scale.push(m); }
   const tonics=scale.filter(m=>((m%12)+12)%12===tpc), floors=tonics.filter(t=>t>=58 && t+11<=76);
@@ -971,7 +982,7 @@ function genTonDictado(key, compas){
 // referencia tonal (cadencia) — devuelve duración
 // tríada de un grado con la fundamental cerca de nearRoot (calidad correcta; V mayor en menor)
 function tonChordMidis(key, degree, nearRoot){
-  const tpc=TON_TPC[key.tonic]; const rootSemi={0:0,3:5,4:7}[degree]; const rootPc=(tpc+rootSemi)%12;
+  const tpc=key.tpc; const rootSemi={0:0,3:5,4:7}[degree]; const rootPc=(tpc+rootSemi)%12;
   const third = key.mode==='major'?4:(degree===4?4:3);
   const target=(nearRoot!=null)?nearRoot:55; let root=null,best=1e9;
   for(let m=40;m<=79;m++){ if(((m%12)+12)%12===rootPc){ const d=Math.abs(m-target); if(d<best){best=d;root=m;} } }
@@ -1013,7 +1024,7 @@ function hostTonLabel(kind,val){ const el=document.getElementById('tcHostMsg'), 
   else { el.textContent='🎼 Identifica tonalidad, armadura y compás'; if(sub)sub.textContent=''; } }
 async function playTonRefLabeled(key, onLabel){ const c=actx(); if(c.state==='suspended')await c.resume();
   onLabel&&onLabel('la'); pianoTone(69, c.currentTime+0.05, 1.3); await tonWait(1650);
-  const tonM=(function(){ const tpc=TON_TPC[key.tonic]; for(let m=60;m<=71;m++) if(((m%12)+12)%12===((tpc%12+12)%12)) return m; return 60; })();
+  const tonM=(function(){ const tpc=key.tpc; for(let m=60;m<=71;m++) if(((m%12)+12)%12===((tpc%12+12)%12)) return m; return 60; })();
   onLabel&&onLabel('tonica'); pianoTone(tonM, c.currentTime+0.05, 1.3); await tonWait(1650);
   onLabel&&onLabel('acordes'); let t=actx().currentTime+0.05;
   const tops=[tonM, tonM, tonM-1, tonM], degrees=[0,3,4,0];   // voz aguda: tónica · tónica · sensible · tónica
@@ -1487,9 +1498,17 @@ function playerSend(){
   }
   PL.sent=true; sfx('submit'); showScreen('s-player-sent');
 }
+// deja #pMelWrap listo con un pentagrama limpio (#pMelStaff) para rítmico/melódico
+function pRevealStaffBox(){ const w=$('#pMelWrap'); if(!w) return null;
+  w.style.display=''; w.className='staffwrap'; w.style.height='clamp(158px,46vh,220px)';
+  w.innerHTML='<div class="staffbox" id="pMelStaff"></div>'; return $('#pMelStaff'); }
 function playerReveal(p){
   const arr=p.ranking||[]; const me=arr.find(r=>r.id===PL.id); const pos=arr.findIndex(r=>r.id===PL.id);
-  showScreen('s-player-reveal'); const w=$('#pMelWrap'); if(w) w.style.display='none';
+  showScreen('s-player-reveal');
+  // MI respuesta con las células correctas en verde y las incorrectas en rojo (como en melódico)
+  const sol=p.solutionIds||[], mine=PL.placed||[];
+  const colors=[]; for(let i=0;i<8;i++){ colors[i]=(mine[i] && mine[i].id===sol[i])?'#2f8f4f':'#c0563a'; }
+  const box=pRevealStaffBox(); if(box) mountStaff(box, PL.compound, PL.placed, {interactive:false, indicator:'', cellColors:colors});
   $('#pScore').textContent='0%'; countUp($('#pScore'), me?me.last:0, 850, '%');
   const emoji = pos===0?'🥇 ¡Ganas!' : pos===1?'🥈 ¡Casi!' : pos===2?'🥉 ¡Podio!' : '';
   $('#pRank').textContent = pos>=0 ? (emoji+'  Puesto '+(pos+1)+' de '+arr.length+' · '+(me?me.points:0)+' pts') : 'Sin respuesta esta ronda';
@@ -1498,7 +1517,7 @@ function playerReveal(p){
 }
 /* ---- TONCOM (móvil): ruedas de tonalidad/armadura + botones de compás ---- */
 function startPlayerRoundTon(){
-  PL.tc={noteI:TON_NOTE_WHEEL.length-1, acc:'', mm:'', armI:2, compas:''};   // nota '—' y armadura '—' por defecto
+  PL.tc={noteI:TON_NOTE_WHEEL.length-1, acc:'', mm:'', armI:ARM_WHEEL.findIndex(o=>o.v===0), compas:''};   // nota '—' y armadura '—' por defecto
   PL.sent=false; PL.roundStart=Date.now();
   if(PL.channel) try{ PL.channel.track({alias:PL.alias, rid:PL.roundId}); }catch(_){}
   showScreen('s-player-toncom'); $('#tcAlias').textContent=PL.alias;
@@ -1576,7 +1595,7 @@ function playerRevealMel(p){
   const sol=p.sol||[]; const mine=(PL.melMidis||new Array(8).fill(null)).slice();
   const ivColors=[]; for(let i=1;i<sol.length;i++){ ivColors[i-1]=(mine[i]!=null&&mine[i-1]!=null&&(mine[i]-mine[i-1])===(sol[i]-sol[i-1]))?'#2f8f4f':'#c0563a'; }
   const noteColors=mine.map((m,i)=> i===0?'#b8860b' : (m!=null&&sol[i]!=null&&m===sol[i])?'#2f8f4f':'#241a06');
-  const w=$('#pMelWrap'); if(w){ w.style.display=''; mountMelStaff($('#pMelStaff'), mine, {given:true, intervals:true, ivColors, colors:noteColors, ivFont:13}); }
+  const box=pRevealStaffBox(); if(box) mountMelStaff(box, mine, {given:true, intervals:true, ivColors, colors:noteColors, ivFont:13});
   $('#pScore').textContent='0%'; countUp($('#pScore'), me?me.last:0, 850, '%');
   const emoji = pos===0?'🥇 ¡Ganas!' : pos===1?'🥈 ¡Casi!' : pos===2?'🥉 ¡Podio!' : '';
   $('#pRank').textContent = pos>=0 ? (emoji+'  Puesto '+(pos+1)+' de '+arr.length+' · '+(me?me.points:0)+' pts') : 'Sin respuesta esta ronda';

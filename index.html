@@ -84,9 +84,8 @@
   .hit .pn{position:absolute;left:50%;transform:translateX(-50%);font-size:clamp(12px,1.7vw,22px);font-weight:800;color:rgba(120,90,20,.6);transition:color .08s,text-shadow .08s,transform .08s}
   .hit .pn.lit{color:var(--gold2);text-shadow:0 0 16px rgba(212,175,55,.9);transform:translateX(-50%) scale(1.55)}
   .hit .parrow{position:absolute;left:50%;transform:translateX(-50%);font-size:14px;line-height:1;color:rgba(150,110,25,.42);transition:color .12s,transform .12s}
-  .hit.current .parrow{color:var(--gold);transform:translateX(-50%) scale(1.4)}
+  .hit.current .parrow{color:var(--gold);transform:translateX(-50%) scale(1.55);text-shadow:0 0 10px rgba(212,175,55,.7)}
   .hit.current .pn{color:var(--gold2)}
-  .hit.current{background:rgba(212,175,55,.13);box-shadow:inset 0 0 0 2px rgba(212,175,55,.7)}
   .hit.over{background:rgba(233,201,106,.32);box-shadow:inset 0 0 0 2px var(--gold-soft)}
   .hit.flash{animation:hitFlash .34s ease-out}
   @keyframes hitFlash{0%{background:rgba(212,175,55,.55)}100%{background:transparent}}
@@ -101,10 +100,12 @@
   .toggle{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
 
   /* ranking */
-  .reveal-wrap{display:flex;gap:16px;flex:1;min-height:0}
-  .rank{flex:0 0 340px;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:18px;padding:16px 18px;overflow:auto}
-  .rank h3{margin:0 0 12px;font-size:16px;color:var(--gold-soft);letter-spacing:.05em}
-  .rrow{display:flex;align-items:center;gap:12px;padding:10px 8px;border-radius:12px;margin-bottom:6px;background:rgba(255,255,255,.02)}
+  .reveal-wrap{display:flex;gap:14px;flex:1;min-height:0;align-items:stretch}
+  #s-host-reveal .staffwrap{flex:1;height:clamp(150px,42vh,290px);align-self:center;align-items:stretch;justify-content:stretch}
+  .rank{flex:0 0 clamp(260px,30vw,340px);align-self:stretch;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:18px;padding:12px 14px;overflow-y:auto;display:flex;flex-direction:column}
+  .rank h3{margin:0 0 10px;font-size:15px;color:var(--gold-soft);letter-spacing:.05em;flex:0 0 auto}
+  #rankList{overflow-y:auto;flex:1}
+  .rrow{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:10px;margin-bottom:5px;background:rgba(255,255,255,.02)}
   .rrow .pos{width:30px;text-align:center;font-weight:900;color:var(--muted2);font-size:16px}
   .rrow.p1 .pos{color:var(--gold)} .rrow.p1{background:rgba(212,175,55,.12)}
   .rrow.p2 .pos{color:#cdd3e0} .rrow.p3 .pos{color:#e0a16a}
@@ -128,10 +129,10 @@
   /* PLAYER round — pentagrama arriba (~34%), tarjetas abajo; TODO en bloques del mismo tamaño */
   #s-player-round{flex-direction:column;gap:4px;height:100dvh;padding:3px max(12px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
   #s-player-round .staffwrap{flex:0 0 34%;min-height:78px;padding:2px 4px;align-items:stretch;justify-content:stretch}
-  .pr-you{position:absolute;top:2px;right:max(12px,env(safe-area-inset-right));font-size:12px;color:var(--muted2);z-index:6}
+  .pr-you{position:absolute;top:4px;right:calc(52px + env(safe-area-inset-right));font-size:12px;color:var(--muted2);z-index:6}
   .pr-you b{color:var(--gold)}
   #prHint{color:var(--gold);font-weight:800}
-  .palette{flex:1;display:flex;flex-wrap:wrap;gap:7px;padding:2px 0;overflow:auto;align-content:center;justify-content:flex-start;align-items:center}
+  .palette{flex:1;display:flex;flex-wrap:wrap;gap:7px;padding:2px 0;overflow-y:auto;align-content:flex-start;justify-content:flex-start;align-items:flex-start;-webkit-overflow-scrolling:touch}
   .cell-ctrl{color:var(--gold)}
   .cell-send{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a2005;border-color:transparent;font-weight:800;font-size:17px;min-width:104px}
   .cell-send:disabled{background:var(--paper);color:#9a8a5a}
@@ -616,8 +617,7 @@ function flashHostNumber(i){ const st=document.getElementById('hrStaff'); const 
    UTIL
    ========================================================================= */
 const $=s=>document.querySelector(s);
-function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on')); $('#'+id).classList.add('on');
-  const fsb=document.getElementById('fsBtn'); if(fsb && fsb.dataset.hide!=='1') fsb.style.display=(id==='s-player-round')?'none':''; }
+function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on')); $('#'+id).classList.add('on'); }
 function genCode(){ const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let c=''; for(let i=0;i<4;i++)c+=A[rint(A.length)]; return c; }
 function genId(){ return 'p'+Math.random().toString(36).slice(2,9); }
 const chan=code=>'pcarrusel-'+code;
@@ -773,7 +773,7 @@ function renderRanking(animate){
   const arr=rankingArr(); const box=$('#rankList');
   if(!arr.length){ box.innerHTML='<div style="color:var(--muted2)">sin respuestas todavía…</div>'; return; }
   box.innerHTML=arr.map((r,i)=>'<div class="rrow p'+(i+1)+'" data-pts="'+r.points+'"><div class="pos">'+(i+1)+'</div><div class="al">'+escapeHtml(r.alias)+'<div class="last">esta ronda: '+r.last+'%</div></div><div class="pts">'+(animate?0:r.points)+'</div></div>').join('');
-  if(!animate) return;
+  if(!animate){ [...box.querySelectorAll('.rrow')].forEach(r=>r.classList.add('in')); return; }
   const rows=[...box.querySelectorAll('.rrow')];
   rows.forEach((row,i)=>setTimeout(()=>{
     row.classList.add('in'); countUp(row.querySelector('.pts'), +row.dataset.pts, 650); sfx('correctTick',i);
@@ -845,8 +845,7 @@ function playerSet(i,cell){
   mountPlayerStaff();
   const el=pslot(i); if(el&&cell){ el.classList.add('flash'); }
   sfx(cell?'place':'clear', i);
-  const full=PL.placed.every(Boolean); $('#btnSend').disabled=!full;
-  $('#prHint').textContent=full?'¡Listo!':(PL.placed.filter(Boolean).length+' / 8');
+  const pv=$('#prHint'); if(pv) pv.textContent=(PL.placed.filter(Boolean).length)+' / 8';
 }
 function refreshPlayerSlots(){ for(let i=0;i<8;i++){ const h=pslot(i); if(h) h.classList.toggle('current',i===PL.current); } }
 function buildPlayerPalette(){
@@ -857,8 +856,7 @@ function buildPlayerPalette(){
     const mini=document.createElement('div'); mini.className='mini'; mini.appendChild(svg);
     card.appendChild(mini); attachPointer(card,cell); box.appendChild(card);
   });
-  const fs=document.createElement('button'); fs.className='cell-card cell-ctrl'; fs.title='Pantalla completa'; fs.innerHTML='<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>'; fs.addEventListener('click',toggleFS); box.appendChild(fs);
-  const send=document.createElement('button'); send.className='cell-card cell-send'; send.id='btnSend'; send.textContent='Enviar'; send.disabled=!PL.placed.every(Boolean); send.addEventListener('click',playerSend); box.appendChild(send);
+  const send=document.createElement('button'); send.className='cell-card cell-send'; send.id='btnSend'; send.textContent='Enviar'; send.addEventListener('click',playerSend); box.appendChild(send);
 }
 function attachPointer(card,cell){
   let sx=0,sy=0,dragging=false,ghost=null,overEl=null;

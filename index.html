@@ -135,14 +135,16 @@
   #prHint{color:var(--gold);font-weight:800}
   .palette{flex:1;display:flex;flex-wrap:wrap;gap:7px;padding:2px 0;overflow-y:auto;align-content:flex-start;justify-content:flex-start;align-items:flex-start;-webkit-overflow-scrolling:touch}
   /* rítmico: cartas scrolleables + Enviar fijo abajo */
-  .palette-wrap{flex:1;display:flex;flex-direction:column;gap:6px;min-height:0}
-  .palette-cards{flex:1;display:flex;flex-wrap:wrap;gap:7px;padding:2px 2px 8px;overflow-y:auto;align-content:flex-start;justify-content:flex-start;align-items:flex-start;-webkit-overflow-scrolling:touch;touch-action:pan-y}
-  .rit-bar{flex:0 0 auto;display:flex}
-  .rit-bar .cell-send{flex:1;min-width:0;height:clamp(48px,10.5vh,62px);font-size:18px}
+  .palette-wrap{flex:1;position:relative;min-height:0}
+  /* toda la zona (incluida la franja derecha) es scrolleable; padding derecho = carril de scroll + hueco de Enviar */
+  .palette-cards{position:absolute;inset:0;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start;justify-content:flex-start;align-items:flex-start;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding:2px 54px 64px 3px}
+  .palette-cards::-webkit-scrollbar{width:6px}
+  .palette-cards::-webkit-scrollbar-thumb{background:rgba(233,201,106,.35);border-radius:3px}
+  .rit-send{position:absolute;right:6px;bottom:6px;width:clamp(116px,24vw,166px);height:clamp(46px,11vh,58px);font-size:18px;z-index:5;box-shadow:0 5px 20px rgba(238,139,28,.55),0 0 0 4px rgba(20,14,4,.5)}
   .cell-ctrl{color:var(--gold)}
   .cell-send{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a2005;border-color:transparent;font-weight:800;font-size:17px;min-width:104px}
   .cell-send:disabled{background:var(--paper);color:#9a8a5a}
-  .cell-card{flex:0 0 auto;height:clamp(74px,23vh,116px);min-width:58px;background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:6px 11px;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none}
+  .cell-card{flex:0 0 auto;height:clamp(48px,13vh,72px);min-width:54px;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:5px 10px;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none}
   .cell-card:active{transform:scale(.95)}
   .cell-card .mini{height:100%;display:flex;align-items:center;justify-content:center;overflow:visible}
   .cell-card svg{height:100%;width:auto;display:block}
@@ -259,10 +261,11 @@
   .exit-btns{display:flex;gap:12px;justify-content:center}
   .exit-btns button{padding:12px 22px;border-radius:11px;font-size:15px;font-weight:800;cursor:pointer;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink)}
   .exit-btns .btn-gold{border:none}
-  /* recordatorio "pulsa Enviar" + resplandor */
-  .send-remind{position:fixed;left:50%;bottom:calc(70px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:390;display:none;background:linear-gradient(180deg,#ffbf3f,#ef8f22);color:#3a2600;font-weight:800;font-size:13px;padding:7px 16px;border-radius:999px;box-shadow:0 4px 18px rgba(238,139,28,.7);animation:acpulse .8s ease-in-out infinite;white-space:nowrap}
-  .send-remind.on{display:block}
-  .send-remind b{color:#3a2600}
+  /* recordatorio GRANDE en el iPad (sobre el ejercicio, durante la cuenta atrás) */
+  .big-remind{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;pointer-events:none;padding:20px}
+  .big-remind.on{display:flex}
+  .big-remind-txt{background:linear-gradient(180deg,rgba(255,191,63,.98),rgba(239,143,34,.98));color:#2a1a02;font-weight:900;font-size:clamp(34px,6.5vw,86px);line-height:1.05;padding:22px 46px;border-radius:22px;text-align:center;box-shadow:0 22px 80px rgba(0,0,0,.65);animation:acpulse .9s ease-in-out infinite;letter-spacing:.005em}
+  .big-remind-txt span{display:block;font-size:.4em;font-weight:800;margin-top:10px;opacity:.85}
   .cell-send.remind,.mel-send.remind{animation:sendGlow .7s ease-in-out infinite}
   @keyframes sendGlow{0%,100%{box-shadow:0 5px 20px rgba(238,139,28,.5),0 0 0 0 rgba(255,150,40,.55)}50%{box-shadow:0 5px 26px rgba(238,139,28,.8),0 0 0 6px rgba(255,150,40,.35)}}
   /* CADENCIAS · host card + partitura */
@@ -381,7 +384,7 @@
 <div class="countdown" id="countdown"></div>
 <div id="exIntro" class="ex-intro"><div class="ex-intro-inner"><div class="ex-intro-kick">a continuación</div><div class="ex-intro-name"></div><div class="ex-intro-sub"></div></div></div>
 <button id="exitBtn" class="exit-btn" title="Salir del juego">✕</button>
-<div id="sendRemind" class="send-remind">Pulsa <b>Enviar</b> si aún no lo has hecho</div>
+<div id="bigRemind" class="big-remind"><div class="big-remind-txt">¡Pulsad ENVIAR<br>si no lo habéis hecho!<span id="bigRemindCount"></span></div></div>
 <div id="exitConfirm" class="exit-confirm"><div class="exit-box"><div class="exit-q">¿Seguro que quieres volver a la pantalla de inicio?</div><div class="exit-btns"><button id="exitYes" class="btn-gold">Sí, salir</button><button id="exitNo">Cancelar</button></div></div></div>
 <button id="fsBtn" class="fs-btn" title="Pantalla completa">⛶</button>
 
@@ -1440,11 +1443,11 @@ async function hostListenCad(){
 }
 // --- corrección automática: tras la última reproducción, 10 s y a corregir (adelantable con el botón) ---
 let _acTimer=null;
-function hostCancelAutoCorrect(){ if(_acTimer){clearTimeout(_acTimer);_acTimer=null;} const el=$('#autoCorr'); if(el) el.classList.remove('on'); cadVizStop(); }
+function hostCancelAutoCorrect(){ if(_acTimer){clearTimeout(_acTimer);_acTimer=null;} const br=$('#bigRemind'); if(br) br.classList.remove('on'); cadVizStop(); }
 function hostArmAutoCorrect(){ if(H.phase!=='round') return; hostCancelAutoCorrect();
-  try{ if(H.channel) H.channel.send({type:'broadcast',event:'warn'}); }catch(_){}   // avisa a los móviles: ¡pulsa Enviar!
-  const el=$('#autoCorr'); let s=10;
-  const show=n=>{ if(el){ el.textContent='Corrección en '+n+' · ¡que pulsen Enviar!'; el.classList.add('on'); } };
+  try{ if(H.channel) H.channel.send({type:'broadcast',event:'warn'}); }catch(_){}   // avisa a los móviles: solo el resplandor del botón
+  const br=$('#bigRemind'), bc=$('#bigRemindCount'); let s=10;
+  const show=n=>{ if(bc) bc.textContent='Corrección automática en '+n; if(br) br.classList.add('on'); };   // aviso GRANDE solo en el iPad
   show(s);
   const tick=()=>{ s--; if(s<=0){ hostCancelAutoCorrect(); if(H.phase==='round') hostShowResults(); return; } show(s); _acTimer=setTimeout(tick,1000); };
   _acTimer=setTimeout(tick,1000);
@@ -1611,8 +1614,7 @@ function playerConnect(){
 // aviso de "pulsa Enviar" (cuando arranca la cuenta atrás en el iPad)
 function playerWarn(){ if(PL.sent) return;   // móvil: solo el resplandor del botón Enviar (el texto va en el iPad)
   ['btnSend','tcSend','cadSend'].forEach(id=>{ const b=document.getElementById(id); if(b) b.classList.add('remind'); }); }
-function clearSendRemind(){ ['btnSend','tcSend','cadSend'].forEach(id=>{ const b=document.getElementById(id); if(b) b.classList.remove('remind'); });
-  const r=$('#sendRemind'); if(r) r.classList.remove('on'); }
+function clearSendRemind(){ ['btnSend','tcSend','cadSend'].forEach(id=>{ const b=document.getElementById(id); if(b) b.classList.remove('remind'); }); }
 function playerOnPhase(p){
   if(p.phase==='round'){ if(p.roundId && p.roundId===PL.roundId) return; PL.roundId=p.roundId||0; PL.exType=p.ex||'ritmico'; clearSendRemind();
     if(PL.exType==='melodico'){ PL.melFirst=p.first; startPlayerRoundMel(); }
@@ -1696,9 +1698,8 @@ function buildPlayerPalette(){
     card.appendChild(mini); attachPointer(card,cell); cards.appendChild(card);
   });
   box.appendChild(cards);
-  const bar=document.createElement('div'); bar.className='rit-bar';           // Enviar fijo abajo (siempre visible)
-  const send=document.createElement('button'); send.className='cell-send'; send.id='btnSend'; send.textContent='Enviar'; send.addEventListener('click',playerSend);
-  bar.appendChild(send); box.appendChild(bar);
+  const send=document.createElement('button'); send.className='cell-send rit-send'; send.id='btnSend'; send.textContent='Enviar'; send.addEventListener('click',playerSend);   // Enviar abajo a la derecha, sin tapar el carril de scroll
+  box.appendChild(send);
 }
 function attachPointer(card,cell){
   let sx=0,sy=0,dragging=false,ghost=null,overEl=null;

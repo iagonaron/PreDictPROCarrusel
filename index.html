@@ -72,7 +72,7 @@
   .counter b{color:var(--gold)}
   .counter.all b{color:var(--ok)}
   .staffwrap{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:18px;padding:14px 16px;display:flex;align-items:center;justify-content:center;flex:1;min-height:0}
-  .staffbox{width:100%;aspect-ratio:640/96;max-height:100%;margin:auto;background:linear-gradient(180deg,#f8f2e1,#efe6cd);border-radius:12px;position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 3px 10px rgba(0,0,0,.32)}
+  .staffbox{width:100%;height:100%;background:linear-gradient(180deg,#f8f2e1,#efe6cd);border-radius:12px;position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 3px 10px rgba(0,0,0,.32)}
   .staff-inner{position:absolute;inset:0}
   .staff-inner svg{position:absolute;inset:0;width:100%;height:100%}
   .hit{position:absolute;top:0;bottom:0;border-radius:9px;cursor:pointer;transition:background .12s,box-shadow .12s;z-index:2}
@@ -86,7 +86,7 @@
   @keyframes hitFlash{0%{background:rgba(212,175,55,.55)}100%{background:transparent}}
   .hit .clr{position:absolute;top:3px;right:4px;width:19px;height:19px;border-radius:50%;background:rgba(20,14,2,.72);color:#fff;font-size:12px;display:none;align-items:center;justify-content:center;border:none;padding:0}
   .hit.filled .clr{display:flex}
-  #s-host-round .staffwrap{flex:0 0 auto;margin:auto 0}   /* el panel abraza el pentagrama y se centra (iPad) */
+  #s-host-round .staffwrap{flex:0 0 auto;height:clamp(120px,26vh,210px);margin:auto 0}   /* tira ancha del pentagrama, centrada (iPad) */
   .hp-ctl{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .btn-listen{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a2005;border-color:transparent;font-weight:800;font-size:15px;padding:11px 18px}
   .tempo{display:flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:11px;padding:4px 5px;background:var(--panel)}
@@ -124,13 +124,13 @@
   .pr-top .kick{font-size:11px;white-space:nowrap}
   .pr-inst{flex:1;font-size:11px;color:var(--muted2);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .pr-count{font-size:13px;font-weight:800;color:var(--gold);min-width:32px;text-align:right}
-  #s-player-round .staffwrap{flex:0 0 auto;padding:5px 8px}
+  #s-player-round .staffwrap{flex:0 0 auto;height:clamp(96px,28vh,165px);padding:5px 8px}
   .palette{flex:1;display:flex;flex-wrap:wrap;gap:6px;padding:4px;overflow:auto;align-content:center;justify-content:center}
-  .cell-card{flex:0 0 auto;height:54px;background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:5px 9px;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none}
+  .cell-card{flex:0 0 auto;height:clamp(52px,9vh,68px);background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:5px 10px;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none}
   .cell-card:active{transform:scale(.95)}
   .cell-card .mini{height:100%;display:flex;align-items:center;justify-content:center;overflow:visible}
   .cell-card svg{height:100%;width:auto;display:block}
-  .drag-ghost{position:fixed;z-index:999;pointer-events:none;height:56px;padding:5px 10px;background:var(--paper);border:2px solid var(--gold);border-radius:9px;box-shadow:0 14px 34px rgba(0,0,0,.5);opacity:.96;display:flex;align-items:center;justify-content:center;transform:translate(-50%,-50%) scale(1.06)}
+  .drag-ghost{position:fixed;z-index:999;pointer-events:none;height:64px;padding:5px 11px;background:var(--paper);border:2px solid var(--gold);border-radius:9px;box-shadow:0 14px 34px rgba(0,0,0,.5);opacity:.96;display:flex;align-items:center;justify-content:center;transform:translate(-50%,-50%) scale(1.06)}
   .drag-ghost svg{height:100%;width:auto}
   .btn-send{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a2005;border-color:transparent;font-weight:800;padding:8px 20px;font-size:15px}
 
@@ -140,6 +140,9 @@
     #s-player-round .rotate-hint .big{font-size:42px}
   }
   .foot{position:fixed;bottom:6px;left:0;right:0;text-align:center;font-size:10px;color:var(--muted2);opacity:.7}
+  .fs-btn{position:fixed;top:6px;right:8px;z-index:300;font-family:inherit;font-size:12px;font-weight:800;padding:7px 12px;border-radius:10px;background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a2005;border:1px solid #8a6410;box-shadow:0 4px 16px rgba(0,0,0,.5);cursor:pointer;animation:fsblink 1.1s ease-in-out infinite}
+  @keyframes fsblink{0%,100%{box-shadow:0 0 0 0 rgba(212,175,55,.7)}50%{box-shadow:0 0 0 9px rgba(212,175,55,0)}}
+  :fullscreen .fs-btn{display:none}
 
   /* ===================== JUICE: animaciones, transiciones, FX ===================== */
   .screen.on{animation:screenIn .4s cubic-bezier(.2,.85,.2,1)}
@@ -209,6 +212,7 @@
 <body>
 <canvas class="fx-confetti" id="confetti"></canvas>
 <div class="countdown" id="countdown"></div>
+<button id="fsBtn" class="fs-btn">⛶ Pantalla completa</button>
 
 <!-- ========================= HOST · LOBBY ========================= -->
 <div class="screen" id="s-host-lobby">
@@ -462,11 +466,12 @@ function drawCellMini(cell,compound,color){
   return svg;
 }
 /* ---- PENTAGRAMA real (clave de sol, compás, 4 compases) + zonas de colocación ---- */
-function renderStaffSVG(spec,slots,vh,vy){
-  const W=640,H=vh||96,y=(vy||33),x0=4,firstExtra=48;
+function renderStaffSVG(spec,slots,W,H){
+  W=Math.max(300,Math.round(W)); H=Math.max(78,Math.round(H));
   const holder=document.createElement('div'); const r=new VF.Renderer(holder,VF.Renderer.Backends.SVG);
   r.resize(W,H); const ctx=r.getContext();
-  const barW=(W-firstExtra-x0-4)/4; let x=x0, slotIndex=0; const boxes=[];
+  const firstExtra=Math.min(74,Math.max(48,W*0.045)), x0=6, pad=8;
+  const barW=(W-firstExtra-x0-pad)/4; const staffH=40, y=Math.round((H-staffH)/2-4); let x=x0, slotIndex=0; const boxes=[];
   for(let ci=0;ci<4;ci++){
     const isFirst=ci===0,isLast=ci===3; const w=isFirst?barW+firstExtra:barW;
     const stave=new VF.Stave(x,y,w);
@@ -493,23 +498,30 @@ function renderStaffSVG(spec,slots,vh,vy){
     for(let p=0;p<spec.pulsos;p++) boxes.push({slot:slotIndex+p,x:uX0+p*sW,w:sW});
     slotIndex+=spec.pulsos; x+=w;
   }
-  const svg=holder.querySelector('svg'); svg.setAttribute('viewBox','0 0 '+W+' '+H); svg.setAttribute('preserveAspectRatio','none'); svg.removeAttribute('width'); svg.removeAttribute('height');
-  return {svg,boxes,W};
+  const svg=holder.querySelector('svg'); svg.setAttribute('viewBox','0 0 '+W+' '+H); svg.style.width='100%'; svg.style.height='100%'; svg.style.display='block';
+  return {svg,boxes,W,H};
 }
 function specOf(compound){ return {ts:compound?'6/8':'2/4',pulsos:2,compound:!!compound}; }
+let _staffRemount=null;
 function mountStaff(container,compound,slots,opts){ opts=opts||{};
-  const vh=96, vy=33;   // pentagrama compacto: llena su tarjeta a lo ancho y alto, sin hueco
-  const {svg,boxes,W}=renderStaffSVG(specOf(compound),slots,vh,vy);
-  container.style.aspectRatio='640 / '+vh;   // la tarjeta adopta la proporción del pentagrama → llena el ancho sin distorsión
-  container.innerHTML=''; const inner=document.createElement('div'); inner.className='staff-inner'; inner.appendChild(svg);
+  container.style.aspectRatio='';
+  let W=container.clientWidth, H=container.clientHeight;
+  if(!W||W<300){ const rc=container.getBoundingClientRect(); W=rc.width||640; H=rc.height||120; }
+  if(!H||H<78) H=Math.round(W/6);
+  const res=renderStaffSVG(specOf(compound),slots,W,H); const boxes=res.boxes, Wb=res.W;
+  container.innerHTML=''; const inner=document.createElement('div'); inner.className='staff-inner'; inner.appendChild(res.svg);
   boxes.forEach(b=>{ const z=document.createElement('div'); z.className='hit'+(slots[b.slot]?' filled':''); z.dataset.slot=b.slot;
-    z.style.left=(b.x/W*100)+'%'; z.style.width=(b.w/W*100)+'%';
+    z.style.left=(b.x/Wb*100)+'%'; z.style.width=(b.w/Wb*100)+'%';
     let ind = opts.indicator==='arrow' ? '<span class="parrow">▲</span>' : opts.indicator==='number' ? '<span class="pn">'+(b.slot+1)+'</span>' : '';
     z.innerHTML=ind+(opts.interactive?'<button class="clr">×</button>':'');
     if(opts.interactive) z.addEventListener('click',e=>opts.onTap(b.slot,e,z));
     inner.appendChild(z); });
-  container.appendChild(inner); return inner;
+  container.appendChild(inner);
+  _staffRemount=()=>mountStaff(container,compound,slots,opts);
+  return inner;
 }
+window.addEventListener('resize',()=>{ clearTimeout(window._srt); window._srt=setTimeout(()=>{ if(_staffRemount){ _staffRemount(); if($('#s-player-round').classList.contains('on')) refreshPlayerSlots(); } },160); });
+window.addEventListener('orientationchange',()=>{ setTimeout(()=>{ if(_staffRemount){ _staffRemount(); if($('#s-player-round').classList.contains('on')) refreshPlayerSlots(); } },320); });
 
 /* =========================================================================
    AUDIO — sonido de RITMO at home (knock "con pegada" + click de metrónomo)
@@ -567,6 +579,11 @@ const chan=code=>'pcarrusel-'+code;
 const params=new URLSearchParams(location.search);
 const roomParam=params.get('room');
 window.addEventListener('load',()=>{ if(roomParam) initPlayer(roomParam.toUpperCase()); else initHost(); });
+/* Botón de pantalla completa (parpadea hasta pulsarlo) */
+(function(){ const b=document.getElementById('fsBtn'); if(!b) return;
+  b.addEventListener('click',()=>{ const el=document.documentElement; const rq=el.requestFullscreen||el.webkitRequestFullscreen||el.mozRequestFullScreen; if(rq){ try{ rq.call(el); }catch(e){} } b.style.display='none'; });
+  document.addEventListener('fullscreenchange',()=>{ b.style.display=document.fullscreenElement?'none':''; });
+})();
 
 /* =========================================================================
    HOST

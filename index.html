@@ -237,6 +237,28 @@
   .ex-intro-kick{font-size:clamp(13px,1.8vw,17px);letter-spacing:.35em;text-transform:uppercase;color:var(--muted2);margin-bottom:14px}
   .ex-intro-name{font-size:clamp(52px,11vw,120px);font-weight:900;color:var(--gold);letter-spacing:.01em;text-shadow:0 8px 46px rgba(212,175,55,.4);line-height:1}
   .ex-intro-sub{font-size:clamp(16px,2.4vw,26px);color:var(--ink);margin-top:16px;font-weight:600}
+  /* auto-corrección (badge en el iPad) */
+  .autocorr{display:none;color:#ffcf6a;font-size:14px;font-weight:800;letter-spacing:.02em;background:rgba(212,175,55,.14);border:1px solid var(--gold2);border-radius:999px;padding:5px 14px;animation:acpulse 1s ease-in-out infinite}
+  .autocorr.on{display:inline-block}
+  @keyframes acpulse{0%,100%{opacity:.75}50%{opacity:1}}
+  /* CADENCIAS · host card + partitura */
+  .cad-hostcard{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:10px}
+  .cad-msg{font-size:24px;font-weight:800;color:#241a06;text-align:center;display:flex;flex-direction:column;gap:6px;flex:0 0 auto}
+  .cad-msg span{font-size:14px;color:#7a6a3a;font-weight:600}
+  .cad-viz{width:100%;flex:1;min-height:0;display:block}
+  .cad-score{width:100%;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;background:var(--paper);border-radius:14px;opacity:0;transition:opacity 1s ease}
+  .cad-score.shown{opacity:1}
+  .cad-score svg{max-width:100%}
+  #s-host-reveal.cad .staffwrap{height:clamp(220px,44vh,300px);align-self:center;padding:10px}
+  /* CADENCIAS · móvil */
+  #s-player-cadencias{flex-direction:column;gap:8px;height:100dvh;padding:10px max(12px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+  .cad-title{text-align:center;font-size:15px;font-weight:800;color:var(--gold-soft);letter-spacing:.03em}
+  .cad-opts{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;min-height:0}
+  .cad-opt{position:relative;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);color:var(--ink);border-radius:13px;font-size:clamp(14px,2.6vw,19px);font-weight:800;cursor:pointer;padding:6px;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.15}
+  .cad-opt.on{background:linear-gradient(180deg,var(--gold),var(--gold2));border-color:transparent;color:#2a2005;box-shadow:0 4px 16px rgba(212,175,55,.4)}
+  .cad-opt-rn{position:absolute;top:6px;right:10px;font-size:12px;font-weight:700;color:var(--muted2);opacity:.55;letter-spacing:.02em}
+  .cad-opt.on .cad-opt-rn{color:#5a4708;opacity:.8}
+  #s-player-cadencias .mel-send{flex:0 0 auto;height:clamp(50px,11vh,64px)}
 
   .rotate-hint{display:none}
   @media (orientation:portrait){
@@ -379,9 +401,9 @@
       <div class="exrow" data-x="ritmico"><span class="exname">Rítmico</span><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-ritmico">1</b><button class="st" data-d="1">+</button></div></div>
       <div class="exrow" data-x="melodico"><span class="exname">Melódico</span><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-melodico">1</b><button class="st" data-d="1">+</button></div></div>
       <div class="exrow" data-x="toncom"><span class="exname">TonCom</span><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-toncom">1</b><button class="st" data-d="1">+</button></div></div>
+      <div class="exrow" data-x="cadencias"><span class="exname">Cadencias</span><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-cadencias">1</b><button class="st" data-d="1">+</button></div></div>
       <div class="exrow locked"><span class="exname">Armonía</span><span class="soon">pronto</span></div>
       <div class="exrow locked"><span class="exname">Modos</span><span class="soon">pronto</span></div>
-      <div class="exrow locked"><span class="exname">Cadencias</span><span class="soon">pronto</span></div>
     </div>
     <button class="btn-gold" id="btnStart" disabled>Empezar partida</button>
   </div>
@@ -396,6 +418,7 @@
   <div class="hp-top">
     <h2 class="brand">Rítmico <span class="b" id="hrTs">2/4</span></h2>
     <span class="hp-prog" id="hProg"></span>
+    <span class="autocorr" id="autoCorr"></span>
     <div class="spacer"></div>
     <div class="counter" id="counter">Respondidos <b>0</b> / 0</div>
   </div>
@@ -489,6 +512,15 @@
     </div>
     <button class="mel-send" id="tcSend">Enviar</button>
   </div>
+</div>
+
+<!-- ========================= PLAYER · CADENCIAS ========================= -->
+<div class="screen" id="s-player-cadencias">
+  <div class="rotate-hint"><div class="big">📱↻</div><div style="font-size:17px;font-weight:800;color:var(--ink)">Gira el móvil</div><div>Se juega en horizontal.</div></div>
+  <span class="pr-you">tú: <b id="cadAlias">—</b></span>
+  <div class="cad-title">¿Qué cadencia suena?</div>
+  <div class="cad-opts" id="cadOpts"></div>
+  <button class="mel-send" id="cadSend">Enviar</button>
 </div>
 
 <!-- ========================= PLAYER · SENT ========================= -->
@@ -703,9 +735,22 @@ function mountStaff(container,compound,slots,opts){ opts=opts||{};
 /* =========================================================================
    AUDIO — sonido de RITMO at home (knock "con pegada" + click de metrónomo)
    ========================================================================= */
-let audioCtx=null, MASTER=null;
+let audioCtx=null, MASTER=null, ANALYSER=null;
 function actx(){ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==='suspended')audioCtx.resume(); return audioCtx; }
-function master(){ const c=actx(); if(!MASTER){ MASTER=c.createGain(); MASTER.gain.value=1; MASTER.connect(c.destination); } return MASTER; }
+function master(){ const c=actx(); if(!MASTER){ MASTER=c.createGain(); MASTER.gain.value=1; try{ ANALYSER=c.createAnalyser(); ANALYSER.fftSize=512; ANALYSER.smoothingTimeConstant=0.8; MASTER.connect(ANALYSER); ANALYSER.connect(c.destination); }catch(e){ MASTER.connect(c.destination); } } return MASTER; }
+let _cadVizRAF=null;
+function cadVizStart(canvas){ if(!canvas) return; cadVizStop(); const g=canvas.getContext('2d'); let phase=0;
+  const rc=canvas.getBoundingClientRect(); canvas.width=Math.max(2,rc.width*2); canvas.height=Math.max(2,rc.height*2); g.setTransform(2,0,0,2,0,0);
+  const freq=ANALYSER?new Uint8Array(ANALYSER.frequencyBinCount):null;
+  (function draw(){ const w=canvas.clientWidth||600,h=canvas.clientHeight||120; g.clearRect(0,0,w,h);
+    if(ANALYSER&&freq) ANALYSER.getByteFrequencyData(freq);
+    const bars=48, bw=w/bars;
+    for(let i=0;i<bars;i++){ let v = (ANALYSER&&freq)? (freq[Math.floor(i/bars*freq.length*0.6)]/255) : 0; v=Math.max(v, 0.05+0.05*Math.abs(Math.sin(phase+i*0.38)));
+      const bh=Math.max(3,v*h*0.82); const grad=g.createLinearGradient(0,h,0,h-bh); grad.addColorStop(0,'rgba(122,94,27,.5)'); grad.addColorStop(1,'rgba(233,201,106,.95)'); g.fillStyle=grad;
+      g.fillRect(i*bw+bw*0.2, h-bh, bw*0.6, bh); }
+    phase+=0.05; _cadVizRAF=requestAnimationFrame(draw); })();
+}
+function cadVizStop(){ if(_cadVizRAF){ cancelAnimationFrame(_cadVizRAF); _cadVizRAF=null; } }
 function click(t0,accent,vol){ const c=actx(),m=master(); const o=c.createOscillator(),g=c.createGain(); const V=(vol==null?1:vol);
   const lp=c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=2200; lp.Q.value=0.4; lp.connect(m);
   o.type='triangle'; o.frequency.value=accent?1050:900; o.connect(g); g.connect(lp);
@@ -1040,8 +1085,95 @@ async function playTonSequence(ex, onLabel){
   onLabel&&onLabel('idle'); }
 async function hostListenTon(){ await ensureAudio(); const btn=$('#hListen'); if(btn.disabled)return; btn.disabled=true;
   try{ await playTonSequence(H.exercise, hostTonLabel); }catch(e){}   // sin animación de "listening" (evita que parezca el pulso)
-  btn.disabled=false; }
+  btn.disabled=false; hostArmAutoCorrect(); }   // tras la última reproducción → cuenta atrás → corrección
 
+/* =========================================================================
+   MOTOR CADENCIAS (SATB) — de LMPRO/PREDICT PRO (MOTOR CADENCIAL)
+   ========================================================================= */
+const CAD_TYPES=[
+  {id:'autentica_perfecta',  label:'Auténtica perfecta',  rn:'V–I'},
+  {id:'autentica_imperfecta',label:'Auténtica imperfecta', rn:'V–I · inv.'},
+  {id:'plagal_perfecta',     label:'Plagal perfecta',     rn:'IV–I'},
+  {id:'plagal_imperfecta',   label:'Plagal imperfecta',   rn:'IV–I · inv.'},
+  {id:'rota',                label:'Cadencia rota',       rn:'V–VI'},
+  {id:'semicadencia',        label:'Semicadencia',        rn:'…–V'},
+];
+// orden en la rejilla 3×2: col1 auténticas, col2 plagales, col3 rota/semi
+const CAD_GRID=['autentica_perfecta','plagal_perfecta','rota','autentica_imperfecta','plagal_imperfecta','semicadencia'];
+const CAD_BASES={
+  autentica_perfecta:{ refMode:'major', refTonicPc:0, ev:[
+    {midi:[67,64,60,48],q:2},{midi:[64,60,55,48],q:2},{midi:[65,60,57,41],q:1},{midi:[64,60,57,41],q:1},
+    {midi:[62,60,59,40],q:2},{midi:[62,65,59,43],q:2},{midi:[60,64,55,48],q:4} ]},
+  autentica_imperfecta:{ refMode:'major', refTonicPc:7, ev:[
+    {midi:[71,67,62,43],q:2},{midi:[74,67,59,43],q:2},{midi:[72,69,60,52],q:1},{midi:[71,69,60,52],q:1},
+    {midi:[76,67,64,48],q:2},{midi:[72,67,64,48],q:2},{midi:[72,69,66,50],q:2},{midi:[71,67,62,47],q:4} ]},
+  plagal_perfecta:{ refMode:'major', refTonicPc:5, ev:[
+    {midi:[69,65,60,41],q:2},{midi:[72,64,57,48],q:2},{midi:[71,65,55,43],q:2},{midi:[69,65,60,41],q:2},
+    {midi:[72,65,57,46],q:2},{midi:[70,65,58,46],q:2},{midi:[77,65,60,41],q:4} ]},
+  plagal_imperfecta:{ refMode:'major', refTonicPc:5, ev:[
+    {midi:[69,65,60,41],q:2},{midi:[72,64,57,48],q:2},{midi:[70,62,53,46],q:2},{midi:[69,65,53,46],q:2},
+    {midi:[72,67,64,48],q:2},{midi:[70,62,58,50],q:2},{midi:[72,65,60,45],q:4} ]},
+  semicadencia:{ refMode:'minor', refTonicPc:2, ev:[
+    {midi:[66,62,57,50],q:2},{midi:[69,62,54,50],q:2},{midi:[66,62,57,54],q:1},{midi:[69,62,57,54],q:2},
+    {midi:[66,62,57,57],q:2},{midi:[64,61,57,57],q:4} ]},
+  rota:{ refMode:'minor', refTonicPc:9, ev:[
+    {midi:[69,64,60,45],q:2},{midi:[72,64,57,45],q:2},{midi:[71,62,53,50],q:1},{midi:[69,64,53,50],q:1},
+    {midi:[68,64,59,52],q:2},{midi:[69,62,53,50],q:2},{midi:[71,62,56,52],q:2},{midi:[72,60,57,53],q:4} ]},
+};
+const CAD_TARGET={ major:{'C':0,'G':7,'D':2,'A':9,'F':5,'Bb':10,'Eb':3}, minor:{'A':9,'E':4,'B':11,'F#':6,'D':2,'G':7,'C':0} };
+const CAD_SHARPS={ major:{'C':0,'G':1,'D':2,'A':3,'F':-1,'Bb':-2,'Eb':-3}, minor:{'A':0,'E':1,'B':2,'F#':3,'D':-1,'G':-2,'C':-3} };
+const CAD_VEXKEY={ major:{'C':'C','G':'G','D':'D','A':'A','F':'F','Bb':'Bb','Eb':'Eb'}, minor:{'A':'Am','E':'Em','B':'Bm','F#':'F#m','D':'Dm','G':'Gm','C':'Cm'} };
+const CAD_SHARP_NM=['c','c#','d','d#','e','f','f#','g','g#','a','a#','b'];
+const CAD_FLAT_NM =['c','db','d','eb','e','f','gb','g','ab','a','bb','b'];
+function cadMidiVex(m,flats){ const pc=((m%12)+12)%12, oct=Math.floor(m/12)-1; return (flats?CAD_FLAT_NM:CAD_SHARP_NM)[pc]+'/'+oct; }
+const CAD_SH_ORD=['f','c','g','d','a','e','b'], CAD_FL_ORD=['b','e','a','d','g','c','f'];
+function cadSigAcc(sharps,letter){ letter=letter.toLowerCase();
+  if(sharps>0) return CAD_SH_ORD.slice(0,sharps).includes(letter)?'#':'';
+  if(sharps<0) return CAD_FL_ORD.slice(0,-sharps).includes(letter)?'b':''; return ''; }
+function genCadencia(){
+  const type=pick(CAD_TYPES).id, base=CAD_BASES[type], mode=base.refMode;
+  const keyNames=Object.keys(CAD_TARGET[mode]); const tonicName=pick(keyNames);
+  let semis=((CAD_TARGET[mode][tonicName]-base.refTonicPc)%12+12)%12; if(semis>6) semis-=12;
+  let events=base.ev.map(e=>({midi:e.midi.map(m=>m+semis), q:e.q}));
+  const sopHi=Math.max(...events.map(e=>e.midi[0])), bassLo=Math.min(...events.map(e=>e.midi[3]));  // rango SATB legible
+  let sh=0; if(bassLo<40 && sopHi+12<=83) sh=12; else if(sopHi>81 && bassLo-12>=37) sh=-12;
+  if(sh) events=events.map(e=>({midi:e.midi.map(m=>m+sh),q:e.q}));
+  const sharps=CAD_SHARPS[mode][tonicName];
+  return {type, label:(CAD_TYPES.find(t=>t.id===type)||{}).label, mode, tonicName, sharps, vexKey:CAD_VEXKEY[mode][tonicName], prefersFlats:sharps<0, events, tempo:84};
+}
+/* --- partitura: pentagrama doble SATB (llave + armadura) --- */
+function renderCadScore(container, gen, colorMode){
+  container.innerHTML=''; if(!gen||typeof Vex==='undefined') return;
+  const W=Math.max(560,Math.min((container.clientWidth||1000),1180)), H=Math.max(200,Math.min(container.clientHeight||240,270));
+  const r=new VF.Renderer(container,VF.Renderer.Backends.SVG); r.resize(W,H); const ctx=r.getContext();
+  const topY=Math.round(H*0.12), botY=Math.round(H*0.52);
+  const top=new VF.Stave(12,topY,W-24), bot=new VF.Stave(12,botY,W-24);
+  top.addClef('treble').addKeySignature(gen.vexKey); bot.addClef('bass').addKeySignature(gen.vexKey);
+  top.setEndBarType(VF.Barline.type.END); bot.setEndBarType(VF.Barline.type.END);
+  top.setContext(ctx).draw(); bot.setContext(ctx).draw();
+  new VF.StaveConnector(top,bot).setType(VF.StaveConnector.type.BRACE).setContext(ctx).draw();
+  new VF.StaveConnector(top,bot).setType(VF.StaveConnector.type.SINGLE_LEFT).setContext(ctx).draw();
+  const durOf=q=> q>=4?'w':q>=3?'hd':q>=2?'h':'q';
+  const flats=gen.prefersFlats, sharps=gen.sharps, N=gen.events.length;
+  const addAcc=(sn,vk)=>{ const letter=vk[0], acc=vk.indexOf('#')>=0?'#':(vk.indexOf('b')>=0?'b':''); if(acc!==cadSigAcc(sharps,letter)){ try{ sn.addModifier(new VF.Accidental(acc===''?'n':acc),0); }catch(e){} } };
+  // escritura a 4 voces: en cada clave, la voz superior con plicas ↑ y la inferior con plicas ↓
+  function mkVoiceNotes(vIdx, clef, stemDir){
+    return gen.events.map((e,i)=>{ const vk=cadMidiVex(e.midi[vIdx],flats);
+      const sn=new VF.StaveNote({clef, keys:[vk], duration:durOf(e.q), stem_direction:stemDir});
+      if(e.q>=3&&e.q<4) VF.Dot.buildAndAttach([sn],{all:true});
+      addAcc(sn,vk);
+      if(colorMode && i>=N-2){ const col=colorMode==='green'?'#1e9e57':'#c0563a'; sn.setStyle({fillStyle:col,strokeStyle:col}); }
+      return sn; }); }
+  const nS=mkVoiceNotes(0,'treble',1), nA=mkVoiceNotes(1,'treble',-1), nT=mkVoiceNotes(2,'bass',1), nB=mkVoiceNotes(3,'bass',-1);
+  const V=arr=>{ const v=new VF.Voice({num_beats:1,beat_value:4}).setMode(VF.Voice.Mode.SOFT); v.addTickables(arr); return v; };
+  const vS=V(nS),vA=V(nA),vT=V(nT),vB=V(nB);
+  new VF.Formatter().joinVoices([vS]).joinVoices([vA]).joinVoices([vT]).joinVoices([vB]).format([vS,vA,vT,vB], W-160);
+  vS.draw(ctx,top); vA.draw(ctx,top); vT.draw(ctx,bot); vB.draw(ctx,bot);
+}
+async function playCadencia(gen){ const c=actx(); if(c.state==='suspended')await c.resume();
+  const spb=60/gen.tempo, t0=c.currentTime+0.15; let t=0;
+  gen.events.forEach(e=>{ e.midi.forEach(m=>pianoTone(m, t0+t*spb, e.q*spb*0.98)); t+=e.q; });
+  const total=gen.events.reduce((s,e)=>s+e.q,0)*spb; return total+0.3; }
 /* =========================================================================
    UTIL
    ========================================================================= */
@@ -1102,7 +1234,7 @@ function toggleFS(){ if(_canFS){ if(_isFS()){ (document.exitFullscreen||document
    ========================================================================= */
 let H={code:null, channel:null, roster:{}, answers:{}, players:{}, phase:'lobby',
        exercise:null, bpm:72, metro:true, listens:2, compMode:'random', exType:'ritmico', melSpeed:'Normal', roundId:0,
-       setlist:{ritmico:1, melodico:1, toncom:1}, queue:[], qIndex:0, gameDone:false};
+       setlist:{ritmico:1, melodico:1, toncom:1, cadencias:1}, queue:[], qIndex:0, gameDone:false};
 
 function initHost(){
   document.addEventListener('pointerdown',()=>ensureAudio(),{once:true});
@@ -1147,6 +1279,7 @@ function hostSyncRoster(){
       if(meta.ans) H.answers[id]={placedIds:meta.ans, ms:meta.ms, alias:meta.alias||'—'};
       else if(meta.mans) H.answers[id]={midis:meta.mans, ms:meta.ms, alias:meta.alias||'—'};
       else if(meta.tans) H.answers[id]={tans:meta.tans, ms:meta.ms, alias:meta.alias||'—'};
+      else if(meta.cans) H.answers[id]={cans:meta.cans, ms:meta.ms, alias:meta.alias||'—'};
     }
   });
   const nuevos=Object.keys(H.roster).some(id=>!prev.has(id));
@@ -1160,10 +1293,10 @@ function renderRoster(){
   else box.innerHTML=ids.map(id=>'<span class="chip"><span class="dot"></span>'+escapeHtml(H.roster[id].alias)+'</span>').join('');
   updateStartBtn();
 }
-function totalRounds(){ return (H.setlist.ritmico||0)+(H.setlist.melodico||0)+(H.setlist.toncom||0); }
+function totalRounds(){ return (H.setlist.ritmico||0)+(H.setlist.melodico||0)+(H.setlist.toncom||0)+(H.setlist.cadencias||0); }
 function updateStartBtn(){ const b=$('#btnStart'); if(!b)return; const ok=Object.keys(H.roster).length>0 && totalRounds()>0; b.disabled=!ok;
   b.textContent = totalRounds()>0 ? ('Empezar partida · '+totalRounds()+' ronda'+(totalRounds()>1?'s':'')) : 'Añade alguna ronda'; }
-function buildQueue(){ const q=[]; ['ritmico','melodico','toncom'].forEach(x=>{ for(let i=0;i<(H.setlist[x]||0);i++) q.push(x); }); return q; }
+function buildQueue(){ const q=[]; ['ritmico','melodico','toncom','cadencias'].forEach(x=>{ for(let i=0;i<(H.setlist[x]||0);i++) q.push(x); }); return q; }
 function hostStartGame(){ H.queue=buildQueue(); if(!H.queue.length) return; H.qIndex=0; H.gameDone=false; H.players={}; H.answers={}; hostStartRound(); }
 // botón único "Continuar": ranking del ejercicio → ranking general (animación) → siguiente ejercicio
 function hostContinue(){
@@ -1177,8 +1310,8 @@ function updateContinueLabel(){ const b=$('#btnAgain'); if(!b)return;
 function hostRevealButtons(){ H.rankMode='exercise'; updateContinueLabel(); }
 function updateRoundProgress(){ const p=$('#hProg'); if(p) p.textContent = H.queue.length? ('Ronda '+(H.qIndex+1)+' / '+H.queue.length) : ''; }
 // INTRO grande del ejercicio, que se esfuma dejando ver la interfaz
-function exDisplayName(x){ return {ritmico:'Rítmico', melodico:'Melódico', toncom:'TonCom'}[x]||x; }
-function exSubtitle(x){ return {ritmico:'Escucha y reconstruye el ritmo', melodico:'Escribe la melodía que oigas', toncom:'Identifica tonalidad, armadura y compás'}[x]||''; }
+function exDisplayName(x){ return {ritmico:'Rítmico', melodico:'Melódico', toncom:'TonCom', cadencias:'Cadencias'}[x]||x; }
+function exSubtitle(x){ return {ritmico:'Escucha y reconstruye el ritmo', melodico:'Escribe la melodía que oigas', toncom:'Identifica tonalidad, armadura y compás', cadencias:'Identifica la cadencia de oído'}[x]||''; }
 function hostIntro(x, done){ const ov=$('#exIntro'); if(!ov){ done&&done(); return; }
   ov.querySelector('.ex-intro-name').textContent=exDisplayName(x);
   ov.querySelector('.ex-intro-sub').textContent=exSubtitle(x);
@@ -1199,6 +1332,7 @@ function hostStartRound(){
   hostIntro(H.exType);       // …y el título grande la tapa y se esfuma dejándola al descubierto
 }
 function hostBeginRound(){
+  hostCancelAutoCorrect();
   if(H.queue.length) H.exType=H.queue[H.qIndex];
   H.answers={}; H.phase='round'; H.roundId++; H.gameDone=false;
   H.listens=MEL_MAX_LISTENS; $('#hListen').disabled=false;
@@ -1218,6 +1352,14 @@ function hostBeginRound(){
     $('#s-host-round .brand').innerHTML='TonCom <span class="b">tonalidad · armadura · compás</span>';
     const hs=$('#hrStaff'); hs._activeRender=null; hs._staffCfg=null; hs._melCfg=null;   // que el ResizeObserver no repinte un pentagrama encima
     hs.innerHTML='<div class="tc-hostcard"><div class="tc-hoststep" id="tcHostMsg">🎼 Identifica tonalidad, armadura y compás</div><div class="tc-hostsub" id="tcHostSub">Pulsa ▶ Reproducir</div></div>';
+  } else if(H.exType==='cadencias'){
+    rs.classList.add('toncom');   // reutiliza el layout de tarjeta (oculta controles rítmicos)
+    $('#hListen').innerHTML='▶ Reproducir (<span id="hLeft">'+H.listens+'</span>)';
+    H.exercise={type:'cadencias', cad:genCadencia()};
+    $('#s-host-round .brand').innerHTML='Cadencias <span class="b">identifica de oído</span>';
+    const hs=$('#hrStaff'); hs._activeRender=null; hs._staffCfg=null; hs._melCfg=null;
+    hs.innerHTML='<div class="cad-hostcard"><div class="cad-msg" id="cadMsg">🎵 Escucha la cadencia e identifícala<span>La 2ª reproducción te muestra la partitura</span></div><canvas class="cad-viz" id="cadViz"></canvas><div class="cad-score" id="cadScore" style="display:none"></div></div>';
+    requestAnimationFrame(()=>cadVizStart($('#cadViz')));
   } else {
     rs.classList.remove('mel');
     $('#hListen').innerHTML='▶ Escuchar (<span id="hLeft">'+H.listens+'</span>)';
@@ -1230,6 +1372,7 @@ function hostBeginRound(){
 }
 async function hostListen(){
   if(H.exercise && H.exercise.type==='toncom'){ return hostListenTon(); }
+  if(H.exercise && H.exercise.type==='cadencias'){ return hostListenCad(); }
   if(H.listens<=0)return; await ensureAudio();
   const primera=(H.listens===MEL_MAX_LISTENS);
   const go=async()=>{
@@ -1240,13 +1383,34 @@ async function hostListen(){
       if(H.exercise.type==='melodico') dur=await playMelody(H.exercise.sol, H.melSpeed, null);
       else dur=await playRhythm(H.exercise.solution,H.exercise.compound,H.bpm,H.metro,flashHostNumber);
     }catch(e){}
-    setTimeout(()=>{ sw&&sw.classList.remove('listening'); eq&&eq.classList.remove('on'); if(H.listens>0)$('#hListen').disabled=false; }, dur*1000);
+    setTimeout(()=>{ sw&&sw.classList.remove('listening'); eq&&eq.classList.remove('on'); if(H.listens>0)$('#hListen').disabled=false; else hostArmAutoCorrect(); }, dur*1000);
   };
   if(primera) runCountdown(go); else go();
 }
+// CADENCIAS: 1ª reproducción solo suena; 2ª (última) revela la partitura con fundido → cuenta atrás
+async function hostListenCad(){
+  if(H.listens<=0) return; await ensureAudio();
+  const first=(H.listens===MEL_MAX_LISTENS); H.listens--; const hl=$('#hLeft'); if(hl) hl.textContent=H.listens; $('#hListen').disabled=true;
+  if(!first){ cadVizStop(); const msg=$('#cadMsg'), vz=$('#cadViz'); if(msg)msg.style.display='none'; if(vz)vz.style.display='none';   // revelar partitura (fundido)
+    const sc=$('#cadScore'); if(sc){ sc.style.display='flex'; renderCadScore(sc, H.exercise.cad); requestAnimationFrame(()=>sc.classList.add('shown')); } }
+  let dur=4; try{ dur=await playCadencia(H.exercise.cad); }catch(e){}
+  setTimeout(()=>{ if(H.listens>0)$('#hListen').disabled=false; else hostArmAutoCorrect(); }, dur*1000);
+}
+// --- corrección automática: tras la última reproducción, 10 s y a corregir (adelantable con el botón) ---
+let _acTimer=null;
+function hostCancelAutoCorrect(){ if(_acTimer){clearTimeout(_acTimer);_acTimer=null;} const el=$('#autoCorr'); if(el) el.classList.remove('on'); cadVizStop(); }
+function hostArmAutoCorrect(){ if(H.phase!=='round') return; hostCancelAutoCorrect();
+  const el=$('#autoCorr'); let s=10;
+  const show=n=>{ if(el){ el.textContent='⏱ Corrección en '+n+'…'; el.classList.add('on'); } };
+  show(s);
+  const tick=()=>{ s--; if(s<=0){ hostCancelAutoCorrect(); if(H.phase==='round') hostShowResults(); return; } show(s); _acTimer=setTimeout(tick,1000); };
+  _acTimer=setTimeout(tick,1000);
+}
 function hostShowResults(){
+  hostCancelAutoCorrect();
   if(H.exercise.type==='melodico'){ hostShowResultsMel(); return; }
   if(H.exercise.type==='toncom'){ hostShowResultsTon(); return; }
+  if(H.exercise.type==='cadencias'){ hostShowResultsCad(); return; }
   const sol=H.exercise.solution.map(c=>c.id);
   Object.keys(H.answers).forEach(id=>{ const a=H.answers[id]; let ok=0;
     for(let i=0;i<8;i++){ if(a.placedIds && a.placedIds[i]===sol[i]) ok++; }
@@ -1255,7 +1419,7 @@ function hostShowResults(){
     H.players[id].lastMs=(a.ms!=null?a.ms:9e9); H.players[id].totalMs=(H.players[id].totalMs||0)+(a.ms!=null?a.ms:9e9); });
   Object.keys(H.players).forEach(id=>{ if(!H.answers[id]){ H.players[id].lastPct=0; H.players[id].lastMs=9e9; } });
   H.phase='reveal'; H.rankMode='exercise'; showScreen('s-host-reveal'); sfx('reveal');
-  const rev=$('#s-host-reveal'); rev.classList.remove('mel','toncom');
+  const rev=$('#s-host-reveal'); rev.classList.remove('mel','toncom','cad');
   $('#s-host-reveal .brand').innerHTML='Solución <span class="b" id="hvTs">'+(H.exercise.compound?'6/8':'2/4')+'</span>';
   const rm=$('#btnRankMode'); if(rm) rm.textContent='Ranking general →';
   mountStaff($('#hvStaff'), H.exercise.compound, new Array(8).fill(null), {interactive:false, indicator:'', tall:true});
@@ -1270,7 +1434,7 @@ function hostShowResultsMel(){
     H.players[id].lastMs=(a.ms!=null?a.ms:9e9); H.players[id].totalMs=(H.players[id].totalMs||0)+(a.ms!=null?a.ms:9e9); });
   Object.keys(H.players).forEach(id=>{ if(!H.answers[id]){ H.players[id].lastPct=0; H.players[id].lastMs=9e9; } });
   H.phase='reveal'; H.rankMode='exercise'; showScreen('s-host-reveal'); sfx('reveal');
-  $('#s-host-reveal').classList.remove('toncom'); $('#s-host-reveal').classList.add('mel');
+  $('#s-host-reveal').classList.remove('toncom','cad'); $('#s-host-reveal').classList.add('mel');
   $('#s-host-reveal .brand').innerHTML='Solución <span class="b">melódica</span>';
   const rm=$('#btnRankMode'); if(rm) rm.textContent='Ranking general →';
   $('#rankList').innerHTML='';
@@ -1290,15 +1454,32 @@ function hostShowResultsTon(){
     H.players[id].lastMs=(a.ms!=null?a.ms:9e9); H.players[id].totalMs=(H.players[id].totalMs||0)+(a.ms!=null?a.ms:9e9); });
   Object.keys(H.players).forEach(id=>{ if(!H.answers[id]){ H.players[id].lastPct=0; H.players[id].lastMs=9e9; } });
   H.phase='reveal'; H.rankMode='exercise'; showScreen('s-host-reveal'); sfx('reveal');
-  const rev=$('#s-host-reveal'); rev.classList.remove('mel'); rev.classList.add('toncom');
+  const rev=$('#s-host-reveal'); rev.classList.remove('mel','cad'); rev.classList.add('toncom');
   $('#s-host-reveal .brand').innerHTML='Solución <span class="b">TonCom</span>';
   const rm=$('#btnRankMode'); if(rm) rm.textContent='Ranking general →';
-  $('#hvStaff').innerHTML='<div class="tcrev">'+
+  const hvt=$('#hvStaff'); hvt._activeRender=null; hvt._staffCfg=null; hvt._melCfg=null;
+  hvt.innerHTML='<div class="tcrev">'+
     '<div class="tcr-card"><div class="tcr-h">TONALIDAD</div><div class="tcr-v">'+key.name+'</div></div>'+
     '<div class="tcr-card"><div class="tcr-h">ARMADURA</div><div class="tcr-v">'+armLabelTon(key.sig)+'</div></div>'+
     '<div class="tcr-card"><div class="tcr-h">COMPÁS</div><div class="tcr-v">'+compas.ts+'</div></div>'+
   '</div>';
   $('#rankList').innerHTML='';
+  renderRanking('exercise',true);
+  hostRevealButtons(); hostBroadcastPhase();
+}
+function hostShowResultsCad(){
+  const cad=H.exercise.cad;
+  Object.keys(H.answers).forEach(id=>{ const a=H.answers[id]; const pct=(a.cans===cad.type)?100:0; a.pct=pct;
+    if(!H.players[id])H.players[id]={alias:a.alias,points:0}; H.players[id].points+=pct; H.players[id].lastPct=pct;
+    H.players[id].lastMs=(a.ms!=null?a.ms:9e9); H.players[id].totalMs=(H.players[id].totalMs||0)+(a.ms!=null?a.ms:9e9); });
+  Object.keys(H.players).forEach(id=>{ if(!H.answers[id]){ H.players[id].lastPct=0; H.players[id].lastMs=9e9; } });
+  H.phase='reveal'; H.rankMode='exercise'; showScreen('s-host-reveal'); sfx('reveal');
+  const rev=$('#s-host-reveal'); rev.classList.remove('mel','toncom'); rev.classList.add('cad');
+  $('#s-host-reveal .brand').innerHTML='Cadencia · <span class="b">'+escapeHtml(cad.label)+'</span>';
+  const hv=$('#hvStaff'); hv._activeRender=null; hv._staffCfg=null; hv._melCfg=null;
+  hv.innerHTML='<div class="cad-score shown" id="cadRevScore" style="width:100%;height:100%"></div>';
+  $('#rankList').innerHTML='';
+  requestAnimationFrame(()=>renderCadScore($('#cadRevScore'), cad, 'green'));
   renderRanking('exercise',true);
   hostRevealButtons(); hostBroadcastPhase();
 }
@@ -1329,8 +1510,8 @@ function renderRanking(mode,animate){
     }, 220+i*150));
   } else { rows.forEach(r=>r.classList.add('in')); }
 }
-function hostReset(){ H.players={}; H.answers={}; H.phase='lobby'; H.queue=[]; H.qIndex=0; H.gameDone=false;
-  $('#s-host-round').classList.remove('mel','toncom'); $('#s-host-reveal').classList.remove('mel','toncom');
+function hostReset(){ hostCancelAutoCorrect(); H.players={}; H.answers={}; H.phase='lobby'; H.queue=[]; H.qIndex=0; H.gameDone=false;
+  $('#s-host-round').classList.remove('mel','toncom'); $('#s-host-reveal').classList.remove('mel','toncom','cad');
   const rm=$('#btnRankMode'); if(rm) rm.style.display='';
   showScreen('s-host-lobby'); renderRoster(); hostBroadcastPhase(); }
 function hostBroadcastPhase(){
@@ -1339,11 +1520,13 @@ function hostBroadcastPhase(){
   if(H.phase==='round'){
     if(H.exercise.type==='melodico') payload={phase:'round',ex:'melodico',roundId:H.roundId,first:H.exercise.first};
     else if(H.exercise.type==='toncom') payload={phase:'round',ex:'toncom',roundId:H.roundId};
+    else if(H.exercise.type==='cadencias') payload={phase:'round',ex:'cadencias',roundId:H.roundId};
     else payload={phase:'round',ex:'ritmico',roundId:H.roundId,compound:H.exercise.compound};
   } else if(H.phase==='reveal'){
     if(H.exercise.type==='melodico') payload={phase:'reveal',ex:'melodico',roundId:H.roundId,sol:H.exercise.sol,ranking:rankingArr('exercise')};
     else if(H.exercise.type==='toncom'){ const k=H.exercise.key, cp=H.exercise.compas;
       payload={phase:'reveal',ex:'toncom',roundId:H.roundId,gt:{ton:k.name,arm:armLabelTon(k.sig),comp:cp.ts,tonPC:tonKeyPC(k.note,k.acc),mm:k.mm,sig:k.sig,ts:cp.ts},ranking:rankingArr('exercise')}; }
+    else if(H.exercise.type==='cadencias') payload={phase:'reveal',ex:'cadencias',roundId:H.roundId,cadType:H.exercise.cad.type,cadLabel:H.exercise.cad.label,ranking:rankingArr('exercise')};
     else payload={phase:'reveal',ex:'ritmico',roundId:H.roundId,compound:H.exercise.compound,solutionIds:H.exercise.solution.map(c=>c.id),ranking:rankingArr('exercise')};
   } else payload={phase:'lobby'};
   H.channel.send({type:'broadcast',event:'phase',payload});
@@ -1381,9 +1564,10 @@ function playerOnPhase(p){
   if(p.phase==='round'){ if(p.roundId && p.roundId===PL.roundId) return; PL.roundId=p.roundId||0; PL.exType=p.ex||'ritmico';
     if(PL.exType==='melodico'){ PL.melFirst=p.first; startPlayerRoundMel(); }
     else if(PL.exType==='toncom'){ startPlayerRoundTon(); }
+    else if(PL.exType==='cadencias'){ startPlayerRoundCad(); }
     else { PL.compound=p.compound; startPlayerRound(); } }
   else if(p.phase==='reveal'){ PL.roundId=p.roundId||PL.roundId; const ex=p.ex||'ritmico';
-    if(ex==='melodico') playerRevealMel(p); else if(ex==='toncom') playerRevealTon(p); else playerReveal(p); }
+    if(ex==='melodico') playerRevealMel(p); else if(ex==='toncom') playerRevealTon(p); else if(ex==='cadencias') playerRevealCad(p); else playerReveal(p); }
   else if(p.phase==='lobby'){ if(!$('#s-player-join').classList.contains('on')) showScreen('s-player-wait'); }
 }
 function startPlayerRound(){
@@ -1481,7 +1665,11 @@ function attachPointer(card,cell){
 function playerSend(){
   if(PL.sent) return;
   const ms=Date.now()-PL.roundStart;
-  if(PL.exType==='toncom'){
+  if(PL.exType==='cadencias'){
+    const cans=PL.cadSel; PL.cadSentAns=cans;
+    try{ PL.channel.track({alias:PL.alias, rid:PL.roundId, cans, ms}); }catch(_){}
+    try{ PL.channel.send({type:'broadcast',event:'answer',payload:{id:PL.id,alias:PL.alias,cans,ms}}); }catch(_){}
+  } else if(PL.exType==='toncom'){
     const t=PL.tc, n=tcNoteSel(); const ans={tonPC:(n==='—'?-1:tonKeyPC(n,t.acc)), mm:t.mm, arm:ARM_WHEEL[t.armI].v, compas:t.compas,
       label:{ton:tcTonLabel(), arm:ARM_WHEEL[t.armI].t, comp:t.compas||'—'}};
     PL.tcSentAns=ans;
@@ -1588,6 +1776,37 @@ function playerRevealTon(p){
   $('#pRank').textContent = pos>=0 ? (emoji+'  Puesto '+(pos+1)+' de '+arr.length+' · '+(me?me.points:0)+' pts') : 'Sin respuesta esta ronda';
   $('#pMini').innerHTML = arr.slice(0,3).map((r,i)=>['🥇','🥈','🥉'][i]+' '+escapeHtml(r.alias)+' ('+r.points+')').join(' &nbsp; ');
   if(pos===0){ sfx('winner'); confettiBurst(); } else if(pos>=0 && me && me.last>=75){ sfx('winner'); } else sfx('reveal');
+}
+/* ---- CADENCIAS (móvil): 6 tipos ---- */
+function startPlayerRoundCad(){
+  PL.cadSel=null; PL.sent=false; PL.roundStart=Date.now();
+  if(PL.channel) try{ PL.channel.track({alias:PL.alias, rid:PL.roundId}); }catch(_){}
+  showScreen('s-player-cadencias'); $('#cadAlias').textContent=PL.alias;
+  buildCadUI();
+}
+function buildCadUI(){
+  const box=$('#cadOpts'); box.innerHTML='';
+  CAD_GRID.forEach(id=>{ const t=CAD_TYPES.find(x=>x.id===id); const b=document.createElement('button'); b.className='cad-opt'+(PL.cadSel===id?' on':''); b.dataset.t=id;
+    b.innerHTML='<span class="cad-opt-rn">'+t.rn+'</span><span class="cad-opt-l">'+t.label+'</span>';
+    b.onclick=()=>{ PL.cadSel=id; buildCadUI(); sfx('place'); }; box.appendChild(b); });
+  const send=$('#cadSend'); if(send) send.onclick=playerSend;
+}
+function cadLabelOf(id){ return (CAD_TYPES.find(t=>t.id===id)||{}).label || '—'; }
+function playerRevealCad(p){
+  const arr=p.ranking||[]; const me=arr.find(r=>r.id===PL.id); const pos=arr.findIndex(r=>r.id===PL.id);
+  showScreen('s-player-reveal');
+  const correct=p.cadType, mine=PL.cadSentAns, ok=(mine===correct);
+  const w=$('#pMelWrap');
+  if(w){ w.style.display=''; w.className=''; w.style.height='auto';
+    w.innerHTML='<div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 0">'+
+      '<div style="font-size:12px;letter-spacing:.12em;color:var(--muted2)">TU RESPUESTA</div>'+
+      '<div style="font-size:26px;font-weight:900;color:'+(ok?'#37b26a':'#d9694a')+'">'+cadLabelOf(mine)+'</div>'+
+      (ok?'<div style="color:#37b26a;font-size:15px">✓ correcto</div>':'<div style="font-size:16px;color:var(--gold-soft)">Era: '+cadLabelOf(correct)+'</div>')+'</div>'; }
+  $('#pScore').textContent='0%'; countUp($('#pScore'), me?me.last:0, 850, '%');
+  const emoji = pos===0?'🥇 ¡Ganas!' : pos===1?'🥈 ¡Casi!' : pos===2?'🥉 ¡Podio!' : '';
+  $('#pRank').textContent = pos>=0 ? (emoji+'  Puesto '+(pos+1)+' de '+arr.length+' · '+(me?me.points:0)+' pts') : 'Sin respuesta esta ronda';
+  $('#pMini').innerHTML = arr.slice(0,3).map((r,i)=>['🥇','🥈','🥉'][i]+' '+escapeHtml(r.alias)+' ('+r.points+')').join(' &nbsp; ');
+  if(pos===0){ sfx('winner'); confettiBurst(); } else if(ok){ sfx('winner'); } else sfx('reveal');
 }
 function playerRevealMel(p){
   const arr=p.ranking||[]; const me=arr.find(r=>r.id===PL.id); const pos=arr.findIndex(r=>r.id===PL.id);

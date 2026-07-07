@@ -89,7 +89,8 @@
   .hit.over{background:rgba(233,201,106,.32);box-shadow:inset 0 0 0 2px var(--gold-soft)}
   .hit.flash{animation:hitFlash .34s ease-out}
   @keyframes hitFlash{0%{background:rgba(212,175,55,.55)}100%{background:transparent}}
-  .hit .clr{position:absolute;top:3px;right:4px;width:19px;height:19px;border-radius:50%;background:rgba(20,14,2,.72);color:#fff;font-size:12px;display:none;align-items:center;justify-content:center;border:none;padding:0}
+  .hit .clr{position:absolute;top:2px;left:50%;transform:translateX(-50%);width:clamp(28px,4.4vw,38px);height:clamp(24px,3.6vw,30px);border-radius:9px;background:rgba(190,45,25,.92);color:#fff;font-size:clamp(16px,2.6vw,21px);font-weight:800;line-height:1;display:none;align-items:center;justify-content:center;border:none;padding:0;box-shadow:0 2px 7px rgba(0,0,0,.45);z-index:6}
+  .hit .clr:active{transform:translateX(-50%) scale(.9)}
   .hit.filled .clr{display:flex}
   #s-host-round .staffwrap{flex:0 0 auto;height:clamp(150px,34vh,300px);margin:auto 0;align-items:stretch;justify-content:stretch}   /* pentagrama amplio y centrado (iPad) */
   .hp-top{padding-right:46px}
@@ -223,8 +224,8 @@
   .stepper .st:active{background:var(--gold-soft)}
   .stepper b{min-width:34px;text-align:center;color:var(--ink);font-size:19px;font-weight:900;display:flex;align-items:center;justify-content:center;border-left:1px solid var(--line);border-right:1px solid var(--line)}
   /* host TonCom: mensaje grande + subtítulo */
-  .tc-hoststep{font-size:44px;font-weight:900;color:var(--gold);letter-spacing:.01em;min-height:52px}
-  .tc-hoststep b{color:var(--ink);font-size:60px}
+  .tc-hoststep{font-size:44px;font-weight:900;color:#b8860b;letter-spacing:.01em;min-height:52px}
+  .tc-hoststep b{color:#241a06;font-size:64px}
   .tc-hostsub{font-size:15px;color:var(--muted);font-weight:500}
   .hp-prog{color:var(--gold-soft);font-size:13px;font-weight:700;letter-spacing:.03em}
   /* INTRO grande del ejercicio */
@@ -241,6 +242,23 @@
   .autocorr{display:none;color:#ffcf6a;font-size:14px;font-weight:800;letter-spacing:.02em;background:rgba(212,175,55,.14);border:1px solid var(--gold2);border-radius:999px;padding:5px 14px;animation:acpulse 1s ease-in-out infinite}
   .autocorr.on{display:inline-block}
   @keyframes acpulse{0%,100%{opacity:.75}50%{opacity:1}}
+  /* salir del juego (móvil) */
+  .exit-btn{position:fixed;top:calc(6px + env(safe-area-inset-top));left:calc(8px + env(safe-area-inset-left));z-index:400;display:none;width:42px;height:42px;border-radius:12px;background:rgba(18,12,3,.6);border:1px solid var(--line);color:var(--gold-soft);font-size:20px;cursor:pointer;align-items:center;justify-content:center;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+  .exit-btn.on{display:flex}
+  .exit-btn:active{transform:scale(.92)}
+  .exit-confirm{position:fixed;inset:0;z-index:6000;display:none;align-items:center;justify-content:center;background:rgba(6,4,2,.84);padding:20px}
+  .exit-confirm.on{display:flex}
+  .exit-box{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:18px;padding:26px 28px;max-width:460px;text-align:center;display:flex;flex-direction:column;gap:18px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+  .exit-q{font-size:18px;font-weight:700;color:var(--ink)}
+  .exit-btns{display:flex;gap:12px;justify-content:center}
+  .exit-btns button{padding:12px 22px;border-radius:11px;font-size:15px;font-weight:800;cursor:pointer;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink)}
+  .exit-btns .btn-gold{border:none}
+  /* recordatorio "pulsa Enviar" + resplandor */
+  .send-remind{position:fixed;left:50%;bottom:calc(6px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:390;display:none;background:linear-gradient(180deg,#ffbf3f,#ef8f22);color:#3a2600;font-weight:800;font-size:14px;padding:8px 18px;border-radius:999px;box-shadow:0 4px 18px rgba(238,139,28,.6);animation:acpulse .8s ease-in-out infinite}
+  .send-remind.on{display:block}
+  .send-remind b{color:#3a2600}
+  .cell-send.remind,.mel-send.remind{animation:sendGlow .7s ease-in-out infinite}
+  @keyframes sendGlow{0%,100%{box-shadow:0 5px 20px rgba(238,139,28,.5),0 0 0 0 rgba(255,150,40,.55)}50%{box-shadow:0 5px 26px rgba(238,139,28,.8),0 0 0 6px rgba(255,150,40,.35)}}
   /* CADENCIAS · host card + partitura */
   .cad-hostcard{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:10px}
   .cad-msg{font-size:24px;font-weight:800;color:#241a06;text-align:center;display:flex;flex-direction:column;gap:6px;flex:0 0 auto}
@@ -356,6 +374,9 @@
 <canvas class="fx-confetti" id="confetti"></canvas>
 <div class="countdown" id="countdown"></div>
 <div id="exIntro" class="ex-intro"><div class="ex-intro-inner"><div class="ex-intro-kick">a continuación</div><div class="ex-intro-name"></div><div class="ex-intro-sub"></div></div></div>
+<button id="exitBtn" class="exit-btn" title="Salir del juego">🚪</button>
+<div id="sendRemind" class="send-remind">Pulsa <b>Enviar</b> si aún no lo has hecho</div>
+<div id="exitConfirm" class="exit-confirm"><div class="exit-box"><div class="exit-q">¿Seguro que quieres volver a la pantalla de inicio?</div><div class="exit-btns"><button id="exitYes" class="btn-gold">Sí, salir</button><button id="exitNo">Cancelar</button></div></div></div>
 <button id="fsBtn" class="fs-btn" title="Pantalla completa">⛶</button>
 
 <!-- ========================= INICIO (portada) ========================= -->
@@ -910,8 +931,8 @@ function pianoTone(midi, when, dur){
   const nb=c.createBuffer(1,Math.floor(c.sampleRate*0.03),c.sampleRate), ch=nb.getChannelData(0); for(let i=0;i<ch.length;i++)ch[i]=(Math.random()*2-1)*(1-i/ch.length);
   const ns=c.createBufferSource(); ns.buffer=nb; const nf=c.createBiquadFilter(); nf.type='bandpass'; nf.frequency.value=Math.min(6000,freq*4); nf.Q.value=0.7;
   const ng=c.createGain(); ng.gain.setValueAtTime(0.12,t); ng.gain.exponentialRampToValueAtTime(0.0001,t+0.03); ns.connect(nf).connect(ng).connect(g); ns.start(t); ns.stop(t+0.04); }
-async function playMelody(midis, speed, onNote){ const c=actx(); if(c.state==='suspended')await c.resume();
-  const sp=MEL_SPEEDS[speed]||1, noteSec=MEL_NOTE_SEC*sp, step=(MEL_NOTE_SEC+MEL_GAP_SEC)*sp, t0=c.currentTime+0.28;
+async function playMelody(midis, speed, onNote, mul){ const c=actx(); if(c.state==='suspended')await c.resume();
+  const sp=(MEL_SPEEDS[speed]||1)*(mul||1), noteSec=MEL_NOTE_SEC*sp, step=(MEL_NOTE_SEC+MEL_GAP_SEC)*sp, t0=c.currentTime+0.28;
   midis.forEach((m,i)=>{ pianoTone(m,t0+i*step,noteSec); if(onNote) setTimeout(()=>onNote(i),Math.max(0,(t0+i*step-c.currentTime)*1000)); });
   return midis.length*step+0.4; }
 
@@ -1065,8 +1086,8 @@ function hostTonLabel(kind,val){ const el=document.getElementById('tcHostMsg'), 
   else if(kind==='tonica'){ el.textContent='Tónica'; if(sub)sub.textContent=''; }
   else if(kind==='acordes'){ el.textContent='Acordes tonales'; if(sub)sub.textContent=''; }
   else if(kind==='count'){ el.innerHTML='Dictado en <b>'+val+'</b>'; if(sub)sub.textContent='prepárate'; }
-  else if(kind==='dictado'){ el.textContent='🎵 Dictado'; if(sub)sub.textContent='escucha y responde en el móvil'; }
-  else { el.textContent='🎼 Identifica tonalidad, armadura y compás'; if(sub)sub.textContent=''; } }
+  else if(kind==='dictado'){ el.textContent='Dictado'; if(sub)sub.textContent='escucha y responde en el móvil'; }
+  else { el.textContent='Identifica tonalidad, armadura y compás'; if(sub)sub.textContent=''; } }
 async function playTonRefLabeled(key, onLabel){ const c=actx(); if(c.state==='suspended')await c.resume();
   onLabel&&onLabel('la'); pianoTone(69, c.currentTime+0.05, 1.3); await tonWait(1650);
   const tonM=(function(){ const tpc=key.tpc; for(let m=60;m<=71;m++) if(((m%12)+12)%12===((tpc%12+12)%12)) return m; return 60; })();
@@ -1318,7 +1339,7 @@ function hostIntro(x, done){ const ov=$('#exIntro'); if(!ov){ done&&done(); retu
   ov.classList.remove('out'); ov.classList.add('on'); try{sfx('go');}catch(_){}
   setTimeout(()=>ov.classList.add('out'), 1500);
   setTimeout(()=>{ ov.classList.remove('on','out'); done&&done(); }, 2050); }
-function hostOnAnswer(p){ if(H.phase!=='round')return; H.answers[p.id]={placedIds:p.placedIds,midis:p.midis,tans:p.tans,ms:p.ms,alias:p.alias};
+function hostOnAnswer(p){ if(H.phase!=='round')return; H.answers[p.id]={placedIds:p.placedIds,midis:p.midis,tans:p.tans,cans:p.cans,ms:p.ms,alias:p.alias};
   if(!H.players[p.id])H.players[p.id]={alias:p.alias,points:0}; updateCounter(); }
 function updateCounter(){
   const conn=Object.keys(H.roster).length, resp=Object.keys(H.answers).length;
@@ -1351,20 +1372,20 @@ function hostBeginRound(){
     H.exercise=Object.assign({type:'toncom'}, genTonCom());
     $('#s-host-round .brand').innerHTML='TonCom <span class="b">tonalidad · armadura · compás</span>';
     const hs=$('#hrStaff'); hs._activeRender=null; hs._staffCfg=null; hs._melCfg=null;   // que el ResizeObserver no repinte un pentagrama encima
-    hs.innerHTML='<div class="tc-hostcard"><div class="tc-hoststep" id="tcHostMsg">🎼 Identifica tonalidad, armadura y compás</div><div class="tc-hostsub" id="tcHostSub">Pulsa ▶ Reproducir</div></div>';
+    hs.innerHTML='<div class="tc-hostcard"><div class="tc-hoststep" id="tcHostMsg">Identifica tonalidad, armadura y compás</div><div class="tc-hostsub" id="tcHostSub">Pulsa ▶ Reproducir</div></div>';
   } else if(H.exType==='cadencias'){
     rs.classList.add('toncom');   // reutiliza el layout de tarjeta (oculta controles rítmicos)
     $('#hListen').innerHTML='▶ Reproducir (<span id="hLeft">'+H.listens+'</span>)';
     H.exercise={type:'cadencias', cad:genCadencia()};
     $('#s-host-round .brand').innerHTML='Cadencias <span class="b">identifica de oído</span>';
     const hs=$('#hrStaff'); hs._activeRender=null; hs._staffCfg=null; hs._melCfg=null;
-    hs.innerHTML='<div class="cad-hostcard"><div class="cad-msg" id="cadMsg">🎵 Escucha la cadencia e identifícala<span>La 2ª reproducción te muestra la partitura</span></div><canvas class="cad-viz" id="cadViz"></canvas><div class="cad-score" id="cadScore" style="display:none"></div></div>';
+    hs.innerHTML='<div class="cad-hostcard"><div class="cad-msg" id="cadMsg">Escucha la cadencia e identifícala<span>La 2ª reproducción te muestra la partitura</span></div><canvas class="cad-viz" id="cadViz"></canvas><div class="cad-score" id="cadScore" style="display:none"></div></div>';
     requestAnimationFrame(()=>cadVizStart($('#cadViz')));
   } else {
     rs.classList.remove('mel');
     $('#hListen').innerHTML='▶ Escuchar (<span id="hLeft">'+H.listens+'</span>)';
     const compound=chosenCompound(); H.exercise={type:'ritmico', compound, solution:gen8(compound)};
-    H.bpm=compound?50:60; $('#hBpm').textContent=H.bpm;
+    H.bpm=compound?45:60; $('#hBpm').textContent=H.bpm;   // 6/8 → 45 la negra con puntillo · 2/4 → 60
     $('#s-host-round .brand').innerHTML='Rítmico <span class="b" id="hrTs">'+(compound?'6/8':'2/4')+'</span>';
     mountStaff($('#hrStaff'), compound, new Array(8).fill(null), {interactive:false, indicator:'number', tall:true}); // pentagrama vacío
   }
@@ -1380,7 +1401,7 @@ async function hostListen(){
     const sw=$('#s-host-round .staffwrap'), eq=$('#hEq'); sw&&sw.classList.add('listening'); eq&&eq.classList.add('on');
     let dur=6;
     try{
-      if(H.exercise.type==='melodico') dur=await playMelody(H.exercise.sol, H.melSpeed, null);
+      if(H.exercise.type==='melodico') dur=await playMelody(H.exercise.sol, H.melSpeed, null, primera?1:0.5);   // 2ª escucha al doble de velocidad
       else dur=await playRhythm(H.exercise.solution,H.exercise.compound,H.bpm,H.metro,flashHostNumber);
     }catch(e){}
     setTimeout(()=>{ sw&&sw.classList.remove('listening'); eq&&eq.classList.remove('on'); if(H.listens>0)$('#hListen').disabled=false; else hostArmAutoCorrect(); }, dur*1000);
@@ -1400,8 +1421,9 @@ async function hostListenCad(){
 let _acTimer=null;
 function hostCancelAutoCorrect(){ if(_acTimer){clearTimeout(_acTimer);_acTimer=null;} const el=$('#autoCorr'); if(el) el.classList.remove('on'); cadVizStop(); }
 function hostArmAutoCorrect(){ if(H.phase!=='round') return; hostCancelAutoCorrect();
+  try{ if(H.channel) H.channel.send({type:'broadcast',event:'warn'}); }catch(_){}   // avisa a los móviles: ¡pulsa Enviar!
   const el=$('#autoCorr'); let s=10;
-  const show=n=>{ if(el){ el.textContent='⏱ Corrección en '+n+'…'; el.classList.add('on'); } };
+  const show=n=>{ if(el){ el.textContent='Corrección en '+n+' · ¡que pulsen Enviar!'; el.classList.add('on'); } };
   show(s);
   const tick=()=>{ s--; if(s<=0){ hostCancelAutoCorrect(); if(H.phase==='round') hostShowResults(); return; } show(s); _acTimer=setTimeout(tick,1000); };
   _acTimer=setTimeout(tick,1000);
@@ -1546,6 +1568,10 @@ function initPlayer(code){
   $('#btnJoin').addEventListener('click',playerJoin);
   $('#alias').addEventListener('keydown',e=>{ if(e.key==='Enter') playerJoin(); });
   const home=$('#pjHome'); if(home) home.addEventListener('click',()=>{ location.href=location.pathname; });
+  // botón SALIR del juego (siempre disponible) + confirmación
+  const eb=$('#exitBtn'); if(eb){ eb.classList.add('on'); eb.onclick=()=>$('#exitConfirm').classList.add('on'); }
+  const ey=$('#exitYes'); if(ey) ey.onclick=()=>{ location.href=location.pathname; };
+  const en=$('#exitNo'); if(en) en.onclick=()=>$('#exitConfirm').classList.remove('on');
 }
 function playerJoin(){
   const a=$('#alias').value.trim(); if(!a){ $('#alias').focus(); return; }
@@ -1557,11 +1583,18 @@ function playerConnect(){
   PL.channel=sb.channel(chan(PL.code),{config:{broadcast:{self:false},presence:{key:PL.id}}});
   PL.channel
     .on('broadcast',{event:'phase'},({payload})=>playerOnPhase(payload))
+    .on('broadcast',{event:'warn'},()=>playerWarn())
     .subscribe(async status=>{ if(status==='SUBSCRIBED'){ await PL.channel.track({alias:PL.alias});
         showScreen('s-player-wait'); PL.channel.send({type:'broadcast',event:'hello',payload:{id:PL.id}}); } });
 }
+// aviso de "pulsa Enviar" (cuando arranca la cuenta atrás en el iPad)
+function playerWarn(){ if(PL.sent) return; const on=!$('#s-player-sent').classList.contains('on');
+  if(!on) return; ['btnSend','tcSend','cadSend'].forEach(id=>{ const b=document.getElementById(id); if(b) b.classList.add('remind'); });
+  const r=$('#sendRemind'); if(r) r.classList.add('on'); }
+function clearSendRemind(){ ['btnSend','tcSend','cadSend'].forEach(id=>{ const b=document.getElementById(id); if(b) b.classList.remove('remind'); });
+  const r=$('#sendRemind'); if(r) r.classList.remove('on'); }
 function playerOnPhase(p){
-  if(p.phase==='round'){ if(p.roundId && p.roundId===PL.roundId) return; PL.roundId=p.roundId||0; PL.exType=p.ex||'ritmico';
+  if(p.phase==='round'){ if(p.roundId && p.roundId===PL.roundId) return; PL.roundId=p.roundId||0; PL.exType=p.ex||'ritmico'; clearSendRemind();
     if(PL.exType==='melodico'){ PL.melFirst=p.first; startPlayerRoundMel(); }
     else if(PL.exType==='toncom'){ startPlayerRoundTon(); }
     else if(PL.exType==='cadencias'){ startPlayerRoundCad(); }
@@ -1684,7 +1717,7 @@ function playerSend(){
     try{ PL.channel.track({alias:PL.alias, rid:PL.roundId, ans:placedIds, ms}); }catch(_){}                 // vía fiable (presence)
     try{ PL.channel.send({type:'broadcast',event:'answer',payload:{id:PL.id,alias:PL.alias,placedIds,ms}}); }catch(_){} // vía rápida (broadcast)
   }
-  PL.sent=true; sfx('submit'); showScreen('s-player-sent');
+  PL.sent=true; clearSendRemind(); sfx('submit'); showScreen('s-player-sent');
 }
 // deja #pMelWrap listo con un pentagrama limpio (#pMelStaff) para rítmico/melódico
 function pRevealStaffBox(){ const w=$('#pMelWrap'); if(!w) return null;

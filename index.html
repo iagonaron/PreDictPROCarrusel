@@ -72,17 +72,21 @@
   .counter b{color:var(--gold)}
   .counter.all b{color:var(--ok)}
   .staffwrap{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:18px;padding:14px 16px;display:flex;align-items:center;justify-content:center;flex:1;min-height:0}
-  .staffbox{width:100%;aspect-ratio:760/150;max-height:100%;margin:auto;background:linear-gradient(180deg,#f8f2e1,#efe6cd);border-radius:12px;position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 3px 10px rgba(0,0,0,.32)}
+  .staffbox{width:100%;aspect-ratio:640/96;max-height:100%;margin:auto;background:linear-gradient(180deg,#f8f2e1,#efe6cd);border-radius:12px;position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 3px 10px rgba(0,0,0,.32)}
   .staff-inner{position:absolute;inset:0}
   .staff-inner svg{position:absolute;inset:0;width:100%;height:100%}
   .hit{position:absolute;top:0;bottom:0;border-radius:9px;cursor:pointer;transition:background .12s,box-shadow .12s;z-index:2}
-  .hit .pn{position:absolute;top:2px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:800;color:rgba(120,90,20,.5)}
-  .hit.current{background:rgba(212,175,55,.16);box-shadow:inset 0 0 0 2px var(--gold)}
+  .hit .pn{position:absolute;top:4px;left:50%;transform:translateX(-50%);font-size:clamp(11px,1.5vw,20px);font-weight:800;color:rgba(120,90,20,.55)}
+  .hit .parrow{position:absolute;bottom:1px;left:50%;transform:translateX(-50%);font-size:12px;line-height:1;color:rgba(150,110,25,.38);transition:color .12s,transform .12s}
+  .hit.current .parrow{color:var(--gold);transform:translateX(-50%) scale(1.4)}
+  .hit.current .pn{color:var(--gold2)}
+  .hit.current{background:rgba(212,175,55,.13);box-shadow:inset 0 0 0 2px rgba(212,175,55,.7)}
   .hit.over{background:rgba(233,201,106,.32);box-shadow:inset 0 0 0 2px var(--gold-soft)}
   .hit.flash{animation:hitFlash .34s ease-out}
   @keyframes hitFlash{0%{background:rgba(212,175,55,.55)}100%{background:transparent}}
   .hit .clr{position:absolute;top:3px;right:4px;width:19px;height:19px;border-radius:50%;background:rgba(20,14,2,.72);color:#fff;font-size:12px;display:none;align-items:center;justify-content:center;border:none;padding:0}
   .hit.filled .clr{display:flex}
+  #s-host-round .staffwrap{flex:0 0 auto;margin:auto 0}   /* el panel abraza el pentagrama y se centra (iPad) */
   .hp-ctl{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .btn-listen{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a2005;border-color:transparent;font-weight:800;font-size:15px;padding:11px 18px}
   .tempo{display:flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:11px;padding:4px 5px;background:var(--panel)}
@@ -114,25 +118,21 @@
   .prank{font-size:20px;font-weight:800}
   .mini-rank{margin-top:6px;font-size:14px;color:var(--muted)}
 
-  /* PLAYER round (reconstrucción) — aprovecha todo el ancho, prioriza el pentagrama */
-  #s-player-round{flex-direction:column;gap:5px;padding:4px 6px 6px}
+  /* PLAYER round — todo el ancho, pentagrama grande, mínimo cromo */
+  #s-player-round{flex-direction:column;gap:4px;padding:3px 5px 5px}
   .pr-top{display:flex;align-items:center;gap:10px;padding:0 2px}
-  .pr-top .kick{flex:1;font-size:11px}
-  #s-player-round .staffwrap{padding:7px 9px;min-height:40vh}
-  .arrows{display:flex;align-items:center;justify-content:center;gap:12px}
-  .arrows button{border-radius:999px;padding:4px 16px;font-size:16px;font-weight:900}
-  .arrows .hint{font-size:10.5px;color:var(--muted2)}
-  .palette-lab{display:none}
-  .palette{display:flex;flex-wrap:wrap;gap:5px;padding:2px;max-height:30vh;overflow:auto;align-content:flex-start;justify-content:center}
-  .cell-card{flex:0 0 auto;height:44px;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:4px 7px;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none}
+  .pr-top .kick{font-size:11px;white-space:nowrap}
+  .pr-inst{flex:1;font-size:11px;color:var(--muted2);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pr-count{font-size:13px;font-weight:800;color:var(--gold);min-width:32px;text-align:right}
+  #s-player-round .staffwrap{flex:0 0 auto;padding:5px 8px}
+  .palette{flex:1;display:flex;flex-wrap:wrap;gap:6px;padding:4px;overflow:auto;align-content:center;justify-content:center}
+  .cell-card{flex:0 0 auto;height:54px;background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:5px 9px;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none}
   .cell-card:active{transform:scale(.95)}
   .cell-card .mini{height:100%;display:flex;align-items:center;justify-content:center;overflow:visible}
   .cell-card svg{height:100%;width:auto;display:block}
-  .drag-ghost{position:fixed;z-index:999;pointer-events:none;height:46px;padding:4px 9px;background:var(--paper);border:2px solid var(--gold);border-radius:9px;box-shadow:0 14px 34px rgba(0,0,0,.5);opacity:.96;display:flex;align-items:center;justify-content:center;transform:translate(-50%,-50%) scale(1.06)}
+  .drag-ghost{position:fixed;z-index:999;pointer-events:none;height:56px;padding:5px 10px;background:var(--paper);border:2px solid var(--gold);border-radius:9px;box-shadow:0 14px 34px rgba(0,0,0,.5);opacity:.96;display:flex;align-items:center;justify-content:center;transform:translate(-50%,-50%) scale(1.06)}
   .drag-ghost svg{height:100%;width:auto}
-  .pr-bottom{display:flex;align-items:center;gap:10px}
-  .btn-send{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a2005;border-color:transparent;font-weight:800;padding:9px 20px;font-size:15px}
-  .pr-hint{flex:1;text-align:right;font-size:12px;color:var(--muted2)}
+  .btn-send{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a2005;border-color:transparent;font-weight:800;padding:8px 20px;font-size:15px}
 
   .rotate-hint{display:none}
   @media (orientation:portrait){
@@ -306,22 +306,16 @@
   <div class="rotate-hint"><div class="big">📱↻</div><div style="font-size:17px;font-weight:800;color:var(--ink)">Gira el móvil</div><div>Se juega en horizontal.</div></div>
   <div class="pr-top">
     <span class="kick">Reconstruye lo que suena · <b id="prTs" style="color:var(--gold)">2/4</b></span>
+    <span class="pr-inst">toca una figura para el pulso marcado · o arrástrala</span>
+    <span class="pr-count" id="prHint"></span>
+    <span class="spacer"></span>
     <span class="youare">tú: <b id="prAlias">—</b></span>
+    <button class="btn-send" id="btnSend" disabled>Enviar</button>
   </div>
   <div class="staffwrap" style="flex:1">
     <div class="staffbox" id="prStaff"></div>
   </div>
-  <div class="arrows">
-    <button id="prPrev">‹</button>
-    <span class="hint">toca una tarjeta para el pulso marcado · o arrástrala al pulso que quieras</span>
-    <button id="prNext">›</button>
-  </div>
-  <div class="palette-lab">Tarjetas</div>
   <div class="palette" id="prPalette"></div>
-  <div class="pr-bottom">
-    <button class="btn-send" id="btnSend" disabled>Enviar</button>
-    <div class="pr-hint" id="prHint">Coloca las 8 células.</div>
-  </div>
 </div>
 
 <!-- ========================= PLAYER · SENT ========================= -->
@@ -468,8 +462,8 @@ function drawCellMini(cell,compound,color){
   return svg;
 }
 /* ---- PENTAGRAMA real (clave de sol, compás, 4 compases) + zonas de colocación ---- */
-function renderStaffSVG(spec,slots){
-  const W=760,H=150,y=52,x0=4,firstExtra=54;
+function renderStaffSVG(spec,slots,vh,vy){
+  const W=640,H=vh||96,y=(vy||33),x0=4,firstExtra=48;
   const holder=document.createElement('div'); const r=new VF.Renderer(holder,VF.Renderer.Backends.SVG);
   r.resize(W,H); const ctx=r.getContext();
   const barW=(W-firstExtra-x0-4)/4; let x=x0, slotIndex=0; const boxes=[];
@@ -504,11 +498,14 @@ function renderStaffSVG(spec,slots){
 }
 function specOf(compound){ return {ts:compound?'6/8':'2/4',pulsos:2,compound:!!compound}; }
 function mountStaff(container,compound,slots,opts){ opts=opts||{};
-  const {svg,boxes,W}=renderStaffSVG(specOf(compound),slots);
+  const vh=96, vy=33;   // pentagrama compacto: llena su tarjeta a lo ancho y alto, sin hueco
+  const {svg,boxes,W}=renderStaffSVG(specOf(compound),slots,vh,vy);
+  container.style.aspectRatio='640 / '+vh;   // la tarjeta adopta la proporción del pentagrama → llena el ancho sin distorsión
   container.innerHTML=''; const inner=document.createElement('div'); inner.className='staff-inner'; inner.appendChild(svg);
   boxes.forEach(b=>{ const z=document.createElement('div'); z.className='hit'+(slots[b.slot]?' filled':''); z.dataset.slot=b.slot;
     z.style.left=(b.x/W*100)+'%'; z.style.width=(b.w/W*100)+'%';
-    z.innerHTML='<span class="pn">'+(b.slot+1)+'</span>'+(opts.interactive?'<button class="clr">×</button>':'');
+    let ind = opts.indicator==='arrow' ? '<span class="parrow">▲</span>' : opts.indicator==='number' ? '<span class="pn">'+(b.slot+1)+'</span>' : '';
+    z.innerHTML=ind+(opts.interactive?'<button class="clr">×</button>':'');
     if(opts.interactive) z.addEventListener('click',e=>opts.onTap(b.slot,e,z));
     inner.appendChild(z); });
   container.appendChild(inner); return inner;
@@ -612,7 +609,10 @@ function hostConnect(){
 function hostSyncRoster(){
   const st=H.channel.presenceState(); const prev=new Set(Object.keys(H.roster)); H.roster={};
   Object.keys(st).forEach(id=>{ const meta=(st[id]&&st[id][0])||{}; H.roster[id]={alias:meta.alias||'—'};
-    if(!H.players[id]) H.players[id]={alias:meta.alias||'—',points:0}; else H.players[id].alias=meta.alias||H.players[id].alias; });
+    if(!H.players[id]) H.players[id]={alias:meta.alias||'—',points:0}; else H.players[id].alias=meta.alias||H.players[id].alias;
+    // respuesta transportada por presence (fiable): si trae 'ans' de esta ronda, la registramos
+    if(H.phase==='round' && meta.ans && meta.rid===H.roundId && !H.answers[id]){ H.answers[id]={placedIds:meta.ans, ms:meta.ms, alias:meta.alias||'—'}; }
+  });
   const nuevos=Object.keys(H.roster).some(id=>!prev.has(id));
   renderRoster(); updateCounter();
   if(nuevos && H.phase==='lobby') sfx('join');
@@ -639,7 +639,7 @@ function hostStartRound(){
   H.bpm = compound?50:60;   // tempo por defecto: 2/4 → 60 la negra · 6/8 → 50 la negra con puntillo
   showScreen('s-host-round');
   $('#hrTs').textContent=compound?'6/8':'2/4';
-  mountStaff($('#hrStaff'), compound, new Array(8).fill(null), {interactive:false}); // pentagrama vacío (dictado)
+  mountStaff($('#hrStaff'), compound, new Array(8).fill(null), {interactive:false, indicator:'number', tall:true}); // pentagrama vacío (dictado)
   H.listens=2; $('#hLeft').textContent=H.listens; $('#hListen').disabled=false; $('#hBpm').textContent=H.bpm;
   updateCounter(); hostBroadcastPhase();
 }
@@ -663,7 +663,7 @@ function hostShowResults(){
   Object.keys(H.players).forEach(id=>{ if(!H.answers[id])H.players[id].lastPct=0; });
   H.phase='reveal'; showScreen('s-host-reveal'); sfx('reveal');
   $('#hvTs').textContent=H.exercise.compound?'6/8':'2/4';
-  mountStaff($('#hvStaff'), H.exercise.compound, new Array(8).fill(null), {interactive:false});
+  mountStaff($('#hvStaff'), H.exercise.compound, new Array(8).fill(null), {interactive:false, indicator:'number', tall:true});
   $('#rankList').innerHTML='';
   animateSolutionReveal(()=>renderRanking(true));
   hostBroadcastPhase();
@@ -698,12 +698,11 @@ let PL={code:null, channel:null, id:genId(), alias:'', compound:false, placed:ne
 
 function initPlayer(code){
   document.addEventListener('pointerdown',()=>ensureAudio(),{once:true});
+  const f=document.querySelector('.foot'); if(f) f.style.display='none';   // el móvil no necesita el pie de marca
   PL.code=code; $('#pjCode').textContent=code;
   showScreen('s-player-join');
   $('#btnJoin').addEventListener('click',playerJoin);
   $('#alias').addEventListener('keydown',e=>{ if(e.key==='Enter') playerJoin(); });
-  $('#prPrev').addEventListener('click',()=>{PL.current=(PL.current+7)%8;refreshPlayerSlots();sfx('nav');});
-  $('#prNext').addEventListener('click',()=>{PL.current=(PL.current+1)%8;refreshPlayerSlots();sfx('nav');});
   $('#btnSend').addEventListener('click',playerSend);
 }
 function playerJoin(){
@@ -726,14 +725,15 @@ function playerOnPhase(p){
 }
 function startPlayerRound(){
   PL.placed=new Array(8).fill(null); PL.current=0; PL.sent=false; PL.roundStart=Date.now();
+  if(PL.channel) try{ PL.channel.track({alias:PL.alias, rid:PL.roundId}); }catch(_){}  // limpia respuesta anterior
   $('#prTs').textContent=PL.compound?'6/8':'2/4';
-  $('#btnSend').disabled=true; $('#prHint').textContent='Coloca las 8 células.';
+  $('#btnSend').disabled=true; $('#prHint').textContent='0 / 8';
   mountPlayerStaff();
   buildPlayerPalette();
   showScreen('s-player-round');
 }
 function mountPlayerStaff(){
-  mountStaff($('#prStaff'), PL.compound, PL.placed, {interactive:true, onTap:(slot,e)=>{
+  mountStaff($('#prStaff'), PL.compound, PL.placed, {interactive:true, indicator:'arrow', onTap:(slot,e)=>{
     if(e.target.classList.contains('clr')){ playerSet(slot,null); return; }
     PL.current=slot; refreshPlayerSlots();
   }});
@@ -747,7 +747,7 @@ function playerSet(i,cell){
   const el=pslot(i); if(el&&cell){ el.classList.add('flash'); }
   sfx(cell?'place':'clear', i);
   const full=PL.placed.every(Boolean); $('#btnSend').disabled=!full;
-  $('#prHint').textContent=full?'¡Listo! Pulsa Enviar.':'Coloca las 8 células ('+PL.placed.filter(Boolean).length+'/8).';
+  $('#prHint').textContent=full?'¡Listo!':(PL.placed.filter(Boolean).length+' / 8');
 }
 function refreshPlayerSlots(){ for(let i=0;i<8;i++){ const h=pslot(i); if(h) h.classList.toggle('current',i===PL.current); } }
 function buildPlayerPalette(){
@@ -780,8 +780,9 @@ function attachPointer(card,cell){
 }
 function playerSend(){
   if(PL.sent) return;
-  const placedIds=PL.placed.map(c=>c?c.id:null);
-  PL.channel.send({type:'broadcast',event:'answer',payload:{id:PL.id,alias:PL.alias,placedIds,ms:Date.now()-PL.roundStart}});
+  const placedIds=PL.placed.map(c=>c?c.id:null); const ms=Date.now()-PL.roundStart;
+  try{ PL.channel.track({alias:PL.alias, rid:PL.roundId, ans:placedIds, ms}); }catch(_){}                 // vía fiable (presence)
+  try{ PL.channel.send({type:'broadcast',event:'answer',payload:{id:PL.id,alias:PL.alias,placedIds,ms}}); }catch(_){} // vía rápida (broadcast)
   PL.sent=true; sfx('submit'); showScreen('s-player-sent');
 }
 function playerReveal(p){
@@ -829,7 +830,7 @@ function confettiBurst(){ const cv=$('#confetti'); if(!cv)return; cv.classList.a
   (function fr(now){ ctx.clearRect(0,0,cv.width,cv.height); let alive=false; P.forEach(p=>{ p.vy+=p.g; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; if(p.y<cv.height+40)alive=true; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.fillStyle=p.c; ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.62); ctx.restore(); }); if(alive&&now-t0<3800)requestAnimationFrame(fr); else{ ctx.clearRect(0,0,cv.width,cv.height); cv.classList.remove('on'); } })(performance.now()); }
 function animateSolutionReveal(done){ const sol=H.exercise.solution, comp=H.exercise.compound; let i=0;
   (function step(){ if(i>=8){ done&&done(); return; }
-    mountStaff($('#hvStaff'), comp, sol.map((c,k)=>k<=i?c:null), {interactive:false});
+    mountStaff($('#hvStaff'), comp, sol.map((c,k)=>k<=i?c:null), {interactive:false, indicator:'number', tall:true});
     const h=$('#hvStaff').querySelector('.hit[data-slot="'+i+'"]'); if(h){ h.classList.add('flash'); }
     sfx('correctTick',i); i++; setTimeout(step,175);
   })(); }

@@ -1482,7 +1482,7 @@ function hostStartGame(){ H.queue=buildQueue(); if(!H.queue.length) return; H.qI
 // botón único "Continuar": ranking del ejercicio → ranking general (animación) → siguiente ejercicio
 function hostContinue(){
   if(H.finalShown){ hostReset(); return; }                                  // tras el podio → volver al lobby
-  if(H.rankMode==='exercise'){ renderRanking('general','flip'); H.rankMode='general'; updateContinueLabel(); sfx('nav'); return; }
+  if(H.rankMode==='exercise'){ renderRanking('general','count'); H.rankMode='general'; updateContinueLabel(); sfx('nav'); return; }
   if(H.qIndex < H.queue.length-1){ H.qIndex++; hostStartRound(); }          // siguiente ejercicio (con intro)
   else hostFinalPodium();                                                   // última ronda → podio final
 }
@@ -1899,7 +1899,9 @@ function renderRanking(mode,animate){
   const suffix=mode==='exercise'?'%':'';
   const sub=r=> mode==='exercise'? ('envío: '+(r.lastMs>=9e9?'—':(r.lastMs/1000).toFixed(1)+' s')) : ('esta ronda: '+r.last+'%');
   const firstTop={}; [...box.querySelectorAll('.rrow')].forEach(r=>{ firstTop[r.dataset.id]=r.getBoundingClientRect().top; });
-  box.innerHTML=arr.map((r,i)=>'<div class="rrow p'+(i+1)+'" data-id="'+r.id+'" data-val="'+value(r)+'"><div class="pos">'+(i+1)+'</div><div class="al">'+escapeHtml(r.alias)+'<div class="last">'+sub(r)+'</div></div><div class="pts">'+(animate===true?0:value(r))+suffix+'</div></div>').join('');
+  const fromOf=r=> mode==='exercise'?0:Math.max(0,(r.points||0)-(r.last||0));   // total antes de sumar esta ronda
+  const initPts=r=> animate===true?0:(animate==='count'?fromOf(r):value(r));
+  box.innerHTML=arr.map((r,i)=>'<div class="rrow p'+(i+1)+'" data-id="'+r.id+'" data-val="'+value(r)+'" data-from="'+fromOf(r)+'"><div class="pos">'+(i+1)+'</div><div class="al">'+escapeHtml(r.alias)+'<div class="last">'+sub(r)+'</div></div><div class="pts">'+initPts(r)+suffix+'</div></div>').join('');
   const rows=[...box.querySelectorAll('.rrow')];
   let flipped=false;
   rows.forEach(r=>{ const id=r.dataset.id; if(firstTop[id]!=null){ const dy=firstTop[id]-r.getBoundingClientRect().top; if(Math.abs(dy)>1){ flipped=true; r.style.transform='translateY('+dy+'px)'; r.style.transition='none'; } } });
@@ -1908,6 +1910,12 @@ function renderRanking(mode,animate){
     rows.forEach((row,i)=>setTimeout(()=>{ row.classList.add('in'); countUp(row.querySelector('.pts'), +row.dataset.val, 600, suffix); sfx('correctTick',i);
       if(i===rows.length-1) setTimeout(()=>{ if(arr[0]&&value(arr[0])>0){ sfx('winner'); confettiBurst(); } }, 380);
     }, 220+i*150));
+  } else if(animate==='count'){   // ranking general: los puntos suben desde el total anterior, con sonido de conteo
+    rows.forEach(r=>r.classList.add('in'));
+    rows.forEach((row,i)=>setTimeout(()=>{ const el=row.querySelector('.pts'), to=+row.dataset.val, from=+(row.dataset.from||0);
+      if(to>from){ countUp(el,to,760,suffix,from); sfx('correctTick',Math.min(i,6)); } else { el.textContent=to+suffix; }
+      if(i===rows.length-1) setTimeout(()=>{ if(arr[0]&&value(arr[0])>0) sfx('winner'); }, 500);
+    }, 260+i*150));
   } else { rows.forEach(r=>r.classList.add('in')); }
 }
 function hostFinalPodium(){ H.finalShown=true; H.phase='final';
@@ -2391,7 +2399,7 @@ function sfx(name,idx){ try{ const c=actx(); const t=c.currentTime; switch(name)
   case 'winner': [523,659,784,1047,1319].forEach((f,i)=>tone(f,t+i*.11,.32,'triangle',.22)); noiseSweep(t,.5,.09); break;
   case 'fail': tone(300,t,.18,'sawtooth',.15); tone(220,t+.12,.22,'sawtooth',.15); break;
 }}catch(e){} }
-function countUp(el,to,dur,suffix){ if(!el)return; const t0=performance.now(); dur=dur||700; suffix=suffix||''; (function fr(now){ const k=Math.min(1,(now-t0)/dur); el.textContent=Math.round(to*(1-Math.pow(1-k,3)))+suffix; if(k<1)requestAnimationFrame(fr); })(performance.now()); }
+function countUp(el,to,dur,suffix,from){ if(!el)return; from=from||0; const t0=performance.now(); dur=dur||700; suffix=suffix||''; (function fr(now){ const k=Math.min(1,(now-t0)/dur); el.textContent=Math.round(from+(to-from)*(1-Math.pow(1-k,3)))+suffix; if(k<1)requestAnimationFrame(fr); })(performance.now()); }
 function hypeCount(i,isGo){ const c=actx(),t=c.currentTime;
   if(isGo){ [523,659,784,1047].forEach((f,k)=>tone(f,t+k*0.05,.3,'sawtooth',.2)); noiseSweep(t,.42,.16); tone(120,t,.5,'sine',.3); }
   else { const base=[311,392,523][i]||311;

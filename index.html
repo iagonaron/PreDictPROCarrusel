@@ -89,6 +89,7 @@
   .hit .parrow{position:absolute;left:50%;transform:translateX(-50%);font-size:14px;line-height:1;color:rgba(150,110,25,.42);transition:color .12s,transform .12s}
   .hit.current .parrow{color:var(--gold);transform:translateX(-50%) scale(1.55);text-shadow:0 0 10px rgba(212,175,55,.7)}
   .hit.current .pn{color:var(--gold2)}
+  #s-player-round.mel .hit.current{background:rgba(212,175,55,.17);box-shadow:inset 0 0 0 2px var(--gold),0 0 16px rgba(212,175,55,.4)}   /* nota melódica seleccionada: se ilumina dorada */
   .hit.over{background:rgba(233,201,106,.32);box-shadow:inset 0 0 0 2px var(--gold-soft)}
   .hit.flash{animation:hitFlash .34s ease-out}
   @keyframes hitFlash{0%{background:rgba(212,175,55,.55)}100%{background:transparent}}
@@ -339,8 +340,8 @@
   .arm2-sel{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;min-height:0}
   .a2col{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:7px 5px;min-height:0}
   .a2h{font-size:11px;letter-spacing:.07em;color:var(--muted2);font-weight:800}
-  .a2accs{display:flex;gap:6px}
-  .a2accs button{width:34px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);font-size:16px;font-weight:800}
+  .a2accs{display:flex;gap:10px;width:100%;justify-content:center;margin-top:3px}
+  .a2accs button{flex:1;max-width:92px;height:46px;border-radius:12px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);font-size:24px;font-weight:800;display:flex;align-items:center;justify-content:center}
   .a2accs button.on{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a2005;border-color:transparent}
   .a2inv{display:flex;flex-direction:column;gap:7px;width:100%;flex:1;justify-content:stretch}
   .a2inv button{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;border-radius:11px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);font-size:clamp(13px,2.7vw,18px);font-weight:900;line-height:1.06;padding:4px 8px;text-transform:uppercase;letter-spacing:.01em}
@@ -375,10 +376,16 @@
   .pause-card{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--gold);font-weight:900;font-size:clamp(30px,6vw,64px);letter-spacing:.06em}
   .pause-card .pc-ico{font-size:1.5em;line-height:1}
   .pause-card span{font-size:.32em;font-weight:700;letter-spacing:.02em;color:var(--muted);text-transform:none}
+  .pause-acts{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;justify-content:center}
+  .pause-act{font-family:inherit;font-weight:800;font-size:16px;letter-spacing:.01em;text-transform:none;padding:12px 22px;border-radius:12px;cursor:pointer;border:1px solid var(--gold2);line-height:1}
+  .pause-act.resume{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a2005;border-color:transparent}
+  .pause-act.end{background:transparent;color:var(--muted);border-color:var(--line)}
+  .pause-act.end:active{background:rgba(255,255,255,.06)}
   .rejoin-note{position:fixed;left:50%;top:12px;transform:translateX(-50%) translateY(-20px);z-index:320;background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a1a02;font-weight:800;font-size:13.5px;padding:9px 16px;border-radius:999px;box-shadow:0 8px 26px rgba(0,0,0,.5);opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;max-width:90vw;text-align:center}
   .rejoin-note.on{opacity:1;transform:translateX(-50%) translateY(0)}
   /* juego automático: se ocultan los controles manuales del iPad (todo va solo) */
   body.autoplay #hListen, body.autoplay #btnResults, body.autoplay #hTest, body.autoplay #btnAgain, body.autoplay #btnRankMode, body.autoplay .rit-only, body.autoplay .hbpm{display:none !important}
+  body.autoplay .hp-top{padding-right:158px}   /* deja hueco a los botones fijos (Pausar + pantalla completa) para que no tapen el contador */
   /* sin botón Enviar en el móvil (el juego recoge lo marcado solo) */
   .mel-send{display:none !important}
   /* portada + escáner */
@@ -524,7 +531,7 @@
 <button id="fsBtn" class="fs-btn" title="Pantalla completa">⛶</button>
 <div id="fsArrow" class="fs-arrow-hint" style="display:none"><svg class="fsa-ar" viewBox="0 0 24 32" width="22" height="28"><path d="M12 3 L12 29 M12 3 L5 11 M12 3 L19 11" stroke="currentColor" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="fsa-lb">pantalla completa</span></div>
 <button id="btnPause" class="pause-btn" style="display:none">⏸ Pausar</button>
-<div id="pauseOv" class="pause-ov"><div class="pause-card"><div class="pc-ico">⏸</div>PAUSA<span>Toca «Reanudar» para seguir</span></div></div>
+<div id="pauseOv" class="pause-ov"><div class="pause-card"><div class="pc-ico">⏸</div>PAUSA<div class="pause-acts"><button id="pauseResume" class="pause-act resume">▶ Reanudar</button><button id="pauseEnd" class="pause-act end">Terminar partida</button></div></div></div>
 
 <!-- ========================= INICIO (portada) ========================= -->
 <div class="screen" id="s-landing">
@@ -959,12 +966,12 @@ function cadVizStop(){ if(_cadVizRAF){ cancelAnimationFrame(_cadVizRAF); _cadViz
 function click(t0,accent,vol){ const c=actx(),m=master(); const o=c.createOscillator(),g=c.createGain(); const V=(vol==null?1:vol);
   const lp=c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=2200; lp.Q.value=0.4; lp.connect(m);
   o.type='triangle'; o.frequency.value=accent?1050:900; o.connect(g); g.connect(lp);
-  g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(Math.max(0.0002,(accent?0.72:0.5)*V),t0+0.002); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.05); o.start(t0); o.stop(t0+0.06); }
+  g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(Math.max(0.0002,(accent?0.95:0.68)*V),t0+0.002); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.05); o.start(t0); o.stop(t0+0.06); }
 function knock(t0,gain){ const c=actx(),m=master(); const len=Math.floor(c.sampleRate*0.018); const b=c.createBuffer(1,len,c.sampleRate); const d=b.getChannelData(0);
   for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.2); const s=c.createBufferSource(); s.buffer=b;
   const hp=c.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=900; hp.Q.value=0.5;
   const lp=c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=5200; lp.Q.value=0.5;
-  const g=c.createGain(); g.gain.setValueAtTime(gain||0.58,t0); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.03);
+  const g=c.createGain(); g.gain.setValueAtTime(gain||0.82,t0); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.035);
   s.connect(hp); hp.connect(lp); lp.connect(g); g.connect(m); s.start(t0); s.stop(t0+0.04); }
 // cuerpo grave sostenido (de RITMO at home) para sentir la DURACIÓN de cada figura
 function synth(midi,t0,dur,gain){ const c=actx(),m=master(); const f=440*Math.pow(2,(midi-69)/12), G=gain||0.09;
@@ -983,11 +990,11 @@ async function testAudio(bpm){ const c=actx(); if(c.state==='suspended') await c
 async function playRhythm(solution,compound,bpm,metro,onPulse){ const c=actx(); if(c.state==='suspended') await c.resume();
   const beat=60/bpm, t0=c.currentTime+0.3; let start=t0;
   if(metro){ click(t0,true); click(t0+beat,false); start=t0+2*beat; }
-  for(let i=0;i<8;i++){ const cell=solution[i], base=start+i*beat; if(metro) click(base,i%2===0,0.62);
+  for(let i=0;i<8;i++){ const cell=solution[i], base=start+i*beat; if(metro) click(base,i%2===0,0.85);
     if(onPulse) setTimeout(()=>onPulse(i), Math.max(0,(base-c.currentTime)*1000));   // iluminar el pulso
     cellEvents(cell,compound).forEach(o=>{ const when=base+o.t*beat, d=Math.max(0.12,o.dur*beat*0.98);
-      knock(when,0.72);        // ataque percusivo con pegada (más volumen)
-      synth(45,when,d,0.12);   // cuerpo grave que dura lo que la figura
+      knock(when,0.95);        // ataque percusivo con pegada (más potente)
+      synth(45,when,d,0.17);   // cuerpo grave que dura lo que la figura (más presente)
     }); }
   return (metro?2:0)*beat+8*beat+0.8;
 }
@@ -1490,6 +1497,10 @@ function hostResume(){ if(!H.paused)return; H.paused=false;
   try{ if(H.channel) H.channel.send({type:'broadcast',event:'pause',payload:{on:false}}); }catch(_){}
 }
 function hostShowPause(show){ const pb=$('#btnPause'); if(pb) pb.style.display=show?'flex':'none'; if(!show){ const o=$('#pauseOv'); if(o) o.classList.remove('on'); } }
+function hostEndGame(){ H.paused=false; audioUnmute(); autoClear(); hostCancelAutoCorrect(); stopAudio();   // terminar partida desde la pausa → clasificación final con lo jugado
+  const o=$('#pauseOv'); if(o) o.classList.remove('on'); const pb=$('#btnPause'); if(pb) pb.textContent='⏸ Pausar';
+  try{ if(H.channel) H.channel.send({type:'broadcast',event:'pause',payload:{on:false}}); }catch(_){}
+  hostFinalPodium(); }
 /* arranca solo cada ronda: 3-2-1 → primera escucha */
 function hostAutoRun(){ if(H.phase!=='round')return; runCountdown(()=>{ if(H.phase==='round') hostListen(true); }); }
 /* recoge lo marcado en los móviles y corrige */
@@ -1520,6 +1531,8 @@ function initHost(){
   $('#btnStart').addEventListener('click',hostStartGame);
   document.body.classList.add('autoplay');   // juego automático: oculta controles manuales del iPad
   { const pb=$('#btnPause'); if(pb) pb.addEventListener('click',hostTogglePause); }
+  { const pr=$('#pauseResume'); if(pr) pr.addEventListener('click',hostResume); }
+  { const pe=$('#pauseEnd'); if(pe) pe.addEventListener('click',hostEndGame); }
   wakeOn();   // mantener el iPad encendido
   $('#hTest').addEventListener('click',()=>testAudio(H.bpm));
   $('#hListen').addEventListener('click',()=>hostListen());
@@ -1821,7 +1834,11 @@ async function hostListenArm(){ await ensureAudio(); $('#hListen').disabled=true
 }
 // ARMÓNICO Fase 2: nota central dada → secuencia de 8 sonidos (4s c/u, con carteles) → 5s de cuenta atrás
 function hostArmPhase2(){ if(H.phase!=='round') return; const rid=H.roundId; H.armPhase=2;
-  H.armP1={}; Object.keys(H.answers).forEach(id=>{ H.armP1[id]={aans:H.answers[id].aans, alias:H.answers[id].alias, ms:H.answers[id].ms}; });
+  // FASE 1 fiable: leer la última elección desde presence (estado), no de una carrera de broadcast
+  const st=(H.channel&&H.channel.presenceState)?H.channel.presenceState():{};
+  H.armP1={};
+  Object.keys(st).forEach(id=>{ const m=(st[id]&&st[id][0])||{}; if(m.aans!=null && m.rid===H.roundId) H.armP1[id]={aans:m.aans, alias:m.alias||(H.roster[id]&&H.roster[id].alias)||'—', ms:m.ms}; });
+  Object.keys(H.answers).forEach(id=>{ if(!H.armP1[id] && H.answers[id].aans!=null) H.armP1[id]={aans:H.answers[id].aans, alias:H.answers[id].alias, ms:H.answers[id].ms}; });   // respaldo por broadcast
   H.answers={}; updateCounter();
   const D=H.exercise.p2; const all=D.notes.map(n=>n.midi), g=D.given.midi, top=D.top.midi, bass=D.bass.midi;
   hostIntro('armonico');   // guiño de la espiral en la transición
@@ -1834,10 +1851,8 @@ function hostArmPhase2(){ if(H.phase!=='round') return; const rid=H.roundId; H.a
   const steps=[
     ['Suena la nota dada', ()=>a2chord([g])],
     ['Suena el acorde completo', ()=>a2chord(all)],
-    ['Suena la nota dada', ()=>a2chord([g])],
     ['Nota dada + bajo (la grave) ↓', ()=>a2chord([g,bass])],
     ['Nota dada + tiple (la aguda) ↑', ()=>a2chord([g,top])],
-    ['Suena la nota dada', ()=>a2chord([g])],
     ['Suena el acorde completo', ()=>a2chord(all)],
     ['Acorde desplegado', ()=>a2arp(all)]
   ];
@@ -2149,7 +2164,7 @@ function startPlayerRound(){
 }
 /* ---- RONDA MELÓDICA (móvil): pentagrama arriba + teclado de piano abajo ---- */
 function startPlayerRoundMel(){
-  PL.melMidis=new Array(8).fill(null); PL.melMidis[0]=PL.melFirst; PL.melCur=1; PL.sent=false; PL.roundStart=Date.now();
+  PL.melMidis=new Array(8).fill(null); PL.melMidis[0]=PL.melFirst; PL.melCur=1; PL.melPicked=false; PL.sent=false; PL.roundStart=Date.now();
   if(PL.channel) try{ PL.channel.track({alias:PL.alias, rid:PL.roundId}); }catch(_){}
   showScreen('s-player-round'); $('#s-player-round').classList.add('mel');
   const pv=$('#prHint'); if(pv) pv.textContent='1 / 8';
@@ -2157,7 +2172,7 @@ function startPlayerRoundMel(){
 }
 function mountPlayerMelStaff(){
   mountMelStaff($('#prStaff'), PL.melMidis, {given:true, interactive:true, cur:PL.melCur,
-    onSlot:(slot)=>{ if(slot===0) return; PL.melCur=slot; mountPlayerMelStaff(); }});
+    onSlot:(slot)=>{ if(slot===0) return; PL.melCur=slot; PL.melPicked=true; mountPlayerMelStaff(); }});   // tocar una nota la selecciona (dorada) para sobrescribirla
 }
 function buildPlayerPiano(){
   const box=$('#prPalette'); box.className='piano-wrap'; box.innerHTML='';
@@ -2170,8 +2185,9 @@ function buildPlayerPiano(){
 }
 function melFilledTxt(){ return (PL.melMidis.filter(x=>x!=null).length)+' / 8'; }
 function playerMelKey(midi){
-  if(PL.melCur<1||PL.melCur>7||PL.melMidis[PL.melCur]!=null){ let nx=-1; for(let k=1;k<8;k++){ if(PL.melMidis[k]==null){nx=k;break;} } if(nx>=0) PL.melCur=nx; }
-  if(PL.melCur<1||PL.melCur>7) PL.melCur=7;
+  if(PL.melPicked){ PL.melPicked=false; if(PL.melCur<1||PL.melCur>7) PL.melCur=7; }   // nota elegida a mano → se sobrescribe esa aunque tenga nota
+  else { if(PL.melCur<1||PL.melCur>7||PL.melMidis[PL.melCur]!=null){ let nx=-1; for(let k=1;k<8;k++){ if(PL.melMidis[k]==null){nx=k;break;} } if(nx>=0) PL.melCur=nx; }
+    if(PL.melCur<1||PL.melCur>7) PL.melCur=7; }
   PL.melMidis[PL.melCur]=midi; PL.sent=false;
   const piano=$('#prPalette .piano'); pianoFlash(piano,midi);
   let nx=-1; for(let k=PL.melCur+1;k<8;k++){ if(PL.melMidis[k]==null){nx=k;break;} }
@@ -2443,7 +2459,7 @@ function buildArmUI(){
   box.className='arm-opts'+(PL.armPro?' pro':''); box.innerHTML='';
   pool.forEach(id=>{ const t=ARM_TIPOS[id]; const b=document.createElement('button'); b.className='arm-opt'+(PL.armSel===id?' on':''); b.dataset.a=id;
     b.innerHTML='<span class="arm-opt-l">'+t.name+'</span><span class="arm-opt-sym">'+(t.sym||'')+'</span>';
-    b.onclick=()=>{ PL.armSel=id; buildArmUI(); sfx('place'); }; box.appendChild(b); });
+    b.onclick=()=>{ PL.armSel=id; buildArmUI(); sfx('place'); try{ if(PL.channel) PL.channel.track({alias:PL.alias, rid:PL.roundId, aans:id, ms:Date.now()-PL.roundStart}); }catch(_){} }; box.appendChild(b); });   // registra la elección de fase 1 al instante (fiable)
   const send=$('#armSend'); if(send) send.onclick=playerSend;
 }
 const A2_WHEEL=['Si','La','Sol','Fa','Mi','Re','Do'];
@@ -2571,11 +2587,11 @@ function countUp(el,to,dur,suffix,from){ if(!el)return; from=from||0; const t0=p
 // sonido de conteo: tics agudos y secos que martillean durante el recuento
 function countHammer(dur){ try{ const c=actx(),t0=c.currentTime; const n=Math.max(5,Math.round(dur/85)); for(let i=0;i<n;i++){ const t=t0+(i*dur/1000)/n; tone(1500,t,.04,'square',.09); tone(2250,t+.004,.028,'square',.045); } }catch(e){} }
 function hypeCount(i,isGo){ const c=actx(),t=c.currentTime;
-  if(isGo){ [523,659,784,1047].forEach((f,k)=>tone(f,t+k*0.05,.3,'sawtooth',.2)); noiseSweep(t,.42,.16); tone(120,t,.5,'sine',.3); }
+  if(isGo){ [523,659,784,1047].forEach((f,k)=>tone(f,t+k*0.05,.3,'sawtooth',.11)); noiseSweep(t,.42,.085); tone(120,t,.5,'sine',.15); }
   else { const base=[311,392,523][i]||311;
-    tone(base,t,.2,'sawtooth',.17); tone(base*2,t+.01,.16,'triangle',.11);
+    tone(base,t,.2,'sawtooth',.095); tone(base*2,t+.01,.16,'triangle',.06);
     const o=c.createOscillator(),g=c.createGain(); o.type='sawtooth'; o.frequency.setValueAtTime(base*0.6,t); o.frequency.exponentialRampToValueAtTime(base*1.5,t+.18);
-    g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.10,t+.02); g.gain.exponentialRampToValueAtTime(.0001,t+.2); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+.22); } }
+    g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.055,t+.02); g.gain.exponentialRampToValueAtTime(.0001,t+.2); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+.22); } }
 function runCountdown(done){ const ov=$('#countdown'); ov.classList.add('on'); const seq=['3','2','1','¡YA!']; let i=0; ensureAudio();
   (function step(){ if(H.paused){ setTimeout(step,250); return; } if(i>=seq.length){ ov.classList.remove('on'); done&&done(); return; } ov.innerHTML='<div class="n'+(i===3?' go':'')+'">'+seq[i]+'</div>'; hypeCount(i, i>=3); i++; setTimeout(step, i<seq.length?600:520); })(); }
 function confettiBurst(){ const cv=$('#confetti'); if(!cv)return; cv.classList.add('on'); const ctx=cv.getContext('2d'); cv.width=innerWidth; cv.height=innerHeight;

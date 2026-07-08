@@ -288,6 +288,47 @@
   .cad-opt.on{background:linear-gradient(180deg,var(--gold),var(--gold2));border-color:transparent;color:#2a2005;box-shadow:0 4px 16px rgba(212,175,55,.4)}
   .cad-opt-rn{position:absolute;top:6px;right:10px;font-size:12px;font-weight:700;color:var(--muted2);opacity:.55;letter-spacing:.02em}
   .cad-opt.on .cad-opt-rn{color:#5a4708;opacity:.8}
+  /* MODOS (móvil): tarjetas de modo; la receta aparece (discreta) en la 2ª escucha */
+  #s-player-modos{flex-direction:column;gap:8px;height:100dvh;padding:10px max(12px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+  #s-player-modos .mel-send{flex:0 0 auto;height:clamp(50px,11vh,64px)}
+  .mode-opts{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:9px;min-height:0}
+  @media(min-width:560px){.mode-opts{grid-template-columns:repeat(4,1fr)}}
+  .mode-opt{position:relative;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);color:var(--ink);border-radius:13px;font-weight:800;cursor:pointer;padding:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.12;gap:3px}
+  .mode-opt-l{font-size:clamp(14px,2.6vw,19px)}
+  .mode-opt.on{background:linear-gradient(180deg,var(--gold),var(--gold2));border-color:transparent;color:#2a2005;box-shadow:0 4px 16px rgba(212,175,55,.4)}
+  .mode-opt-recipe{font-size:clamp(11px,2.2vw,14px);font-weight:800;color:var(--gold-soft);opacity:0;transition:opacity .5s ease;letter-spacing:.02em;min-height:1.05em}
+  .mode-opts.show-recipe .mode-opt-recipe{opacity:.92}
+  .mode-opt.on .mode-opt-recipe{color:#5a4708;opacity:.95}
+  .mo-up,.mo-dn{font-weight:900}
+  /* ARMÓNICO Fase 1 (móvil): tarjetas de tipo de acorde */
+  #s-player-armonico{flex-direction:column;gap:8px;height:100dvh;padding:10px max(12px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+  #s-player-armonico .mel-send{flex:0 0 auto;height:clamp(50px,11vh,64px)}
+  .arm-opts{flex:1;display:grid;grid-template-columns:repeat(5,1fr);gap:8px;min-height:0}
+  @media(max-width:600px){.arm-opts{grid-template-columns:repeat(3,1fr)}}
+  .arm-opt{position:relative;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);color:var(--ink);border-radius:12px;font-weight:800;cursor:pointer;padding:6px 5px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.1;gap:3px}
+  .arm-opt-l{font-size:clamp(11px,1.9vw,15px)}
+  .arm-opt-sym{font-size:clamp(14px,2.6vw,20px);font-weight:900;color:var(--gold-soft);min-height:1em}
+  .arm-opt.on{background:linear-gradient(180deg,var(--gold),var(--gold2));border-color:transparent;color:#2a2005;box-shadow:0 4px 16px rgba(212,175,55,.4)}
+  .arm-opt.on .arm-opt-sym{color:#5a4708}
+  /* ARMÓNICO Fase 2 (iPad + móvil) */
+  .arm2-host{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:var(--paper);border-radius:14px;padding:16px}
+  .arm2-cap{font-size:clamp(17px,2.5vw,26px);font-weight:800;color:#241a06;text-align:center;min-height:1.3em}
+  .arm2-staff{width:min(540px,92%);height:150px}
+  .arm2-rev{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--paper);border-radius:14px;padding:12px}
+  .arm2-revcap{font-size:14px;font-weight:700;color:#5a4708;text-align:center}
+  #s-player-armonico2{flex-direction:column;gap:7px;height:100dvh;padding:8px max(12px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+  .arm2-top{flex:0 0 33%;background:var(--paper);border-radius:12px;overflow:hidden}
+  .arm2-pstaff{width:100%;height:100%}
+  .arm2-sel{flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;min-height:0}
+  .a2col{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:7px 5px;min-height:0}
+  .a2h{font-size:11px;letter-spacing:.07em;color:var(--muted2);font-weight:800}
+  .a2accs{display:flex;gap:6px}
+  .a2accs button{width:34px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);font-size:16px;font-weight:800}
+  .a2accs button.on{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a2005;border-color:transparent}
+  .a2inv{display:flex;flex-direction:column;gap:6px;width:100%;flex:1;justify-content:center}
+  .a2inv button{border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);font-size:15px;font-weight:800;padding:8px 6px}
+  .a2inv button.on{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a2005;border-color:transparent}
+  #s-player-armonico2 .mel-send{flex:0 0 auto;height:clamp(46px,10vh,58px)}
   #s-player-cadencias .mel-send{flex:0 0 auto;height:clamp(50px,11vh,64px)}
 
   .rotate-hint{display:none}
@@ -355,6 +396,19 @@
   .pscore{animation:scorePop .55s cubic-bezier(.2,1.6,.4,1)}
   @keyframes scorePop{from{transform:scale(.35);opacity:0}to{transform:scale(1);opacity:1}}
   .big-emoji{animation:bob 2.4s ease-in-out infinite}
+  .hero-spiral{width:clamp(90px,15vh,122px);margin:2px auto 6px;display:block;filter:drop-shadow(0 5px 18px rgba(0,0,0,.55))}
+  .hero-spiral svg{width:100%;height:auto;display:block;transform-origin:50% 50%;animation:spinSlow 26s linear infinite}
+  @keyframes spinSlow{to{transform:rotate(360deg)}}
+  /* giro breve de la espiral al cambiar de pantalla/ejercicio */
+  .spin-cue{animation:spinCue 1.15s cubic-bezier(.34,1.2,.4,1) both}
+  @keyframes spinCue{0%{transform:rotate(-42deg) scale(.9);opacity:.4}100%{transform:rotate(0) scale(1);opacity:1}}
+  .ex-intro-spiral{width:78px;margin:0 auto 12px}
+  .ex-intro-spiral svg{width:100%;height:auto;display:block;filter:drop-shadow(0 4px 14px rgba(0,0,0,.5))}
+  .ex-intro.on .ex-intro-spiral svg{animation:spinIntro 1.5s cubic-bezier(.2,.9,.3,1) both}
+  @keyframes spinIntro{from{transform:rotate(-430deg) scale(.5);opacity:0}55%{opacity:1}to{transform:rotate(0) scale(1);opacity:1}}
+  .dice-row{display:flex;align-items:center;justify-content:center;gap:9px;font-size:13.5px;font-weight:700;color:var(--muted);cursor:pointer;user-select:none;margin:2px 0 4px}
+  .dice-row input{width:17px;height:17px;accent-color:var(--gold);cursor:pointer}
+  .dice-ico{font-size:18px}
   @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
   /* brillo en botones dorados */
   .btn-gold,.btn-listen,.btn-send{position:relative;overflow:hidden}
@@ -385,7 +439,7 @@
 <body>
 <canvas class="fx-confetti" id="confetti"></canvas>
 <div class="countdown" id="countdown"></div>
-<div id="exIntro" class="ex-intro"><div class="ex-intro-inner"><div class="ex-intro-kick">a continuación</div><div class="ex-intro-name"></div><div class="ex-intro-sub"></div></div></div>
+<div id="exIntro" class="ex-intro"><div class="ex-intro-inner"><div class="ex-intro-spiral" aria-hidden="true"><svg viewBox="0 0 200 200"><defs><linearGradient id="heroSp2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7e6a8"/><stop offset="0.5" stop-color="#d4af37"/><stop offset="1" stop-color="#a9801d"/></linearGradient></defs><path d="M 100.00 158.00 L 90.35 157.51 L 80.85 155.42 L 71.79 151.77 L 63.41 146.63 L 55.96 140.14 L 49.66 132.47 L 44.69 123.82 L 41.20 114.40 L 39.31 104.49 L 39.08 94.36 L 40.55 84.27 L 43.69 74.51 L 48.42 65.36 L 54.64 57.08 L 62.18 49.91 L 70.84 44.06 L 80.41 39.70 L 90.61 36.98 L 101.18 35.98 L 111.82 36.74 L 122.24 39.28 L 132.15 43.52 L 141.25 49.37 L 149.31 56.69 L 156.06 65.29 L 161.33 74.93 L 164.95 85.36 L 166.79 96.29 L 167.03 101.86 L 166.11 112.99 L 163.34 123.87 L 158.79 134.18 L 152.56 143.65 L 144.82 151.99 L 135.76 158.96 L 125.62 164.36 L 114.68 168.03 L 103.23 169.84 L 91.58 169.72 L 80.07 167.67 L 69.00 163.72 L 58.69 157.97 L 49.44 150.56 L 41.51 141.67 L 35.13 131.56 L 30.50 120.47 L 27.75 108.72 L 26.99 96.62 L 28.25 84.52 L 31.50 72.73 L 36.69 61.61 L 43.68 51.45 L 52.29 42.55 L 62.30 35.17 L 73.44 29.53 L 85.42 25.79 L 97.90 24.08 L 110.54 24.47 L 122.99 26.95 L 134.91 31.48 L 145.96 37.95 L 155.83 46.20 L 164.23 56.00 L 170.91 67.11 L 175.69 79.22 L 178.40 92.00 L 178.96 105.11 L 177.33 118.19 L 173.55 130.86 L 167.69 142.78 L 159.91 153.61 L 150.41 163.04 L 139.43 170.79 L 127.27 176.64 L 114.26 180.41 L 100.76 181.98 L 87.13 181.29 L 73.74 178.33 L 60.99 173.19 L 49.22 165.97 L 38.76 156.87 L 29.93 146.12 L 22.97 134.01 L 18.09 120.87 L 15.45 107.05 L 15.00 100.00" fill="none" stroke="url(#heroSp2)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="100" cy="158" r="5" fill="#f7e6a8"/></svg></div><div class="ex-intro-kick">a continuación</div><div class="ex-intro-name"></div><div class="ex-intro-sub"></div></div></div>
 <button id="exitBtn" class="exit-btn" title="Salir del juego">✕</button>
 <div id="bigRemind" class="big-remind"><div class="big-remind-txt">Pulsa ENVIAR<br>si no lo has hecho<span id="bigRemindCount"></span></div></div>
 <div id="exitConfirm" class="exit-confirm"><div class="exit-box"><div class="exit-q">¿Seguro que quieres volver a la pantalla de inicio?</div><div class="exit-btns"><button id="exitYes" class="btn-gold">Sí, salir</button><button id="exitNo">Cancelar</button></div></div></div>
@@ -393,7 +447,7 @@
 
 <!-- ========================= INICIO (portada) ========================= -->
 <div class="screen" id="s-landing">
-  <div class="big-emoji">🎵</div>
+  <div class="hero-spiral" aria-hidden="true"><svg viewBox="0 0 200 200"><defs><linearGradient id="heroSp" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7e6a8"/><stop offset="0.5" stop-color="#d4af37"/><stop offset="1" stop-color="#a9801d"/></linearGradient></defs><path d="M 100.00 158.00 L 95.17 157.96 L 90.35 157.51 L 85.56 156.67 L 80.85 155.42 L 76.25 153.78 L 71.79 151.77 L 67.50 149.38 L 63.41 146.63 L 59.56 143.55 L 55.96 140.14 L 52.66 136.44 L 49.66 132.47 L 46.99 128.25 L 44.69 123.82 L 42.75 119.19 L 41.20 114.40 L 40.05 109.50 L 39.31 104.49 L 38.98 99.44 L 39.08 94.36 L 39.61 89.29 L 40.55 84.27 L 41.92 79.33 L 43.69 74.51 L 45.86 69.84 L 48.42 65.36 L 51.35 61.10 L 54.64 57.08 L 58.25 53.35 L 62.18 49.91 L 66.38 46.81 L 70.84 44.06 L 75.53 41.69 L 80.41 39.70 L 85.45 38.13 L 90.61 36.98 L 95.87 36.26 L 101.18 35.98 L 106.51 36.14 L 111.82 36.74 L 117.08 37.79 L 122.24 39.28 L 127.28 41.19 L 132.15 43.52 L 136.82 46.25 L 141.25 49.37 L 145.43 52.86 L 149.31 56.69 L 152.86 60.84 L 156.06 65.29 L 158.90 69.99 L 161.33 74.93 L 163.35 80.06 L 164.95 85.36 L 166.10 90.78 L 166.79 96.29 L 167.03 101.86 L 166.80 107.44 L 166.11 112.99 L 164.95 118.48 L 163.34 123.87 L 161.28 129.11 L 158.79 134.18 L 155.88 139.04 L 152.56 143.65 L 148.87 147.97 L 144.82 151.99 L 140.44 155.66 L 135.76 158.96 L 130.81 161.87 L 125.62 164.36 L 120.23 166.42 L 114.68 168.03 L 109.00 169.17 L 103.23 169.84 L 97.41 170.02 L 91.58 169.72 L 85.79 168.94 L 80.07 167.67 L 74.46 165.93 L 69.00 163.72 L 63.73 161.07 L 58.69 157.97 L 53.92 154.46 L 49.44 150.56 L 45.30 146.29 L 41.51 141.67 L 38.11 136.75 L 35.13 131.56 L 32.59 126.12 L 30.50 120.47 L 28.88 114.66 L 27.75 108.72 L 27.12 102.69 L 26.99 96.62 L 27.36 90.55 L 28.25 84.52 L 29.63 78.56 L 31.50 72.73 L 33.86 67.07 L 36.69 61.61 L 39.97 56.39 L 43.68 51.45 L 47.80 46.82 L 52.29 42.55 L 57.14 38.65 L 62.30 35.17 L 67.75 32.12 L 73.44 29.53 L 79.35 27.41 L 85.42 25.79 L 91.61 24.68 L 97.90 24.08 L 104.22 24.01 L 110.54 24.47 L 116.81 25.45 L 122.99 26.95 L 129.04 28.97 L 134.91 31.48 L 140.57 34.48 L 145.96 37.95 L 151.06 41.86 L 155.83 46.20 L 160.23 50.92 L 164.23 56.00 L 167.80 61.41 L 170.91 67.11 L 173.55 73.06 L 175.69 79.22 L 177.31 85.55 L 178.40 92.00 L 178.95 98.54 L 178.96 105.11 L 178.42 111.68 L 177.33 118.19 L 175.70 124.60 L 173.55 130.86 L 170.87 136.94 L 167.69 142.78 L 164.03 148.35 L 159.91 153.61 L 155.36 158.52 L 150.41 163.04 L 145.08 167.14 L 139.43 170.79 L 133.48 173.96 L 127.27 176.64 L 120.85 178.79 L 114.26 180.41 L 107.55 181.47 L 100.76 181.98 L 93.93 181.92 L 87.13 181.29 L 80.38 180.09 L 73.74 178.33 L 67.27 176.03 L 60.99 173.19 L 54.96 169.83 L 49.22 165.97 L 43.81 161.64 L 38.76 156.87 L 34.13 151.68 L 29.93 146.12 L 26.20 140.22 L 22.97 134.01 L 20.26 127.55 L 18.09 120.87 L 16.49 114.02 L 15.45 107.05 L 15.00 100.00" fill="none" stroke="url(#heroSp)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="100" cy="158" r="4" fill="#f7e6a8"/></svg></div>
   <h1 class="brand wm" style="font-size:36px"><span class="pd"><span class="pre">Pre</span><span class="dict">Dict</span></span><span class="pro">PRO</span><span class="carr">Carrusel</span></h1>
   <div class="kick">educación auditiva · en directo</div>
   <div class="landing-box">
@@ -435,9 +489,11 @@
       <div class="exrow" data-x="melodico"><span class="exname">Melódico</span><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-melodico">1</b><button class="st" data-d="1">+</button></div></div>
       <div class="exrow" data-x="toncom"><span class="exname">TonCom</span><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-toncom">1</b><button class="st" data-d="1">+</button></div></div>
       <div class="exrow" data-x="cadencias"><span class="exname">Cadencias</span><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-cadencias">1</b><button class="st" data-d="1">+</button></div></div>
-      <div class="exrow locked"><span class="exname">Armonía</span><span class="soon">pronto</span></div>
-      <div class="exrow locked"><span class="exname">Modos</span><span class="soon">pronto</span></div>
+      <div class="exrow" data-x="armonico"><span class="exname">Armónico</span><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-armonico">1</b><button class="st" data-d="1">+</button></div></div>
+      <div class="exrow" data-x="modos"><span class="exname">Modos</span><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-modos">1</b><button class="st" data-d="1">+</button></div></div>
     </div>
+    <label class="dice-row"><input type="checkbox" id="diceRandom" checked><span class="dice-ico">🎲</span> <span>Orden aleatorio de ejercicios</span></label>
+    <label class="dice-row"><input type="checkbox" id="armPro"><span>Armónico <b style="color:var(--gold-soft)">PRO</b> · 10 tipos de acorde</span></label>
     <button class="btn-gold" id="btnStart" disabled>Empezar partida</button>
   </div>
   <div class="joinline">¿Alumno sin cámara? Código:
@@ -554,6 +610,37 @@
   <div class="cad-title">¿Qué cadencia suena?</div>
   <div class="cad-opts" id="cadOpts"></div>
   <button class="mel-send" id="cadSend">Enviar</button>
+</div>
+
+<!-- ========================= PLAYER · ARMÓNICO (Fase 1) ========================= -->
+<div class="screen" id="s-player-armonico">
+  <div class="rotate-hint"><div class="big">📱↻</div><div style="font-size:17px;font-weight:800;color:var(--ink)">Gira el móvil</div><div>Se juega en horizontal.</div></div>
+  <span class="pr-you">tú: <b id="armAlias">—</b></span>
+  <div class="cad-title">¿Qué tipo de acorde suena?</div>
+  <div class="arm-opts" id="armOpts"></div>
+  <button class="mel-send" id="armSend">Enviar</button>
+</div>
+
+<!-- ========================= PLAYER · ARMÓNICO (Fase 2) ========================= -->
+<div class="screen" id="s-player-armonico2">
+  <div class="rotate-hint"><div class="big">📱↻</div><div style="font-size:17px;font-weight:800;color:var(--ink)">Gira el móvil</div><div>Se juega en horizontal.</div></div>
+  <span class="pr-you">tú: <b id="arm2Alias">—</b> · construye el acorde</span>
+  <div class="arm2-top"><div class="arm2-pstaff" id="arm2pStaff"></div></div>
+  <div class="arm2-sel">
+    <div class="a2col"><div class="a2h">TIPLE ↑</div><div class="tc-spin" id="arm2Tiple"></div><div class="a2accs"><button class="a2t-acc" data-a="b">♭</button><button class="a2t-acc" data-a="#">♯</button></div></div>
+    <div class="a2col"><div class="a2h">BAJO ↓</div><div class="tc-spin" id="arm2Bajo"></div><div class="a2accs"><button class="a2b-acc" data-a="b">♭</button><button class="a2b-acc" data-a="#">♯</button></div></div>
+    <div class="a2col"><div class="a2h">INVERSIÓN</div><div class="a2inv" id="arm2Inv"><button data-i="0">E.F.</button><button data-i="1">6</button><button data-i="2">6/4</button></div></div>
+  </div>
+  <button class="mel-send" id="arm2Send">Enviar</button>
+</div>
+
+<!-- ========================= PLAYER · MODOS ========================= -->
+<div class="screen" id="s-player-modos">
+  <div class="rotate-hint"><div class="big">📱↻</div><div style="font-size:17px;font-weight:800;color:var(--ink)">Gira el móvil</div><div>Se juega en horizontal.</div></div>
+  <span class="pr-you">tú: <b id="modAlias">—</b></span>
+  <div class="cad-title">¿Qué modo suena?</div>
+  <div class="mode-opts" id="modOpts"></div>
+  <button class="mel-send" id="modSend">Enviar</button>
 </div>
 
 <!-- ========================= PLAYER · SENT ========================= -->
@@ -1282,7 +1369,7 @@ function toggleFS(){ if(_canFS){ if(_isFS()){ (document.exitFullscreen||document
    ========================================================================= */
 let H={code:null, channel:null, roster:{}, answers:{}, players:{}, phase:'lobby',
        exercise:null, bpm:72, metro:true, listens:2, compMode:'random', exType:'ritmico', melSpeed:'Normal', roundId:0,
-       setlist:{ritmico:1, melodico:1, toncom:1, cadencias:1}, queue:[], qIndex:0, gameDone:false};
+       setlist:{ritmico:1, melodico:1, toncom:1, cadencias:1, modos:1, armonico:1}, queue:[], qIndex:0, gameDone:false};
 
 function initHost(){
   document.addEventListener('pointerdown',()=>ensureAudio(),{once:true});
@@ -1328,6 +1415,9 @@ function hostSyncRoster(){
       else if(meta.mans) H.answers[id]={midis:meta.mans, ms:meta.ms, alias:meta.alias||'—'};
       else if(meta.tans) H.answers[id]={tans:meta.tans, ms:meta.ms, alias:meta.alias||'—'};
       else if(meta.cans) H.answers[id]={cans:meta.cans, ms:meta.ms, alias:meta.alias||'—'};
+      else if(meta.mos) H.answers[id]={mos:meta.mos, ms:meta.ms, alias:meta.alias||'—'};
+      else if(meta.aans) H.answers[id]={aans:meta.aans, ms:meta.ms, alias:meta.alias||'—'};
+      else if(meta.atiple!=null) H.answers[id]={atiple:meta.atiple, abajo:meta.abajo, ainv:meta.ainv, ms:meta.ms, alias:meta.alias||'—'};
     }
   });
   const nuevos=Object.keys(H.roster).some(id=>!prev.has(id));
@@ -1341,10 +1431,13 @@ function renderRoster(){
   else box.innerHTML=ids.map(id=>'<span class="chip"><span class="dot"></span>'+escapeHtml(H.roster[id].alias)+'</span>').join('');
   updateStartBtn();
 }
-function totalRounds(){ return (H.setlist.ritmico||0)+(H.setlist.melodico||0)+(H.setlist.toncom||0)+(H.setlist.cadencias||0); }
+function totalRounds(){ return (H.setlist.ritmico||0)+(H.setlist.melodico||0)+(H.setlist.toncom||0)+(H.setlist.cadencias||0)+(H.setlist.modos||0)+(H.setlist.armonico||0); }
 function updateStartBtn(){ const b=$('#btnStart'); if(!b)return; const ok=Object.keys(H.roster).length>0 && totalRounds()>0; b.disabled=!ok;
   b.textContent = totalRounds()>0 ? ('Empezar partida · '+totalRounds()+' ronda'+(totalRounds()>1?'s':'')) : 'Añade alguna ronda'; }
-function buildQueue(){ const q=[]; ['ritmico','melodico','toncom','cadencias'].forEach(x=>{ for(let i=0;i<(H.setlist[x]||0);i++) q.push(x); }); return q; }
+function shuffleArr(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i];a[i]=a[j];a[j]=t; } return a; }
+function buildQueue(){ const types=['ritmico','melodico','toncom','cadencias','modos','armonico'];
+  const dr=document.getElementById('diceRandom'); const order=(!dr||dr.checked)?shuffleArr(types.slice()):types;   // 🎲 tipos en orden aleatorio; rondas del mismo tipo van seguidas
+  const q=[]; order.forEach(x=>{ for(let i=0;i<(H.setlist[x]||0);i++) q.push(x); }); return q; }
 function hostStartGame(){ H.queue=buildQueue(); if(!H.queue.length) return; H.qIndex=0; H.gameDone=false; H.players={}; H.answers={}; hostStartRound(); }
 // botón único "Continuar": ranking del ejercicio → ranking general (animación) → siguiente ejercicio
 function hostContinue(){
@@ -1358,15 +1451,15 @@ function updateContinueLabel(){ const b=$('#btnAgain'); if(!b)return;
 function hostRevealButtons(){ H.rankMode='exercise'; updateContinueLabel(); }
 function updateRoundProgress(){ const p=$('#hProg'); if(p) p.textContent = H.queue.length? ('Ronda '+(H.qIndex+1)+' / '+H.queue.length) : ''; }
 // INTRO grande del ejercicio, que se esfuma dejando ver la interfaz
-function exDisplayName(x){ return {ritmico:'Rítmico', melodico:'Melódico', toncom:'TonCom', cadencias:'Cadencias'}[x]||x; }
-function exSubtitle(x){ return {ritmico:'Escucha y reconstruye el ritmo', melodico:'Escribe la melodía que oigas', toncom:'Identifica tonalidad, armadura y compás', cadencias:'Identifica la cadencia de oído'}[x]||''; }
+function exDisplayName(x){ return {ritmico:'Rítmico', melodico:'Melódico', toncom:'TonCom', cadencias:'Cadencias', modos:'Modos', armonico:'Armónico'}[x]||x; }
+function exSubtitle(x){ return {ritmico:'Escucha y reconstruye el ritmo', melodico:'Escribe la melodía que oigas', toncom:'Identifica tonalidad, armadura y compás', cadencias:'Identifica la cadencia de oído', modos:'Identifica el modo de oído', armonico:'Identifica el acorde y constrúyelo'}[x]||''; }
 function hostIntro(x, done){ const ov=$('#exIntro'); if(!ov){ done&&done(); return; }
   ov.querySelector('.ex-intro-name').textContent=exDisplayName(x);
   ov.querySelector('.ex-intro-sub').textContent=exSubtitle(x);
   ov.classList.remove('out'); ov.classList.add('on'); try{sfx('go');}catch(_){}
   setTimeout(()=>ov.classList.add('out'), 1500);
   setTimeout(()=>{ ov.classList.remove('on','out'); done&&done(); }, 2050); }
-function hostOnAnswer(p){ if(H.phase!=='round')return; H.answers[p.id]={placedIds:p.placedIds,midis:p.midis,tans:p.tans,cans:p.cans,ms:p.ms,alias:p.alias};
+function hostOnAnswer(p){ if(H.phase!=='round')return; H.answers[p.id]={placedIds:p.placedIds,midis:p.midis,tans:p.tans,cans:p.cans,mos:p.mos,aans:p.aans,atiple:p.atiple,abajo:p.abajo,ainv:p.ainv,ms:p.ms,alias:p.alias};
   if(!H.players[p.id])H.players[p.id]={alias:p.alias,points:0}; updateCounter(); }
 function updateCounter(){
   const conn=Object.keys(H.roster).length, resp=Object.keys(H.answers).length;
@@ -1379,6 +1472,97 @@ function hostStartRound(){
   hostBeginRound();          // monta la interfaz de la ronda…
   hostIntro(H.exType);       // …y el título grande la tapa y se esfuma dejándola al descubierto
 }
+/* =========================================================================
+   MOTOR MODOS  (de LMPRO/modosathome · dos frases, adivina el modo)
+   ========================================================================= */
+const MODE_SEMIS={jonico:[0,2,4,5,7,9,11],dorico:[0,2,3,5,7,9,10],frigio:[0,1,3,5,7,8,10],lidio:[0,2,4,6,7,9,11],mixolidio:[0,2,4,5,7,9,10],eolico:[0,2,3,5,7,8,10],locrio:[0,1,3,5,6,8,10]};
+const MODOS_ALL=['jonico','dorico','frigio','lidio','mixolidio','eolico','locrio'];
+const MODE_LABEL={jonico:'Jónico',dorico:'Dórico',frigio:'Frigio',lidio:'Lidio',mixolidio:'Mixolidio',eolico:'Eólico',locrio:'Locrio'};
+const MODE_CHAR_DEG={jonico:7,dorico:6,frigio:2,lidio:4,mixolidio:7,eolico:6,locrio:5};
+const MODE_CHAR_DEG2={locrio:2};
+const MODE_RECIPE={jonico:'M',dorico:'m 6↑',frigio:'m 2↓',lidio:'M 4↑',mixolidio:'M 7↓',eolico:'m',locrio:'m 2↓ 5↓'};
+function modosFatArrows(s){ return String(s).replace(/↑/g,'<span class="mo-up">↑</span>').replace(/↓/g,'<span class="mo-dn">↓</span>'); }
+function modBuildScale(tonicMidi,mode,lo,hi){ const steps=MODE_SEMIS[mode],out=[]; for(let oct=-1;oct<=2;oct++){ for(let i=0;i<7;i++){ const midi=tonicMidi+steps[i]+12*oct; if(midi>=lo&&midi<=hi) out.push({midi,deg:i+1}); } } out.sort((a,b)=>a.midi-b.midi); return out; }
+function modDegW(mode,deg){ let w=1.0; if(deg===1)w+=2.0; if(deg===5)w+=0.7; if(deg===MODE_CHAR_DEG[mode])w+=1.8; if(MODE_CHAR_DEG2[mode]===deg)w+=1.2; return w; }
+function modPhrase(scale,mode,tonicMidi,len,startIdx){ const charDeg=MODE_CHAR_DEG[mode]; const seq=[]; let idx=startIdx; seq.push(scale[idx]); let charPlaced=false;
+  for(let n=1;n<len-1;n++){ const cands=[]; for(let d=-3;d<=3;d++){ if(d===0)continue; const j=idx+d; if(j<0||j>=scale.length)continue; const step=Math.abs(d); let w=step===1?3.0:step===2?1.1:0.4; w*=modDegW(mode,scale[j].deg); if(!charPlaced&&scale[j].deg===charDeg)w*=(n>len-4?4.0:1.8); if(Math.abs(scale[j].midi-tonicMidi)>10)w*=0.3; cands.push({j,w}); }
+    const tot=cands.reduce((a,c)=>a+c.w,0); let r=Math.random()*tot,ch=cands[cands.length-1]; for(const c of cands){ r-=c.w; if(r<=0){ch=c;break;} } idx=ch.j; if(scale[idx].deg===charDeg)charPlaced=true; seq.push(scale[idx]); }
+  const lastMidi=seq[seq.length-1].midi; const tonics=scale.filter(s=>s.deg===1); const endT=tonics.reduce((b,s)=>Math.abs(s.midi-lastMidi)<Math.abs(b.midi-lastMidi)?s:b,tonics[0]); seq.push(endT); return seq; }
+function genModos(){ const mode=pick(MODOS_ALL); const tonicMidi=60+Math.floor(Math.random()*12); const lo=tonicMidi-2,hi=tonicMidi+12; const scale=modBuildScale(tonicMidi,mode,lo,hi);
+  let ti=scale.findIndex(s=>s.midi===tonicMidi); if(ti<0)ti=scale.findIndex(s=>s.deg===1); const P=7;
+  const f1=modPhrase(scale,mode,tonicMidi,P,ti); const e1=scale.findIndex(s=>s.midi===f1[f1.length-1].midi); const f2=modPhrase(scale,mode,tonicMidi,P,e1>=0?e1:ti);
+  const REST={rest:true}, mk=s=>({midi:s.midi,rest:false}); const notes=[...f1.map(mk),REST,...f2.map(mk),REST];
+  return {type:'modos', mode, tonicMidi, notes}; }
+async function playModos(notes){ const c=actx(); if(c.state==='suspended')await c.resume(); const tempo=92,beat=60/tempo,dur=beat*0.92,t0=c.currentTime+0.15;
+  notes.forEach((nt,k)=>{ if(!nt.rest) pianoTone(nt.midi, t0+k*beat, dur); }); return notes.length*beat+0.3; }
+
+/* =========================================================================
+   MOTOR ARMÓNICO — Fase 1: identificar el tipo de acorde (símbolos tal cual teoriapro)
+   (Fase 2 —construir tiple/bajo/inversión— se añade en la siguiente tanda)
+   ========================================================================= */
+const ARM_TIPOS={
+  may:{name:'Mayor',sym:'',i3:4,i5:7}, men:{name:'menor',sym:'−',i3:3,i5:7},
+  aum:{name:'Aumentado',sym:'+',i3:4,i5:8}, dis:{name:'Disminuido',sym:'5̶',i3:3,i5:6},
+  sus4:{name:'Cuarta suspendida',sym:'sus4',i3:5,i5:7},
+  d7:{name:'Séptima de dominante',sym:'7D',i3:4,i5:7,i7:10}, m7:{name:'menor séptima',sym:'−7',i3:3,i5:7,i7:10},
+  maj7:{name:'Mayor séptima',sym:'△',i3:4,i5:7,i7:11}, dim7:{name:'Séptima disminuida',sym:'7̶',i3:3,i5:6,i7:9},
+  m7b5:{name:'Semidisminuido',sym:'∅',i3:3,i5:6,i7:10}
+};
+const ARM_BASICO=['may','men','aum','dis','d7'];
+const ARM_PRO=['may','men','aum','dis','sus4','d7','m7','maj7','dim7','m7b5'];
+function armGen(pro){ const pool=pro?ARM_PRO:ARM_BASICO; const tipo=pick(pool); const t=ARM_TIPOS[tipo];
+  const root=55+Math.floor(Math.random()*13); const notes=[root,root+t.i3,root+t.i5]; if(t.i7!=null)notes.push(root+t.i7);
+  return {type:'armonico', pro:!!pro, tipo, root, notes}; }
+function armPlayBlock(notes){ const c=actx(); const t0=c.currentTime+0.1; notes.forEach(m=>pianoTone(m,t0,1.7)); return 1.8; }
+function armPlayArp(notes){ const c=actx(); const t0=c.currentTime+0.1; const b=0.36; notes.forEach((m,i)=>pianoTone(m,t0+i*b,0.55)); return notes.length*b+0.4; }
+
+/* ---- ARMÓNICO Fase 2: tríada con nota central dada (construir tiple/bajo/inversión) ---- */
+const A2_LETTERS=['C','D','E','F','G','A','B'];
+const A2_LPC={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+const A2_SOLF={C:'Do',D:'Re',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
+const A2_TRI={may:{i3:4,i5:7,l3:2,label:'Mayor'},men:{i3:3,i5:7,l3:2,label:'menor'},aum:{i3:4,i5:8,l3:2,label:'Aumentado'},dis:{i3:3,i5:6,l3:2,label:'Disminuido'},sus4:{i3:5,i5:7,l3:3,label:'Cuarta suspendida'}};
+const A2_LIST=['may','men','aum','dis','sus4'];
+const A2_INV=['E.F.','6','6/4'];
+function a2acc(letter,pc){ let d=(((pc-A2_LPC[letter])%12)+12)%12; if(d>6)d-=12; return d===0?'':d===1?'#':d===-1?'b':d===2?'##':d===-2?'bb':null; }
+function a2semis(a){ return a==='#'?1:a==='b'?-1:a==='##'?2:a==='bb'?-2:0; }
+function a2oct(m,letter,acc){ return Math.round((m-a2semis(acc)-A2_LPC[letter])/12)-1; }
+function a2spell(li,pc){ const letter=A2_LETTERS[((li%7)+7)%7], acc=a2acc(letter,pc); return acc==null?null:{letter,acc,pc}; }
+function a2solf(sp){ return A2_SOLF[sp.letter]+(sp.acc==='#'?'♯':sp.acc==='b'?'♭':''); }
+function genArm2(){
+  for(let k=0;k<300;k++){ const type=pick(A2_LIST), t=A2_TRI[type];
+    const rIdx=Math.floor(Math.random()*7), rL=A2_LETTERS[rIdx], rPc=A2_LPC[rL];
+    const s1={letter:rL,acc:'',pc:rPc}, s3=a2spell(rIdx+t.l3,(rPc+t.i3)%12), s5=a2spell(rIdx+4,(rPc+t.i5)%12);
+    if(!s3||!s5||s3.acc.length>1||s5.acc.length>1) continue;
+    const inv=Math.floor(Math.random()*3); let rootMidi=60+rPc, notes;
+    if(inv===0) notes=[rootMidi,rootMidi+t.i3,rootMidi+t.i5];
+    else if(inv===1) notes=[rootMidi+t.i3,rootMidi+t.i5,rootMidi+12];
+    else notes=[rootMidi+t.i5,rootMidi+12,rootMidi+12+t.i3];
+    const role=inv===0?[s1,s3,s5]:inv===1?[s3,s5,s1]:[s5,s1,s3];
+    let sh=0,g=notes[1]; while(g+sh<60)sh+=12; while(g+sh>74)sh-=12; notes=notes.map(m=>m+sh);
+    const objs=notes.map((m,i)=>{ const sp=role[i]; return {midi:m,letter:sp.letter,acc:sp.acc,pc:sp.pc,oct:a2oct(m,sp.letter,sp.acc),solf:a2solf(sp)}; });
+    return {type,typeLabel:t.label,inv,invCif:A2_INV[inv],bass:objs[0],given:objs[1],top:objs[2],notes:objs};
+  }
+  const nb=[{midi:60,letter:'C',acc:'',pc:0,oct:4,solf:'Do'},{midi:64,letter:'E',acc:'',pc:4,oct:4,solf:'Mi'},{midi:67,letter:'G',acc:'',pc:7,oct:4,solf:'Sol'}];
+  return {type:'may',typeLabel:'Mayor',inv:0,invCif:'E.F.',bass:nb[0],given:nb[1],top:nb[2],notes:nb};
+}
+// Pentagrama (clave de sol) con una nota o un acorde; admite color por nota (feedback verde/rojo)
+function mountArmStaff(container, notes, opts){ opts=opts||{}; if(!container) return;
+  const render=()=>{ if(typeof Vex==='undefined'){ container.innerHTML='<div style="color:#241a06;font-size:20px;text-align:center;padding:20px">'+notes.map(n=>n.solf+n.oct).join(' · ')+'</div>'; return; }
+    let W=Math.round(container.clientWidth)||300, H=Math.round(container.clientHeight)||160; if(W<140)W=300; if(H<90)H=160;
+    container.innerHTML=''; const VF=Vex.Flow; const r=new VF.Renderer(container, VF.Renderer.Backends.SVG); r.resize(W,H); const ctx=r.getContext();
+    const stave=new VF.Stave(6, Math.max(6,H/2-46), W-12); stave.addClef('treble'); stave.setContext(ctx).draw();
+    const keys=notes.map(n=> n.letter.toLowerCase()+(n.acc||'')+'/'+n.oct );
+    const sn=new VF.StaveNote({keys, duration:'w'});
+    notes.forEach((n,i)=>{ if(n.acc) try{ sn.addModifier(new VF.Accidental(n.acc), i); }catch(_){}
+      if(n.color) try{ sn.setKeyStyle(i,{fillStyle:n.color,strokeStyle:n.color}); }catch(_){} });
+    try{ const v=new VF.Voice({num_beats:4,beat_value:4}); v.addTickables([sn]); new VF.Formatter().joinVoices([v]).format([v], Math.max(60,W-80)); v.draw(ctx,stave); }catch(e){}
+  };
+  container._activeRender=render; container._staffCfg=null; container._melCfg=null; render(); requestAnimationFrame(render);
+  if(window.ResizeObserver&&!_staffRO.has(container)){ const ro=new ResizeObserver(()=>{ if(container.offsetParent!==null&&container._activeRender)container._activeRender(); }); ro.observe(container); _staffRO.set(container,ro); }
+}
+function a2chord(mids,dur){ const c=actx(); const t0=c.currentTime+0.05; (mids||[]).forEach(m=>pianoTone(m,t0,dur||1.6)); }
+function a2arp(mids){ const c=actx(); const t0=c.currentTime+0.05; const b=0.34; mids.forEach((m,i)=>pianoTone(m,t0+i*b,0.5)); }
+
 function hostBeginRound(){
   hostCancelAutoCorrect();
   if(H.queue.length) H.exType=H.queue[H.qIndex];
@@ -1408,6 +1592,21 @@ function hostBeginRound(){
     const hs=$('#hrStaff'); hs._activeRender=null; hs._staffCfg=null; hs._melCfg=null;
     hs.innerHTML='<div class="cad-hostcard"><div class="cad-msg" id="cadMsg">Escucha la cadencia e identifícala<span>La 2ª reproducción te muestra la partitura</span></div><canvas class="cad-viz" id="cadViz"></canvas><div class="cad-score" id="cadScore" style="display:none"></div></div>';
     requestAnimationFrame(()=>cadVizStart($('#cadViz')));
+  } else if(H.exType==='modos'){
+    rs.classList.add('toncom');   // reutiliza el layout de tarjeta
+    $('#hListen').innerHTML='▶ Reproducir (<span id="hLeft">'+H.listens+'</span>)';
+    H.exercise=genModos();
+    $('#s-host-round .brand').innerHTML='Modos <span class="b">identifica de oído</span>';
+    const hs=$('#hrStaff'); hs._activeRender=null; hs._staffCfg=null; hs._melCfg=null;
+    hs.innerHTML='<div class="cad-hostcard"><div class="cad-msg" id="modMsg">Escucha las dos frases e identifica el modo<span>En la 2ª reproducción, los alumnos ven la receta</span></div></div>';
+  } else if(H.exType==='armonico'){
+    rs.classList.add('toncom');
+    $('#hListen').innerHTML='▶ Reproducir';
+    const pro=!!(document.getElementById('armPro')&&document.getElementById('armPro').checked);
+    H.exercise=armGen(pro); H.exercise.p2=genArm2(); H.armP1={}; H.armPhase=1;
+    $('#s-host-round .brand').innerHTML='Armónico <span class="b">¿qué tipo de acorde?</span>';
+    const hs=$('#hrStaff'); hs._activeRender=null; hs._staffCfg=null; hs._melCfg=null;
+    hs.innerHTML='<div class="cad-hostcard"><div class="cad-msg" id="armMsg">Escucha el acorde e identifica el tipo<span>Suena en bloque y luego arpegiado'+(pro?' · modo PRO (10 tipos)':'')+'</span></div></div>';
   } else {
     rs.classList.remove('mel');
     $('#hListen').innerHTML='▶ Escuchar (<span id="hLeft">'+H.listens+'</span>)';
@@ -1421,6 +1620,8 @@ function hostBeginRound(){
 async function hostListen(){
   if(H.exercise && H.exercise.type==='toncom'){ return hostListenTon(); }
   if(H.exercise && H.exercise.type==='cadencias'){ return hostListenCad(); }
+  if(H.exercise && H.exercise.type==='modos'){ return hostListenModos(); }
+  if(H.exercise && H.exercise.type==='armonico'){ return hostListenArm(); }
   if(H.listens<=0)return; await ensureAudio();
   const primera=(H.listens===MEL_MAX_LISTENS);
   const go=async()=>{
@@ -1444,6 +1645,55 @@ async function hostListenCad(){
   let dur=4; try{ dur=await playCadencia(H.exercise.cad); }catch(e){}
   setTimeout(()=>{ if(H.listens>0)$('#hListen').disabled=false; else hostArmAutoCorrect(); }, dur*1000);
 }
+// MODOS: dos frases; en la 2ª reproducción avisa a los móviles para que muestren la receta
+async function hostListenModos(){
+  if(H.listens<=0) return; await ensureAudio();
+  const first=(H.listens===MEL_MAX_LISTENS); H.listens--; const hl=$('#hLeft'); if(hl) hl.textContent=H.listens; $('#hListen').disabled=true;
+  if(!first){ try{ if(H.channel) H.channel.send({type:'broadcast',event:'moderecipe'}); }catch(_){}
+    const m=$('#modMsg'); if(m) m.innerHTML='Suena otra vez · fíjate en la receta de cada modo'; }
+  let dur=5; try{ dur=await playModos(H.exercise.notes); }catch(e){}
+  setTimeout(()=>{ if(H.listens>0)$('#hListen').disabled=false; else hostArmAutoCorrect(); }, dur*1000);
+}
+// ARMÓNICO Fase 1: acorde en bloque (0s), arpegiado (6s), a corregir (10s) — sin temporizador visible
+async function hostListenArm(){ await ensureAudio(); $('#hListen').disabled=true; const D=H.exercise; const m=$('#armMsg');
+  armPlayBlock(D.notes); if(m) m.innerHTML='Suena el acorde en <b>bloque</b>…';
+  setTimeout(()=>{ if(H.phase!=='round')return; armPlayArp(D.notes); if(m) m.innerHTML='Ahora <b>arpegiado</b>…'; }, 6000);
+  setTimeout(()=>{ if(H.phase==='round') hostArmPhase2(); }, 10000);
+}
+// ARMÓNICO Fase 2: nota central dada → secuencia de 8 sonidos (4s c/u, con carteles) → 5s de cuenta atrás
+function hostArmPhase2(){ if(H.phase!=='round') return; H.armPhase=2;
+  H.armP1={}; Object.keys(H.answers).forEach(id=>{ H.armP1[id]={aans:H.answers[id].aans, alias:H.answers[id].alias, ms:H.answers[id].ms}; });
+  H.answers={}; updateCounter();
+  const D=H.exercise.p2; const all=D.notes.map(n=>n.midi), g=D.given.midi, top=D.top.midi, bass=D.bass.midi;
+  hostIntro('armonico');   // guiño de la espiral en la transición
+  const hs=$('#hrStaff'); hs._activeRender=null; hs._staffCfg=null; hs._melCfg=null;
+  hs.innerHTML='<div class="arm2-host"><div class="arm2-cap" id="arm2Cap">Construye el acorde a partir de la nota dada</div><div class="arm2-staff" id="arm2Staff"></div></div>';
+  $('#s-host-round .brand').innerHTML='Armónico <span class="b">construye el acorde</span>';
+  setTimeout(()=>{ mountArmStaff($('#arm2Staff'), [D.given]); }, 380);
+  try{ if(H.channel) H.channel.send({type:'broadcast',event:'armp2',payload:{given:D.given}}); }catch(_){}
+  ensureAudio();
+  const steps=[
+    ['Suena la nota dada', ()=>a2chord([g])],
+    ['Suena el acorde completo', ()=>a2chord(all)],
+    ['Suena la nota dada', ()=>a2chord([g])],
+    ['Nota dada + tiple (la aguda) ↑', ()=>a2chord([g,top])],
+    ['Nota dada + bajo (la grave) ↓', ()=>a2chord([g,bass])],
+    ['Suena la nota dada', ()=>a2chord([g])],
+    ['Suena el acorde completo', ()=>a2chord(all)],
+    ['Acorde desplegado', ()=>a2arp(all)]
+  ];
+  let i=0; const cap=()=>$('#arm2Cap');
+  const run=()=>{ if(H.phase!=='round'||H.armPhase!==2) return; if(i>=steps.length){ hostArm2Countdown(); return; }
+    const st=steps[i]; const c=cap(); if(c) c.innerHTML=st[0]; try{ st[1](); }catch(_){} i++; setTimeout(run, 4000); };
+  setTimeout(run, 1200);
+}
+function hostArm2Countdown(){ hostCancelAutoCorrect();
+  try{ if(H.channel) H.channel.send({type:'broadcast',event:'warn'}); }catch(_){}
+  const br=$('#bigRemind'), bc=$('#bigRemindCount'); let s=5;
+  const show=n=>{ if(bc) bc.textContent='Corrección en '+n; if(br) br.classList.add('on'); }; show(s);
+  const tick=()=>{ s--; if(s<=0){ hostCancelAutoCorrect(); if(H.phase==='round') hostShowResults(); return; } show(s); _acTimer=setTimeout(tick,1000); };
+  _acTimer=setTimeout(tick,1000);
+}
 // --- corrección automática: tras la última reproducción, 10 s y a corregir (adelantable con el botón) ---
 let _acTimer=null;
 function hostCancelAutoCorrect(){ if(_acTimer){clearTimeout(_acTimer);_acTimer=null;} const br=$('#bigRemind'); if(br) br.classList.remove('on'); cadVizStop(); }
@@ -1460,6 +1710,8 @@ function hostShowResults(){
   if(H.exercise.type==='melodico'){ hostShowResultsMel(); return; }
   if(H.exercise.type==='toncom'){ hostShowResultsTon(); return; }
   if(H.exercise.type==='cadencias'){ hostShowResultsCad(); return; }
+  if(H.exercise.type==='modos'){ hostShowResultsModos(); return; }
+  if(H.exercise.type==='armonico'){ hostShowResultsArm(); return; }
   const sol=H.exercise.solution.map(c=>c.id);
   Object.keys(H.answers).forEach(id=>{ const a=H.answers[id]; let ok=0;
     for(let i=0;i<8;i++){ if(a.placedIds && a.placedIds[i]===sol[i]) ok++; }
@@ -1532,6 +1784,43 @@ function hostShowResultsCad(){
   renderRanking('exercise',true);
   hostRevealButtons(); hostBroadcastPhase();
 }
+function hostShowResultsArm(){
+  const p1tipo=H.exercise.tipo, t1=ARM_TIPOS[p1tipo], p2=H.exercise.p2;
+  const ids=new Set([...Object.keys(H.armP1||{}), ...Object.keys(H.answers)]);
+  ids.forEach(id=>{ const a1=(H.armP1||{})[id]||{}, a2=H.answers[id]||{}; let pct=0;
+    if(a1.aans===p1tipo) pct+=25;
+    if(a2.atiple!=null && a2.atiple===p2.top.pc) pct+=25;
+    if(a2.abajo!=null && a2.abajo===p2.bass.pc) pct+=25;
+    if(a2.ainv!=null && a2.ainv===p2.inv) pct+=25;
+    const alias=a2.alias||a1.alias||'—', ms=(a2.ms!=null?a2.ms:9e9);
+    if(!H.players[id])H.players[id]={alias,points:0}; H.players[id].points+=pct; H.players[id].lastPct=pct;
+    H.players[id].lastMs=ms; H.players[id].totalMs=(H.players[id].totalMs||0)+ms; });
+  Object.keys(H.players).forEach(id=>{ if(!ids.has(id)){ H.players[id].lastPct=0; H.players[id].lastMs=9e9; } });
+  H.phase='reveal'; H.rankMode='exercise'; showScreen('s-host-reveal'); sfx('reveal');
+  const rev=$('#s-host-reveal'); rev.classList.remove('mel','toncom'); rev.classList.add('cad');
+  $('#s-host-reveal .brand').innerHTML='Armónico · <span class="b">'+t1.name+(t1.sym?(' '+t1.sym):'')+' · '+p2.typeLabel+' '+p2.invCif+'</span>';
+  const hv=$('#hvStaff'); hv._activeRender=null; hv._staffCfg=null; hv._melCfg=null;
+  hv.innerHTML='<div class="arm2-rev"><div class="arm2-revcap">Fase 2 · '+p2.typeLabel+' '+p2.invCif+' &nbsp;(bajo '+p2.bass.solf+' · dada '+p2.given.solf+' · tiple '+p2.top.solf+')</div><div class="arm2-staff" id="arm2Rev"></div></div>';
+  requestAnimationFrame(()=>mountArmStaff($('#arm2Rev'), p2.notes.map(n=>({letter:n.letter,acc:n.acc,oct:n.oct,solf:n.solf}))));
+  $('#rankList').innerHTML='';
+  renderRanking('exercise',true);
+  hostRevealButtons(); hostBroadcastPhase();
+}
+function hostShowResultsModos(){
+  const mode=H.exercise.mode;
+  Object.keys(H.answers).forEach(id=>{ const a=H.answers[id]; const pct=(a.mos===mode)?100:0; a.pct=pct;
+    if(!H.players[id])H.players[id]={alias:a.alias,points:0}; H.players[id].points+=pct; H.players[id].lastPct=pct;
+    H.players[id].lastMs=(a.ms!=null?a.ms:9e9); H.players[id].totalMs=(H.players[id].totalMs||0)+(a.ms!=null?a.ms:9e9); });
+  Object.keys(H.players).forEach(id=>{ if(!H.answers[id]){ H.players[id].lastPct=0; H.players[id].lastMs=9e9; } });
+  H.phase='reveal'; H.rankMode='exercise'; showScreen('s-host-reveal'); sfx('reveal');
+  const rev=$('#s-host-reveal'); rev.classList.remove('mel','toncom','cad'); rev.classList.add('toncom');
+  $('#s-host-reveal .brand').innerHTML='Modo · <span class="b">'+MODE_LABEL[mode]+'</span>';
+  const hv=$('#hvStaff'); hv._activeRender=null; hv._staffCfg=null; hv._melCfg=null;
+  hv.innerHTML='<div class="tcrev"><div class="tcr-card"><div class="tcr-h">MODO</div><div class="tcr-v">'+MODE_LABEL[mode]+'</div></div><div class="tcr-card"><div class="tcr-h">RECETA</div><div class="tcr-v">'+modosFatArrows(MODE_RECIPE[mode])+'</div></div></div>';
+  $('#rankList').innerHTML='';
+  renderRanking('exercise',true);
+  hostRevealButtons(); hostBroadcastPhase();
+}
 function rankingArr(mode){
   const arr=Object.keys(H.players).filter(id=>H.roster[id]||H.players[id].points>0||H.answers[id])
     .map(id=>({id,alias:H.players[id].alias,points:H.players[id].points||0,last:H.players[id].lastPct||0,lastMs:H.players[id].lastMs||9e9,totalMs:H.players[id].totalMs||9e9}));
@@ -1570,12 +1859,18 @@ function hostBroadcastPhase(){
     if(H.exercise.type==='melodico') payload={phase:'round',ex:'melodico',roundId:H.roundId,first:H.exercise.first};
     else if(H.exercise.type==='toncom') payload={phase:'round',ex:'toncom',roundId:H.roundId};
     else if(H.exercise.type==='cadencias') payload={phase:'round',ex:'cadencias',roundId:H.roundId};
+    else if(H.exercise.type==='modos') payload={phase:'round',ex:'modos',roundId:H.roundId};
+    else if(H.exercise.type==='armonico') payload={phase:'round',ex:'armonico',roundId:H.roundId,pro:H.exercise.pro};
     else payload={phase:'round',ex:'ritmico',roundId:H.roundId,compound:H.exercise.compound};
   } else if(H.phase==='reveal'){
     if(H.exercise.type==='melodico') payload={phase:'reveal',ex:'melodico',roundId:H.roundId,sol:H.exercise.sol,ranking:rankingArr('exercise')};
     else if(H.exercise.type==='toncom'){ const k=H.exercise.key, cp=H.exercise.compas;
       payload={phase:'reveal',ex:'toncom',roundId:H.roundId,gt:{ton:k.name,arm:armLabelTon(k.sig),comp:cp.ts,tonPC:tonKeyPC(k.note,k.acc),mm:k.mm,sig:k.sig,ts:cp.ts},ranking:rankingArr('exercise')}; }
     else if(H.exercise.type==='cadencias') payload={phase:'reveal',ex:'cadencias',roundId:H.roundId,cadType:H.exercise.cad.type,cadLabel:H.exercise.cad.label,ranking:rankingArr('exercise')};
+    else if(H.exercise.type==='modos') payload={phase:'reveal',ex:'modos',roundId:H.roundId,modMode:H.exercise.mode,modRecipe:MODE_RECIPE[H.exercise.mode],ranking:rankingArr('exercise')};
+    else if(H.exercise.type==='armonico'){ const p2=H.exercise.p2;
+      payload={phase:'reveal',ex:'armonico',roundId:H.roundId,armTipo:H.exercise.tipo,armName:ARM_TIPOS[H.exercise.tipo].name,armSym:ARM_TIPOS[H.exercise.tipo].sym,
+        p2:{topPc:p2.top.pc,topSolf:p2.top.solf,bassPc:p2.bass.pc,bassSolf:p2.bass.solf,inv:p2.inv,invCif:p2.invCif,typeLabel:p2.typeLabel,givenSolf:p2.given.solf},ranking:rankingArr('exercise')}; }
     else payload={phase:'reveal',ex:'ritmico',roundId:H.roundId,compound:H.exercise.compound,solutionIds:H.exercise.solution.map(c=>c.id),ranking:rankingArr('exercise')};
   } else payload={phase:'lobby'};
   H.channel.send({type:'broadcast',event:'phase',payload});
@@ -1611,21 +1906,25 @@ function playerConnect(){
   PL.channel
     .on('broadcast',{event:'phase'},({payload})=>playerOnPhase(payload))
     .on('broadcast',{event:'warn'},()=>playerWarn())
+    .on('broadcast',{event:'moderecipe'},()=>playerModosRecipe())
+    .on('broadcast',{event:'armp2'},({payload})=>{ if(PL.exType==='armonico'){ PL.armPhase=2; startPlayerRoundArm2(payload&&payload.given); } })
     .subscribe(async status=>{ if(status==='SUBSCRIBED'){ await PL.channel.track({alias:PL.alias});
         showScreen('s-player-wait'); PL.channel.send({type:'broadcast',event:'hello',payload:{id:PL.id}}); } });
 }
 // aviso de "pulsa Enviar" (cuando arranca la cuenta atrás en el iPad)
 function playerWarn(){ if(PL.sent) return;   // móvil: solo el resplandor del botón Enviar (el texto va en el iPad)
-  ['btnSend','tcSend','cadSend'].forEach(id=>{ const b=document.getElementById(id); if(b) b.classList.add('remind'); }); }
-function clearSendRemind(){ ['btnSend','tcSend','cadSend'].forEach(id=>{ const b=document.getElementById(id); if(b) b.classList.remove('remind'); }); }
+  ['btnSend','tcSend','cadSend','modSend','armSend'].forEach(id=>{ const b=document.getElementById(id); if(b) b.classList.add('remind'); }); }
+function clearSendRemind(){ ['btnSend','tcSend','cadSend','modSend','armSend'].forEach(id=>{ const b=document.getElementById(id); if(b) b.classList.remove('remind'); }); }
 function playerOnPhase(p){
   if(p.phase==='round'){ if(p.roundId && p.roundId===PL.roundId) return; PL.roundId=p.roundId||0; PL.exType=p.ex||'ritmico'; clearSendRemind();
     if(PL.exType==='melodico'){ PL.melFirst=p.first; startPlayerRoundMel(); }
     else if(PL.exType==='toncom'){ startPlayerRoundTon(); }
     else if(PL.exType==='cadencias'){ startPlayerRoundCad(); }
+    else if(PL.exType==='modos'){ startPlayerRoundModos(); }
+    else if(PL.exType==='armonico'){ PL.armPro=!!p.pro; PL.armPhase=1; startPlayerRoundArm(); }
     else { PL.compound=p.compound; startPlayerRound(); } }
   else if(p.phase==='reveal'){ PL.roundId=p.roundId||PL.roundId; const ex=p.ex||'ritmico';
-    if(ex==='melodico') playerRevealMel(p); else if(ex==='toncom') playerRevealTon(p); else if(ex==='cadencias') playerRevealCad(p); else playerReveal(p); }
+    if(ex==='melodico') playerRevealMel(p); else if(ex==='toncom') playerRevealTon(p); else if(ex==='cadencias') playerRevealCad(p); else if(ex==='modos') playerRevealModos(p); else if(ex==='armonico') playerRevealArm(p); else playerReveal(p); }
   else if(p.phase==='lobby'){ if(!$('#s-player-join').classList.contains('on')) showScreen('s-player-wait'); }
 }
 function startPlayerRound(){
@@ -1730,6 +2029,21 @@ function playerSend(){
     const cans=PL.cadSel; PL.cadSentAns=cans;
     try{ PL.channel.track({alias:PL.alias, rid:PL.roundId, cans, ms}); }catch(_){}
     try{ PL.channel.send({type:'broadcast',event:'answer',payload:{id:PL.id,alias:PL.alias,cans,ms}}); }catch(_){}
+  } else if(PL.exType==='modos'){
+    const mos=PL.modSel; PL.modSentAns=mos;
+    try{ PL.channel.track({alias:PL.alias, rid:PL.roundId, mos, ms}); }catch(_){}
+    try{ PL.channel.send({type:'broadcast',event:'answer',payload:{id:PL.id,alias:PL.alias,mos,ms}}); }catch(_){}
+  } else if(PL.exType==='armonico'){
+    if(PL.armPhase===2 && PL.arm2){
+      const atiple=tonKeyPC(A2_WHEEL[PL.arm2.tipleI], PL.arm2.tipleAcc), abajo=tonKeyPC(A2_WHEEL[PL.arm2.bajoI], PL.arm2.bajoAcc), ainv=PL.arm2.inv;
+      PL.arm2sent={atiple,abajo,ainv,tipleName:A2_WHEEL[PL.arm2.tipleI]+tcAccSym(PL.arm2.tipleAcc),bajoName:A2_WHEEL[PL.arm2.bajoI]+tcAccSym(PL.arm2.bajoAcc)};
+      try{ PL.channel.track({alias:PL.alias, rid:PL.roundId, atiple, abajo, ainv, ms}); }catch(_){}
+      try{ PL.channel.send({type:'broadcast',event:'answer',payload:{id:PL.id,alias:PL.alias,atiple,abajo,ainv,ms}}); }catch(_){}
+    } else {
+      const aans=PL.armSel; PL.armSentAns=aans;
+      try{ PL.channel.track({alias:PL.alias, rid:PL.roundId, aans, ms}); }catch(_){}
+      try{ PL.channel.send({type:'broadcast',event:'answer',payload:{id:PL.id,alias:PL.alias,aans,ms}}); }catch(_){}
+    }
   } else if(PL.exType==='toncom'){
     const t=PL.tc, n=tcNoteSel(); const ans={tonPC:(n==='—'?-1:tonKeyPC(n,t.acc)), mm:t.mm, arm:ARM_WHEEL[t.armI].v, compas:t.compas,
       label:{ton:tcTonLabel(), arm:ARM_WHEEL[t.armI].t, comp:t.compas||'—'}};
@@ -1863,6 +2177,96 @@ function playerRevealCad(p){
       '<div style="font-size:12px;letter-spacing:.12em;color:var(--muted2)">TU RESPUESTA</div>'+
       '<div style="font-size:26px;font-weight:900;color:'+(ok?'#37b26a':'#d9694a')+'">'+cadLabelOf(mine)+'</div>'+
       (ok?'<div style="color:#37b26a;font-size:15px">✓ correcto</div>':'<div style="font-size:16px;color:var(--gold-soft)">Era: '+cadLabelOf(correct)+'</div>')+'</div>'; }
+  $('#pScore').textContent='0%'; countUp($('#pScore'), me?me.last:0, 850, '%');
+  const emoji = pos===0?'🥇 ¡Ganas!' : pos===1?'🥈 ¡Casi!' : pos===2?'🥉 ¡Podio!' : '';
+  $('#pRank').textContent = pos>=0 ? (emoji+'  Puesto '+(pos+1)+' de '+arr.length+' · '+(me?me.points:0)+' pts') : 'Sin respuesta esta ronda';
+  $('#pMini').innerHTML = arr.slice(0,3).map((r,i)=>['🥇','🥈','🥉'][i]+' '+escapeHtml(r.alias)+' ('+r.points+')').join(' &nbsp; ');
+  if(pos===0){ sfx('winner'); confettiBurst(); } else if(ok){ sfx('winner'); } else sfx('reveal');
+}
+/* ---- ARMÓNICO Fase 1 (móvil): identificar el tipo de acorde ---- */
+function startPlayerRoundArm(){
+  PL.armSel=null; PL.armPhase=1; PL.sent=false; PL.roundStart=Date.now();
+  if(PL.channel) try{ PL.channel.track({alias:PL.alias, rid:PL.roundId}); }catch(_){}
+  showScreen('s-player-armonico'); const al=$('#armAlias'); if(al) al.textContent=PL.alias;
+  buildArmUI();
+}
+function buildArmUI(){
+  const box=$('#armOpts'); if(!box) return; const pool=PL.armPro?ARM_PRO:ARM_BASICO;
+  box.className='arm-opts'+(PL.armPro?' pro':''); box.innerHTML='';
+  pool.forEach(id=>{ const t=ARM_TIPOS[id]; const b=document.createElement('button'); b.className='arm-opt'+(PL.armSel===id?' on':''); b.dataset.a=id;
+    b.innerHTML='<span class="arm-opt-l">'+t.name+'</span><span class="arm-opt-sym">'+(t.sym||'')+'</span>';
+    b.onclick=()=>{ PL.armSel=id; buildArmUI(); sfx('place'); }; box.appendChild(b); });
+  const send=$('#armSend'); if(send) send.onclick=playerSend;
+}
+const A2_WHEEL=['Si','La','Sol','Fa','Mi','Re','Do'];
+function startPlayerRoundArm2(given){
+  PL.arm2={ tipleI:A2_WHEEL.indexOf('Do'), tipleAcc:'', bajoI:A2_WHEEL.indexOf('Do'), bajoAcc:'', inv:null, given:given };
+  PL.arm2sent=null; PL.sent=false; PL.roundStart=Date.now();
+  if(PL.channel) try{ PL.channel.track({alias:PL.alias, rid:PL.roundId}); }catch(_){}
+  showScreen('s-player-armonico2'); const al=$('#arm2Alias'); if(al) al.textContent=PL.alias;
+  requestAnimationFrame(()=>{ if(given) mountArmStaff($('#arm2pStaff'), [given]); buildArm2UI(); });
+}
+function buildArm2UI(){
+  if(!PL.arm2) return;
+  renderSpin($('#arm2Tiple'), A2_WHEEL, PL.arm2.tipleI, i=>{ PL.arm2.tipleI=Math.max(0,Math.min(A2_WHEEL.length-1,i)); buildArm2UI(); sfx('nav'); });
+  renderSpin($('#arm2Bajo'), A2_WHEEL, PL.arm2.bajoI, i=>{ PL.arm2.bajoI=Math.max(0,Math.min(A2_WHEEL.length-1,i)); buildArm2UI(); sfx('nav'); });
+  attachWheelDrag($('#arm2Tiple'), n=>{ const i=Math.max(0,Math.min(A2_WHEEL.length-1,PL.arm2.tipleI+n)); if(i!==PL.arm2.tipleI){PL.arm2.tipleI=i; buildArm2UI();} });
+  attachWheelDrag($('#arm2Bajo'), n=>{ const i=Math.max(0,Math.min(A2_WHEEL.length-1,PL.arm2.bajoI+n)); if(i!==PL.arm2.bajoI){PL.arm2.bajoI=i; buildArm2UI();} });
+  const sc=$('#s-player-armonico2'); if(!sc) return;
+  sc.querySelectorAll('.a2t-acc').forEach(b=>{ b.classList.toggle('on', PL.arm2.tipleAcc===b.dataset.a); b.onclick=()=>{ PL.arm2.tipleAcc=(PL.arm2.tipleAcc===b.dataset.a?'':b.dataset.a); buildArm2UI(); sfx('place'); }; });
+  sc.querySelectorAll('.a2b-acc').forEach(b=>{ b.classList.toggle('on', PL.arm2.bajoAcc===b.dataset.a); b.onclick=()=>{ PL.arm2.bajoAcc=(PL.arm2.bajoAcc===b.dataset.a?'':b.dataset.a); buildArm2UI(); sfx('place'); }; });
+  const inv=$('#arm2Inv'); if(inv) inv.querySelectorAll('button').forEach(b=>{ b.classList.toggle('on', String(PL.arm2.inv)===b.dataset.i); b.onclick=()=>{ PL.arm2.inv=+b.dataset.i; buildArm2UI(); sfx('place'); }; });
+  const send=$('#arm2Send'); if(send) send.onclick=playerSend;
+}
+function playerRevealArm(p){
+  const arr=p.ranking||[]; const me=arr.find(r=>r.id===PL.id); const pos=arr.findIndex(r=>r.id===PL.id);
+  showScreen('s-player-reveal');
+  const nm=id=> id?((ARM_TIPOS[id]&&ARM_TIPOS[id].name)||id):'—';
+  const p1mine=PL.armSentAns, p1ok=(p1mine===p.armTipo);
+  const s=PL.arm2sent||{}, p2=p.p2||{};
+  const tOk=(s.atiple!=null&&s.atiple===p2.topPc), bOk=(s.abajo!=null&&s.abajo===p2.bassPc), iOk=(s.ainv!=null&&s.ainv===p2.inv);
+  const invTxt=i=> i===0?'E.F.':i===1?'6':i===2?'6/4':'—';
+  const line=(lbl,mineTxt,okv,corrTxt)=> '<div style="display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:4px 2px;border-bottom:1px solid rgba(180,150,60,.12)"><span style="color:var(--muted2)">'+lbl+'</span><span style="font-weight:800;color:'+(okv?'#37b26a':'#d9694a')+'">'+(mineTxt||'—')+(okv?' ✓':' · era '+corrTxt)+'</span></div>';
+  const w=$('#pMelWrap');
+  if(w){ w.style.display=''; w.className=''; w.style.height='auto';
+    w.innerHTML='<div style="padding:6px 12px">'+
+      line('Fase 1 · tipo', nm(p1mine), p1ok, nm(p.armTipo))+
+      line('Tiple', s.tipleName||'—', tOk, p2.topSolf)+
+      line('Bajo', s.bajoName||'—', bOk, p2.bassSolf)+
+      line('Inversión', invTxt(s.ainv), iOk, invTxt(p2.inv))+
+    '</div>'; }
+  $('#pScore').textContent='0%'; countUp($('#pScore'), me?me.last:0, 850, '%');
+  const emoji = pos===0?'🥇 ¡Ganas!' : pos===1?'🥈 ¡Casi!' : pos===2?'🥉 ¡Podio!' : '';
+  $('#pRank').textContent = pos>=0 ? (emoji+'  Puesto '+(pos+1)+' de '+arr.length+' · '+(me?me.points:0)+' pts') : 'Sin respuesta esta ronda';
+  $('#pMini').innerHTML = arr.slice(0,3).map((r,i)=>['🥇','🥈','🥉'][i]+' '+escapeHtml(r.alias)+' ('+r.points+')').join(' &nbsp; ');
+  const anyOk=p1ok||tOk||bOk||iOk;
+  if(pos===0){ sfx('winner'); confettiBurst(); } else if(anyOk){ sfx('winner'); } else sfx('reveal');
+}
+/* ---- MODOS (móvil): 7 modos; la receta aparece en la 2ª escucha ---- */
+function startPlayerRoundModos(){
+  PL.modSel=null; PL.modRecipe=false; PL.sent=false; PL.roundStart=Date.now();
+  if(PL.channel) try{ PL.channel.track({alias:PL.alias, rid:PL.roundId}); }catch(_){}
+  showScreen('s-player-modos'); const al=$('#modAlias'); if(al) al.textContent=PL.alias;
+  buildModosUI();
+}
+function buildModosUI(){
+  const box=$('#modOpts'); if(!box) return; box.className='mode-opts'+(PL.modRecipe?' show-recipe':''); box.innerHTML='';
+  MODOS_ALL.forEach(id=>{ const b=document.createElement('button'); b.className='mode-opt'+(PL.modSel===id?' on':''); b.dataset.m=id;
+    b.innerHTML='<span class="mode-opt-l">'+MODE_LABEL[id]+'</span><span class="mode-opt-recipe">'+modosFatArrows(MODE_RECIPE[id])+'</span>';
+    b.onclick=()=>{ PL.modSel=id; buildModosUI(); sfx('place'); }; box.appendChild(b); });
+  const send=$('#modSend'); if(send) send.onclick=playerSend;
+}
+function playerModosRecipe(){ PL.modRecipe=true; const box=$('#modOpts'); if(box) box.classList.add('show-recipe'); }
+function playerRevealModos(p){
+  const arr=p.ranking||[]; const me=arr.find(r=>r.id===PL.id); const pos=arr.findIndex(r=>r.id===PL.id);
+  showScreen('s-player-reveal');
+  const correct=p.modMode, mine=PL.modSentAns, ok=(mine===correct);
+  const w=$('#pMelWrap');
+  if(w){ w.style.display=''; w.className=''; w.style.height='auto';
+    w.innerHTML='<div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 0">'+
+      '<div style="font-size:12px;letter-spacing:.12em;color:var(--muted2)">TU RESPUESTA</div>'+
+      '<div style="font-size:26px;font-weight:900;color:'+(ok?'#37b26a':'#d9694a')+'">'+(mine?MODE_LABEL[mine]:'—')+'</div>'+
+      (ok?'<div style="color:#37b26a;font-size:15px">✓ correcto</div>':'<div style="font-size:16px;color:var(--gold-soft)">Era: '+MODE_LABEL[correct]+' ('+(p.modRecipe||'')+')</div>')+'</div>'; }
   $('#pScore').textContent='0%'; countUp($('#pScore'), me?me.last:0, 850, '%');
   const emoji = pos===0?'🥇 ¡Ganas!' : pos===1?'🥈 ¡Casi!' : pos===2?'🥉 ¡Podio!' : '';
   $('#pRank').textContent = pos>=0 ? (emoji+'  Puesto '+(pos+1)+' de '+arr.length+' · '+(me?me.points:0)+' pts') : 'Sin respuesta esta ronda';

@@ -107,7 +107,8 @@
   .reveal-wrap{display:flex;gap:14px;flex:1;min-height:0;align-items:stretch}
   #s-host-reveal .staffwrap{flex:1;height:clamp(108px,22vh,168px);align-self:center;align-items:stretch;justify-content:stretch}
   .rank{flex:0 0 clamp(190px,20vw,244px);align-self:stretch;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:10px 11px;overflow:hidden;display:flex;flex-direction:column}
-  .rank h3{margin:0 0 8px;font-size:14px;color:var(--gold-soft);letter-spacing:.04em;flex:0 0 auto;display:flex;align-items:center;gap:6px}
+  .rank h3{margin:0 0 13px;font-size:14px;color:var(--gold-soft);letter-spacing:.04em;flex:0 0 auto;display:flex;align-items:center;gap:6px}
+  .rank .rank-next{width:100%;margin:0 0 13px;flex:0 0 auto}
   #rankList{overflow-y:auto;flex:1}
   .rrow{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:10px;margin-bottom:5px;background:rgba(255,255,255,.02)}
   .rrow .pos{width:30px;text-align:center;font-weight:900;color:var(--muted2);font-size:16px}
@@ -132,7 +133,7 @@
 
   /* PLAYER round — pentagrama arriba (~34%), tarjetas abajo; TODO en bloques del mismo tamaño */
   #s-player-round{flex-direction:column;gap:4px;height:100dvh;padding:3px max(12px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
-  #s-player-round .staffwrap{flex:0 0 27%;min-height:70px;padding:2px 4px;align-items:stretch;justify-content:stretch}
+  #s-player-round .staffwrap{flex:0 0 auto;height:clamp(80px,23vh,128px);min-height:80px;padding:2px 4px;align-items:stretch;justify-content:stretch}
   .pr-you{position:absolute;top:4px;right:calc(52px + env(safe-area-inset-right));font-size:12px;color:var(--muted2);z-index:6}
   .pr-you b{color:var(--gold)}
   #prHint{color:var(--gold);font-weight:800}
@@ -148,6 +149,13 @@
   .cell-send{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a2005;border-color:transparent;font-weight:800;font-size:17px;min-width:104px}
   .cell-send:disabled{background:var(--paper);color:#9a8a5a}
   .cell-card{flex:0 0 auto;height:clamp(64px,18vh,96px);min-width:66px;background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:7px 13px;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none}
+  /* ritmo móvil: rejilla que LLENA la pantalla (botones grandes) + Enviar como última celda */
+  .palette-grid{flex:1;display:grid;grid-template-columns:repeat(var(--pcols,6),1fr);grid-auto-rows:minmax(0,1fr);gap:7px;min-height:0;overflow:hidden;padding:3px 0 2px}
+  .palette-grid .cell-card{height:auto;min-height:0;min-width:0;width:100%;padding:5px 7px;border-radius:13px;box-shadow:0 2px 7px rgba(0,0,0,.28)}
+  .palette-grid .cell-card .mini{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+  .palette-grid .cell-card .mini svg{width:100%;height:100%;display:block}
+  .palette-grid .cell-card.over{outline:3px solid var(--gold);outline-offset:-2px}
+  .palette-grid .cell-send{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a2005;border:none;border-radius:13px;font-weight:800;font-size:clamp(18px,3.6vw,28px);box-shadow:0 6px 22px rgba(238,139,28,.55);cursor:pointer}
   .cell-card:active{transform:scale(.95)}
   .cell-card .mini{height:100%;display:flex;align-items:center;justify-content:center;overflow:visible}
   .cell-card svg{height:100%;width:auto;display:block}
@@ -666,8 +674,8 @@
   <span class="pr-you">tú: <b id="arm2Alias">—</b> · construye el acorde</span>
   <div class="arm2-top"><div class="arm2-pstaff" id="arm2pStaff"></div></div>
   <div class="arm2-sel">
-    <div class="a2col"><div class="a2h">TIPLE ↑</div><div class="tc-spin" id="arm2Tiple"></div><div class="a2accs"><button class="a2t-acc" data-a="b">♭</button><button class="a2t-acc" data-a="#">♯</button></div></div>
     <div class="a2col"><div class="a2h">BAJO ↓</div><div class="tc-spin" id="arm2Bajo"></div><div class="a2accs"><button class="a2b-acc" data-a="b">♭</button><button class="a2b-acc" data-a="#">♯</button></div></div>
+    <div class="a2col"><div class="a2h">TIPLE ↑</div><div class="tc-spin" id="arm2Tiple"></div><div class="a2accs"><button class="a2t-acc" data-a="b">♭</button><button class="a2t-acc" data-a="#">♯</button></div></div>
     <div class="a2col"><div class="a2h">INVERSIÓN</div><div class="a2inv" id="arm2Inv"><button data-i="0">E.F.</button><button data-i="1">6</button><button data-i="2">6/4</button></div></div>
   </div>
   <button class="mel-send" id="arm2Send">Enviar</button>
@@ -800,6 +808,8 @@ function beamableGroup(group,cellNotes){
 }
 function drawCellMini(cell,compound,color){
   const holder=document.createElement('div');
+  holder.style.cssText='position:fixed;left:-9999px;top:-9999px;opacity:0;pointer-events:none';
+  document.body.appendChild(holder);   // adjuntar al DOM para que getBBox() mida bien (si no, la figura sale diminuta)
   const renderer=new VF.Renderer(holder,VF.Renderer.Backends.SVG);
   const W=170,H=150; renderer.resize(W,H);
   const ctx=renderer.getContext();
@@ -824,7 +834,8 @@ function drawCellMini(cell,compound,color){
   if(beam) beam.setContext(ctx).draw();
   if(tuplet) tuplet.setContext(ctx).draw();
   const svg=holder.querySelector('svg');
-  try{const bb=svg.getBBox();if(bb&&bb.width>0){const p=3;svg.setAttribute('viewBox',(bb.x-p)+' '+(bb.y-p)+' '+(bb.width+2*p)+' '+(bb.height+2*p));svg.removeAttribute('width');svg.removeAttribute('height');svg.style.width='100%';svg.style.height='100%';}}catch(e){}
+  try{const bb=svg.getBBox();if(bb&&bb.width>0){const p=1;svg.setAttribute('viewBox',(bb.x-p)+' '+(bb.y-p)+' '+(bb.width+2*p)+' '+(bb.height+2*p));svg.removeAttribute('width');svg.removeAttribute('height');svg.style.width='100%';svg.style.height='100%';svg.setAttribute('preserveAspectRatio','xMidYMid meet');}}catch(e){}
+  if(holder.parentNode) document.body.removeChild(holder);   // el svg ya lleva su viewBox; lo montará quien llame
   return svg;
 }
 /* ---- PENTAGRAMA real (clave de sol, compás, 4 compases) + zonas de colocación ---- */
@@ -1546,11 +1557,13 @@ function modPhrase(scale,mode,tonicMidi,len,startIdx,forceEndTonic){ const charD
 // 4 semifrases: cada una empieza en la tónica; la 4ª acaba en tónica; entre las 4 aparecen los 7 grados
 function genModos(){ const mode=pick(MODOS_ALL); const tonicMidi=60+Math.floor(Math.random()*12); const lo=tonicMidi-3,hi=tonicMidi+15; const scale=modBuildScale(tonicMidi,mode,lo,hi);
   let ti=scale.findIndex(s=>s.midi===tonicMidi); if(ti<0)ti=scale.findIndex(s=>s.deg===1); const charDeg=MODE_CHAR_DEG[mode]; const P=5;
+  const mk=s=>({midi:s.midi,rest:false,isChar:(s.deg===charDeg||MODE_CHAR_DEG2[mode]===s.deg)});
+  const phrase1=[0,1,2,3,4].map(k=>scale[ti+k]).filter(Boolean);   // 1ª frase: los 5 primeros grados de la escala en orden (presenta la escala)
   let best=null, bestCov=-1;
-  for(let attempt=0;attempt<80;attempt++){ const phs=[]; for(let ph=0;ph<4;ph++) phs.push(modPhrase(scale,mode,tonicMidi,P,ti,ph===3));
-    const degs=new Set(); phs.forEach(f=>f.forEach(s=>degs.add(s.deg))); if(degs.size>bestCov){bestCov=degs.size;best=phs;} if(degs.size>=7) break; }
-  const REST={rest:true}, notes=[];
-  best.forEach(f=>{ f.forEach(s=>notes.push({midi:s.midi,rest:false,isChar:(s.deg===charDeg||MODE_CHAR_DEG2[mode]===s.deg)})); notes.push(REST); });
+  for(let attempt=0;attempt<80;attempt++){ const phs=[]; for(let ph=1;ph<4;ph++) phs.push(modPhrase(scale,mode,tonicMidi,P,ti,ph===3));   // frases 2-4: melódicas
+    const degs=new Set(phrase1.map(s=>s.deg)); phs.forEach(f=>f.forEach(s=>degs.add(s.deg))); if(degs.size>bestCov){bestCov=degs.size;best=phs;} if(degs.size>=7) break; }
+  const REST={rest:true}, notes=[...phrase1.map(mk), REST];
+  best.forEach(f=>{ f.forEach(s=>notes.push(mk(s))); notes.push(REST); });
   return {type:'modos', mode, tonicMidi, notes}; }
 async function playModos(notes, opts){ opts=opts||{}; const c=actx(); if(c.state==='suspended')await c.resume(); const tempo=92,beat=60/tempo,dur=beat*0.92,t0=c.currentTime+0.15;
   notes.forEach((nt,k)=>{ if(!nt.rest){ pianoTone(nt.midi, t0+k*beat, dur);
@@ -1739,8 +1752,8 @@ function hostArmPhase2(){ if(H.phase!=='round') return; const rid=H.roundId; H.a
     ['Suena la nota dada', ()=>a2chord([g])],
     ['Suena el acorde completo', ()=>a2chord(all)],
     ['Suena la nota dada', ()=>a2chord([g])],
-    ['Nota dada + tiple (la aguda) ↑', ()=>a2chord([g,top])],
     ['Nota dada + bajo (la grave) ↓', ()=>a2chord([g,bass])],
+    ['Nota dada + tiple (la aguda) ↑', ()=>a2chord([g,top])],
     ['Suena la nota dada', ()=>a2chord([g])],
     ['Suena el acorde completo', ()=>a2chord(all)],
     ['Acorde desplegado', ()=>a2arp(all)]
@@ -2077,17 +2090,19 @@ function playerSet(i,cell){
 }
 function refreshPlayerSlots(){ for(let i=0;i<8;i++){ const h=pslot(i); if(h) h.classList.toggle('current',i===PL.current); } }
 function buildPlayerPalette(){
-  const box=$('#prPalette'); box.className='palette-wrap'; box.innerHTML='';
-  const cards=document.createElement('div'); cards.className='palette-cards';   // zona scrolleable (las cartas y el fondo)
-  paletteFor(PL.compound).forEach(cell=>{
+  const box=$('#prPalette'); box.className='palette-grid'; box.innerHTML='';   // rejilla que llena la pantalla; Enviar = última celda
+  const cells=paletteFor(PL.compound); const n=cells.length;
+  const cols=Math.max(4, Math.ceil((n+1)/2));   // ~2 filas
+  box.style.setProperty('--pcols',cols);
+  cells.forEach(cell=>{
     const card=document.createElement('div'); card.className='cell-card';
-    const svg=drawCellMini(cell,PL.compound,'#241a06'); svg.style.width='auto'; svg.style.height='100%';
+    const svg=drawCellMini(cell,PL.compound,'#241a06'); svg.style.width='100%'; svg.style.height='100%';
     const mini=document.createElement('div'); mini.className='mini'; mini.appendChild(svg);
-    card.appendChild(mini); attachPointer(card,cell); cards.appendChild(card);
+    card.appendChild(mini); attachPointer(card,cell); box.appendChild(card);
   });
-  box.appendChild(cards);
-  const send=document.createElement('button'); send.className='cell-send rit-send'; send.id='btnSend'; send.textContent='Enviar'; send.addEventListener('click',playerSend);   // Enviar abajo a la derecha, sin tapar el carril de scroll
-  box.appendChild(send);
+  const send=document.createElement('button'); send.className='cell-send'; send.id='btnSend'; send.textContent='Enviar';
+  send.style.gridColumn='span '+Math.max(1, cols*2-n);   // Enviar ocupa hasta el borde derecho de la última fila
+  send.addEventListener('click',playerSend); box.appendChild(send);
 }
 function attachPointer(card,cell){
   let sx=0,sy=0,dragging=false,ghost=null,overEl=null;

@@ -495,7 +495,7 @@
     <div class="land-or">o escribe el código de sala</div>
     <div class="land-code"><input type="text" id="landCode" maxlength="4" placeholder="XXXX" autocomplete="off"><button id="btnLandJoin">Entrar</button></div>
   </div>
-  <button class="land-host" id="btnCreate">Soy el profe · crear sala</button>
+  <button class="land-host" id="btnCreate">Crear sala</button>
 </div>
 
 <!-- ===== Escáner de QR ===== -->
@@ -897,6 +897,8 @@ function mountStaff(container,compound,slots,opts){ opts=opts||{};
 let audioCtx=null, MASTER=null, ANALYSER=null;
 function actx(){ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==='suspended')audioCtx.resume(); return audioCtx; }
 function master(){ const c=actx(); if(!MASTER){ MASTER=c.createGain(); MASTER.gain.value=1; try{ ANALYSER=c.createAnalyser(); ANALYSER.fftSize=512; ANALYSER.smoothingTimeConstant=0.8; MASTER.connect(ANALYSER); ANALYSER.connect(c.destination); }catch(e){ MASTER.connect(c.destination); } } return MASTER; }
+// corta el audio de piano en curso (silencia MASTER un instante; los sfx de interfaz van aparte y no se ven afectados)
+function stopAudio(){ try{ const c=actx(); const m=master(); m.gain.cancelScheduledValues(c.currentTime); m.gain.setValueAtTime(0.0001, c.currentTime); m.gain.setValueAtTime(0.0001, c.currentTime+0.18); m.gain.linearRampToValueAtTime(1, c.currentTime+0.26); }catch(_){} }
 let _cadVizRAF=null;
 function cadVizStart(canvas){ if(!canvas) return; cadVizStop(); const g=canvas.getContext('2d'); let phase=0;
   const rc=canvas.getBoundingClientRect(); canvas.width=Math.max(2,rc.width*2); canvas.height=Math.max(2,rc.height*2); g.setTransform(2,0,0,2,0,0);
@@ -1432,7 +1434,7 @@ function initHost(){
   $('#hBpmDown').addEventListener('click',()=>{H.bpm=Math.max(30,H.bpm-4);$('#hBpm').textContent=H.bpm;});
   $('#hBpmUp').addEventListener('click',()=>{H.bpm=Math.min(160,H.bpm+4);$('#hBpm').textContent=H.bpm;});
   $('#hMetro').addEventListener('change',e=>H.metro=e.target.checked);
-  $('#btnResults').addEventListener('click',hostShowResults);
+  $('#btnResults').addEventListener('click',()=>{ if(H.phase==='round') hostArmAutoCorrect(); });   // "Mostrar resultados" → cuenta atrás de 5 s + aviso de enviar
   $('#btnAgain').addEventListener('click',hostContinue);
   { const br=$('#btnReset'); if(br) br.addEventListener('click',hostReset); }   // botón "Nueva partida" eliminado
   $('#manualGo').addEventListener('click',()=>{const c=$('#manualCode').value.trim().toUpperCase(); if(c.length>=3) location.href=location.origin+location.pathname+'?room='+c;});

@@ -342,15 +342,37 @@
 
   .rotate-hint{display:none}
   @media (orientation:portrait){
-    #s-player-round .rotate-hint{display:flex;position:fixed;inset:0;z-index:60;background:rgba(12,9,2,.96);align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center;padding:34px;color:var(--muted)}
-    #s-player-round .rotate-hint .big{font-size:42px}
+    .screen.on .rotate-hint{display:flex;position:fixed;inset:0;z-index:120;background:rgba(12,9,2,.97);align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center;padding:34px;color:var(--muted)}
+    .screen.on .rotate-hint .big{font-size:54px;animation:rotatehint 1.7s ease-in-out infinite}
   }
+  @keyframes rotatehint{0%,100%{transform:rotate(-4deg)}35%,72%{transform:rotate(86deg)}}
   .foot{position:fixed;bottom:6px;left:0;right:0;text-align:center;font-size:10px;color:var(--muted2);opacity:.7}
   .fs-btn{position:fixed;top:5px;right:6px;z-index:300;font-family:inherit;font-size:17px;line-height:1;width:38px;height:34px;padding:0;border-radius:9px;background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a2005;border:1px solid #8a6410;box-shadow:0 4px 16px rgba(0,0,0,.5);cursor:pointer;display:flex;align-items:center;justify-content:center;animation:fsblink 1.1s ease-in-out infinite}
   .fs-btn.pressed{animation:none}
   @keyframes fsblink{0%,100%{box-shadow:0 0 0 0 rgba(212,175,55,.7)}50%{box-shadow:0 0 0 9px rgba(212,175,55,0)}}
   .fs-toast{position:fixed;top:46px;right:8px;z-index:300;max-width:min(320px,86vw);background:var(--panel);color:var(--ink);border:1px solid var(--gold2);border-radius:10px;padding:9px 12px;font-size:12.5px;line-height:1.35;box-shadow:0 10px 30px rgba(0,0,0,.5);opacity:0;transform:translateY(-6px);transition:opacity .3s,transform .3s;pointer-events:none}
   .fs-toast.show{opacity:1;transform:none}
+  /* flecha animada apuntando DIRECTAMENTE al botón ⛶ (esquina superior derecha) */
+  .fs-arrow-hint{position:fixed;top:41px;right:6px;z-index:301;display:flex;flex-direction:column;align-items:flex-end;gap:3px;pointer-events:none}
+  .fs-arrow-hint .fsa-ar{display:block;color:var(--gold);margin-right:11px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.65));animation:fsbob .95s ease-in-out infinite}
+  .fs-arrow-hint .fsa-lb{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a1a02;font-size:10.5px;font-weight:800;letter-spacing:.01em;padding:3px 9px;border-radius:999px;white-space:nowrap;box-shadow:0 5px 16px rgba(0,0,0,.55)}
+  @keyframes fsbob{0%,100%{transform:translateY(4px)}50%{transform:translateY(-4px)}}
+  /* CORRECCIÓN grande (número de la cuenta atrás) */
+  #bigRemindCount.brc-num{display:block;font-size:1.15em;font-weight:900;margin-top:4px;opacity:1;line-height:1}
+  /* Pausar (iPad) */
+  .pause-btn{position:fixed;top:5px;right:52px;z-index:300;font-family:inherit;font-size:14px;font-weight:800;line-height:1;height:34px;padding:0 14px;border-radius:9px;background:linear-gradient(180deg,#2a2412,#1b1608);color:var(--gold);border:1px solid var(--gold2);box-shadow:0 4px 16px rgba(0,0,0,.5);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px}
+  .pause-btn:active{transform:scale(.96)}
+  .pause-ov{position:fixed;inset:0;z-index:290;display:none;align-items:center;justify-content:center;background:rgba(8,6,2,.82);backdrop-filter:blur(3px)}
+  .pause-ov.on{display:flex}
+  .pause-card{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--gold);font-weight:900;font-size:clamp(30px,6vw,64px);letter-spacing:.06em}
+  .pause-card .pc-ico{font-size:1.5em;line-height:1}
+  .pause-card span{font-size:.32em;font-weight:700;letter-spacing:.02em;color:var(--muted);text-transform:none}
+  .rejoin-note{position:fixed;left:50%;top:12px;transform:translateX(-50%) translateY(-20px);z-index:320;background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a1a02;font-weight:800;font-size:13.5px;padding:9px 16px;border-radius:999px;box-shadow:0 8px 26px rgba(0,0,0,.5);opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;max-width:90vw;text-align:center}
+  .rejoin-note.on{opacity:1;transform:translateX(-50%) translateY(0)}
+  /* juego automático: se ocultan los controles manuales del iPad (todo va solo) */
+  body.autoplay #hListen, body.autoplay #btnResults, body.autoplay #hTest, body.autoplay #btnAgain, body.autoplay #btnRankMode, body.autoplay .rit-only, body.autoplay .hbpm{display:none !important}
+  /* sin botón Enviar en el móvil (el juego recoge lo marcado solo) */
+  .mel-send{display:none !important}
   /* portada + escáner */
   #s-landing{flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center}
   .landing-box{width:100%;max-width:360px;display:flex;flex-direction:column;gap:10px;margin-top:8px}
@@ -489,9 +511,12 @@
 </div>
 <div id="exIntro" class="ex-intro"><div class="ex-intro-inner"><div class="ex-intro-spiral" aria-hidden="true"><svg viewBox="0 0 200 200"><defs><linearGradient id="heroSp2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7e6a8"/><stop offset="0.5" stop-color="#d4af37"/><stop offset="1" stop-color="#a9801d"/></linearGradient></defs><path d="M 100.00 158.00 L 90.35 157.51 L 80.85 155.42 L 71.79 151.77 L 63.41 146.63 L 55.96 140.14 L 49.66 132.47 L 44.69 123.82 L 41.20 114.40 L 39.31 104.49 L 39.08 94.36 L 40.55 84.27 L 43.69 74.51 L 48.42 65.36 L 54.64 57.08 L 62.18 49.91 L 70.84 44.06 L 80.41 39.70 L 90.61 36.98 L 101.18 35.98 L 111.82 36.74 L 122.24 39.28 L 132.15 43.52 L 141.25 49.37 L 149.31 56.69 L 156.06 65.29 L 161.33 74.93 L 164.95 85.36 L 166.79 96.29 L 167.03 101.86 L 166.11 112.99 L 163.34 123.87 L 158.79 134.18 L 152.56 143.65 L 144.82 151.99 L 135.76 158.96 L 125.62 164.36 L 114.68 168.03 L 103.23 169.84 L 91.58 169.72 L 80.07 167.67 L 69.00 163.72 L 58.69 157.97 L 49.44 150.56 L 41.51 141.67 L 35.13 131.56 L 30.50 120.47 L 27.75 108.72 L 26.99 96.62 L 28.25 84.52 L 31.50 72.73 L 36.69 61.61 L 43.68 51.45 L 52.29 42.55 L 62.30 35.17 L 73.44 29.53 L 85.42 25.79 L 97.90 24.08 L 110.54 24.47 L 122.99 26.95 L 134.91 31.48 L 145.96 37.95 L 155.83 46.20 L 164.23 56.00 L 170.91 67.11 L 175.69 79.22 L 178.40 92.00 L 178.96 105.11 L 177.33 118.19 L 173.55 130.86 L 167.69 142.78 L 159.91 153.61 L 150.41 163.04 L 139.43 170.79 L 127.27 176.64 L 114.26 180.41 L 100.76 181.98 L 87.13 181.29 L 73.74 178.33 L 60.99 173.19 L 49.22 165.97 L 38.76 156.87 L 29.93 146.12 L 22.97 134.01 L 18.09 120.87 L 15.45 107.05 L 15.00 100.00" fill="none" stroke="url(#heroSp2)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="100" cy="158" r="5" fill="#f7e6a8"/></svg></div><div class="ex-intro-center" id="exIntroCenter"></div></div></div>
 <button id="exitBtn" class="exit-btn" title="Salir del juego">✕</button>
-<div id="bigRemind" class="big-remind"><div class="big-remind-txt">Pulsa ENVIAR<br>si no lo has hecho<span id="bigRemindCount"></span></div></div>
+<div id="bigRemind" class="big-remind"><div class="big-remind-txt">CORRECCIÓN<span id="bigRemindCount" class="brc-num"></span></div></div>
 <div id="exitConfirm" class="exit-confirm"><div class="exit-box"><div class="exit-q">¿Seguro que quieres salir de la partida?</div><div class="exit-sub">Tu puntuación se perderá.</div><div class="exit-btns"><button id="exitYes" class="btn-gold">Sí, salir</button><button id="exitNo">Seguir jugando</button></div></div></div>
 <button id="fsBtn" class="fs-btn" title="Pantalla completa">⛶</button>
+<div id="fsArrow" class="fs-arrow-hint" style="display:none"><svg class="fsa-ar" viewBox="0 0 24 32" width="22" height="28"><path d="M12 3 L12 29 M12 3 L5 11 M12 3 L19 11" stroke="currentColor" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="fsa-lb">pantalla completa</span></div>
+<button id="btnPause" class="pause-btn" style="display:none">⏸ Pausar</button>
+<div id="pauseOv" class="pause-ov"><div class="pause-card"><div class="pc-ico">⏸</div>PAUSA<span>Toca «Reanudar» para seguir</span></div></div>
 
 <!-- ========================= INICIO (portada) ========================= -->
 <div class="screen" id="s-landing">
@@ -834,7 +859,7 @@ function drawCellMini(cell,compound,color){
   if(beam) beam.setContext(ctx).draw();
   if(tuplet) tuplet.setContext(ctx).draw();
   const svg=holder.querySelector('svg');
-  try{const bb=svg.getBBox();if(bb&&bb.width>0){const p=1;svg.setAttribute('viewBox',(bb.x-p)+' '+(bb.y-p)+' '+(bb.width+2*p)+' '+(bb.height+2*p));svg.removeAttribute('width');svg.removeAttribute('height');svg.style.width='100%';svg.style.height='100%';svg.setAttribute('preserveAspectRatio','xMidYMid meet');}}catch(e){}
+  try{const bb=svg.getBBox();if(bb&&bb.width>0){const p=1;svg.__bb={x:bb.x,y:bb.y,w:bb.width,h:bb.height};svg.setAttribute('viewBox',(bb.x-p)+' '+(bb.y-p)+' '+(bb.width+2*p)+' '+(bb.height+2*p));svg.removeAttribute('width');svg.removeAttribute('height');svg.style.width='100%';svg.style.height='100%';svg.setAttribute('preserveAspectRatio','xMidYMid meet');}}catch(e){}
   if(holder.parentNode) document.body.removeChild(holder);   // el svg ya lleva su viewBox; lo montará quien llame
   return svg;
 }
@@ -926,12 +951,12 @@ function cadVizStop(){ if(_cadVizRAF){ cancelAnimationFrame(_cadVizRAF); _cadViz
 function click(t0,accent,vol){ const c=actx(),m=master(); const o=c.createOscillator(),g=c.createGain(); const V=(vol==null?1:vol);
   const lp=c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=2200; lp.Q.value=0.4; lp.connect(m);
   o.type='triangle'; o.frequency.value=accent?1050:900; o.connect(g); g.connect(lp);
-  g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(Math.max(0.0002,(accent?0.46:0.30)*V),t0+0.002); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.05); o.start(t0); o.stop(t0+0.06); }
+  g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(Math.max(0.0002,(accent?0.72:0.5)*V),t0+0.002); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.05); o.start(t0); o.stop(t0+0.06); }
 function knock(t0,gain){ const c=actx(),m=master(); const len=Math.floor(c.sampleRate*0.018); const b=c.createBuffer(1,len,c.sampleRate); const d=b.getChannelData(0);
   for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.2); const s=c.createBufferSource(); s.buffer=b;
   const hp=c.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=900; hp.Q.value=0.5;
   const lp=c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=5200; lp.Q.value=0.5;
-  const g=c.createGain(); g.gain.setValueAtTime(gain||0.34,t0); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.03);
+  const g=c.createGain(); g.gain.setValueAtTime(gain||0.58,t0); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.03);
   s.connect(hp); hp.connect(lp); lp.connect(g); g.connect(m); s.start(t0); s.stop(t0+0.04); }
 // cuerpo grave sostenido (de RITMO at home) para sentir la DURACIÓN de cada figura
 function synth(midi,t0,dur,gain){ const c=actx(),m=master(); const f=440*Math.pow(2,(midi-69)/12), G=gain||0.09;
@@ -950,11 +975,11 @@ async function testAudio(bpm){ const c=actx(); if(c.state==='suspended') await c
 async function playRhythm(solution,compound,bpm,metro,onPulse){ const c=actx(); if(c.state==='suspended') await c.resume();
   const beat=60/bpm, t0=c.currentTime+0.3; let start=t0;
   if(metro){ click(t0,true); click(t0+beat,false); start=t0+2*beat; }
-  for(let i=0;i<8;i++){ const cell=solution[i], base=start+i*beat; if(metro) click(base,i%2===0,0.32);
+  for(let i=0;i<8;i++){ const cell=solution[i], base=start+i*beat; if(metro) click(base,i%2===0,0.62);
     if(onPulse) setTimeout(()=>onPulse(i), Math.max(0,(base-c.currentTime)*1000));   // iluminar el pulso
     cellEvents(cell,compound).forEach(o=>{ const when=base+o.t*beat, d=Math.max(0.12,o.dur*beat*0.98);
-      knock(when,0.42);        // ataque percusivo con pegada
-      synth(45,when,d,0.09);   // cuerpo grave que dura lo que la figura
+      knock(when,0.72);        // ataque percusivo con pegada (más volumen)
+      synth(45,when,d,0.12);   // cuerpo grave que dura lo que la figura
     }); }
   return (metro?2:0)*beat+8*beat+0.8;
 }
@@ -1024,10 +1049,10 @@ function renderMelStaffSVG(midis, W, H, opts){ opts=opts||{};
   const staveY=Math.round((LH-ivRoom)/2 - 16) + ivRoom;
   const stave=new VF.Stave(x0, staveY, LW-x0-pad, {space_above_staff_ln:0,space_below_staff_ln:0});
   stave.addClef('treble'); stave.setContext(ctx).draw();
-  const notes=[];
+  const notes=[]; const accState={};   // alteración vigente por nota (letra+octava); una natural tras una # lleva becuadro
   for(let i=0;i<N;i++){ const m=midis[i];
-    if(m!=null){ const k=melVFkey(m); const sn=new VF.StaveNote({keys:[k.key],duration:'w'});
-      if(k.acc){ try{ sn.addModifier(new VF.Accidental(k.acc),0); }catch(e){ try{ sn.addAccidental(0,new VF.Accidental(k.acc)); }catch(_){} } }
+    if(m!=null){ const k=melVFkey(m); const sp=melSpell(m); const kk=sp.letter+sp.oct, des=(sp.acc==='#')?'#':'n', cur=accState[kk]||'n'; const sn=new VF.StaveNote({keys:[k.key],duration:'w'});
+      if(des!==cur){ const gl=(des==='#')?'#':'n'; try{ sn.addModifier(new VF.Accidental(gl),0); }catch(e){ try{ sn.addAccidental(0,new VF.Accidental(gl)); }catch(_){} } accState[kk]=des; }
       const col=(opts.colors&&opts.colors[i])||((i===0&&opts.given)?'#b8860b':'#241a06');
       sn.setStyle({fillStyle:col,strokeStyle:col}); notes.push(sn);
     } else { const sn=new VF.StaveNote({keys:['b/4'],duration:'w'}); sn.setStyle({fillStyle:'rgba(0,0,0,0)',strokeStyle:'rgba(0,0,0,0)'}); notes.push(sn); } }
@@ -1366,7 +1391,7 @@ async function playCadencia(gen){ const c=actx(); if(c.state==='suspended')await
    UTIL
    ========================================================================= */
 const $=s=>document.querySelector(s);
-function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on')); $('#'+id).classList.add('on'); }
+function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on')); $('#'+id).classList.add('on'); if(typeof updateFsHint==='function') updateFsHint(); }
 function genCode(){ const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let c=''; for(let i=0;i<4;i++)c+=A[rint(A.length)]; return c; }
 function genId(){ return 'p'+Math.random().toString(36).slice(2,9); }
 const chan=code=>'pcarrusel-'+code;
@@ -1414,15 +1439,60 @@ function toggleFS(){ if(_canFS){ if(_isFS()){ (document.exitFullscreen||document
 (function(){ const b=document.getElementById('fsBtn');
   const standalone = window.navigator.standalone===true || (window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches);
   if(b){ if(standalone){ b.dataset.hide='1'; b.style.display='none'; } else { b.addEventListener('click',()=>{ b.classList.add('pressed'); toggleFS(); }); } }
-  ['fullscreenchange','webkitfullscreenchange'].forEach(ev=>document.addEventListener(ev,()=>{ if(b) b.textContent=_isFS()?'⤢':'⛶'; }));
+  ['fullscreenchange','webkitfullscreenchange'].forEach(ev=>document.addEventListener(ev,()=>{ if(b) b.textContent=_isFS()?'⤢':'⛶'; if(_isFS()) tryLockLandscape(); updateFsHint(); }));
 })();
+
+/* ---- mantener la pantalla encendida (wake lock) + orientación horizontal + aviso de pantalla completa ---- */
+let _wake=null;
+async function wakeOn(){ try{ if('wakeLock' in navigator && document.visibilityState==='visible'){ _wake=await navigator.wakeLock.request('screen'); } }catch(_){} }
+function tryLockLandscape(){ try{ if(screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(()=>{}); }catch(_){} }
+function updateFsHint(){ const a=document.getElementById('fsArrow'); if(!a)return;
+  const standalone=window.navigator.standalone===true||(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches);
+  const on=document.querySelector('.screen.on'); const waiting=on&&on.id==='s-player-wait';
+  a.style.display=(waiting && _canFS && !_isFS() && !standalone)?'flex':'none'; }
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'){ wakeOn(); if(typeof playerOnResume==='function') playerOnResume(); } });
 
 /* =========================================================================
    HOST
    ========================================================================= */
 let H={code:null, channel:null, roster:{}, answers:{}, players:{}, phase:'lobby',
        exercise:null, bpm:72, metro:true, listens:2, compMode:'random', exType:'ritmico', melSpeed:'Normal', roundId:0,
-       setlist:{ritmico:1, melodico:1, toncom:1, cadencias:1, modos:1, armonico:1}, queue:[], qIndex:0, gameDone:false};
+       setlist:{ritmico:1, melodico:1, toncom:1, cadencias:1, modos:1, armonico:1}, queue:[], qIndex:0, gameDone:false,
+       paused:false, autoT:null, autoFn:null, autoLeft:0, autoAt:0};
+
+/* ---- JUEGO AUTOMÁTICO: temporizador pausable + pausa/reanudar ---- */
+function autoClear(){ if(H.autoT){ clearTimeout(H.autoT); H.autoT=null; } H.autoFn=null; }
+function autoStep(ms, fn){ autoClear(); H.autoFn=fn; H.autoLeft=ms; H.autoAt=Date.now();
+  if(!H.paused){ H.autoT=setTimeout(()=>{ H.autoT=null; const f=H.autoFn; H.autoFn=null; f&&f(); }, ms); } }
+function audioMute(){ try{ const c=actx(),m=master(); m.gain.cancelScheduledValues(c.currentTime); m.gain.setValueAtTime(0.0001,c.currentTime); }catch(_){} }
+function audioUnmute(){ try{ const c=actx(),m=master(); m.gain.cancelScheduledValues(c.currentTime); m.gain.setValueAtTime(m.gain.value||0.0001,c.currentTime); m.gain.linearRampToValueAtTime(1,c.currentTime+0.15); }catch(_){} }
+function hostTogglePause(){ H.paused?hostResume():hostPause(); }
+function hostPause(){ if(H.paused)return; H.paused=true;
+  if(H.autoT){ clearTimeout(H.autoT); H.autoT=null; H.autoLeft=Math.max(0,H.autoLeft-(Date.now()-H.autoAt)); }
+  audioMute();
+  const o=$('#pauseOv'); if(o) o.classList.add('on');
+  const pb=$('#btnPause'); if(pb) pb.textContent='▶ Reanudar';
+  try{ if(H.channel) H.channel.send({type:'broadcast',event:'pause',payload:{on:true}}); }catch(_){}
+}
+function hostResume(){ if(!H.paused)return; H.paused=false;
+  const o=$('#pauseOv'); if(o) o.classList.remove('on');
+  const pb=$('#btnPause'); if(pb) pb.textContent='⏸ Pausar';
+  audioUnmute();
+  if(H.autoFn){ H.autoAt=Date.now(); H.autoT=setTimeout(()=>{ H.autoT=null; const f=H.autoFn; H.autoFn=null; f&&f(); }, H.autoLeft); }
+  try{ if(H.channel) H.channel.send({type:'broadcast',event:'pause',payload:{on:false}}); }catch(_){}
+}
+function hostShowPause(show){ const pb=$('#btnPause'); if(pb) pb.style.display=show?'flex':'none'; if(!show){ const o=$('#pauseOv'); if(o) o.classList.remove('on'); } }
+/* arranca solo cada ronda: 3-2-1 → primera escucha */
+function hostAutoRun(){ if(H.phase!=='round')return; runCountdown(()=>{ if(H.phase==='round') hostListen(true); }); }
+/* recoge lo marcado en los móviles y corrige */
+function hostCollectAndScore(){ if(H.phase!=='round')return;
+  try{ if(H.channel) H.channel.send({type:'broadcast',event:'collect'}); }catch(_){}   // los móviles registran lo que tengan marcado
+  autoStep(800, ()=>{ if(H.phase==='round') hostShowResults(); }); }
+/* tras enseñar resultados: ejercicio → (5s) general → (5s) siguiente ronda, todo solo */
+function hostScheduleReveal(){
+  autoStep(5500, ()=>{ if(H.phase!=='reveal')return; renderRanking('general','count'); H.rankMode='general'; updateContinueLabel();
+    autoStep(5500, ()=>{ if(H.phase!=='reveal')return; hostAutoAdvance(); }); }); }
+function hostAutoAdvance(){ if(H.qIndex < H.queue.length-1){ H.qIndex++; hostStartRound(); } else hostFinalPodium(); }
 
 function initHost(){
   document.addEventListener('pointerdown',()=>ensureAudio(),{once:true});
@@ -1440,8 +1510,11 @@ function initHost(){
   $('#hMelSpeed').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
     $('#hMelSpeed').querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');H.melSpeed=b.dataset.sp;sfx('nav');});
   $('#btnStart').addEventListener('click',hostStartGame);
+  document.body.classList.add('autoplay');   // juego automático: oculta controles manuales del iPad
+  { const pb=$('#btnPause'); if(pb) pb.addEventListener('click',hostTogglePause); }
+  wakeOn();   // mantener el iPad encendido
   $('#hTest').addEventListener('click',()=>testAudio(H.bpm));
-  $('#hListen').addEventListener('click',hostListen);
+  $('#hListen').addEventListener('click',()=>hostListen());
   $('#hBpmDown').addEventListener('click',()=>{H.bpm=Math.max(30,H.bpm-4);$('#hBpm').textContent=H.bpm;});
   $('#hBpmUp').addEventListener('click',()=>{H.bpm=Math.min(160,H.bpm+4);$('#hBpm').textContent=H.bpm;});
   $('#hMetro').addEventListener('change',e=>H.metro=e.target.checked);
@@ -1501,7 +1574,7 @@ function hostContinue(){
 }
 function updateContinueLabel(){ const b=$('#btnAgain'); if(!b)return; const last=H.qIndex>=H.queue.length-1;
   if(H.rankMode!=='exercise' && last) b.innerHTML='🏆 Clasificación final'; else b.textContent='Siguiente →'; }
-function hostRevealButtons(){ H.rankMode='exercise'; updateContinueLabel(); }
+function hostRevealButtons(){ H.rankMode='exercise'; updateContinueLabel(); hostScheduleReveal(); }
 function updateRoundProgress(){ const p=$('#hProg'); if(p) p.textContent = H.queue.length? ('Ronda '+(H.qIndex+1)+' / '+H.queue.length) : ''; }
 // INTRO grande del ejercicio, que se esfuma dejando ver la interfaz
 function exDisplayName(x){ return {ritmico:'Rítmico', melodico:'Melódico', toncom:'TonCom', cadencias:'Cadencias', modos:'Modos', armonico:'Armónico'}[x]||x; }
@@ -1523,8 +1596,8 @@ function updateCounter(){
 function chosenCompound(){ if(H.compMode==='simple')return false; if(H.compMode==='compound')return true; return Math.random()<0.5; }
 function hostStartRound(){
   if(H.queue.length) H.exType=H.queue[H.qIndex];
-  hostBeginRound();          // monta la interfaz de la ronda…
-  hostIntro(H.exType);       // …y el título grande la tapa y se esfuma dejándola al descubierto
+  hostBeginRound();                    // monta la interfaz de la ronda…
+  hostIntro(H.exType, ()=>hostAutoRun());   // …intro grande, y al esfumarse arranca sola (3-2-1 → escuchar)
 }
 /* =========================================================================
    MOTOR MODOS  (de LMPRO/modosathome · dos frases, adivina el modo)
@@ -1639,10 +1712,11 @@ function a2chord(mids,dur){ const c=actx(); const t0=c.currentTime+0.05; (mids||
 function a2arp(mids){ const c=actx(); const t0=c.currentTime+0.05; const b=0.34; mids.forEach((m,i)=>pianoTone(m,t0+i*b,0.5)); }
 
 function hostBeginRound(){
-  hostCancelAutoCorrect(); stopAudio();   // corta cualquier audio/temporizador de la ronda anterior (evita corregir sobre el ejercicio nuevo)
+  hostCancelAutoCorrect(); autoClear(); stopAudio();   // corta cualquier audio/temporizador de la ronda anterior (evita corregir sobre el ejercicio nuevo)
   if(H.queue.length) H.exType=H.queue[H.qIndex];
   H.answers={}; H.phase='round'; H.roundId++; H.gameDone=false;
   H.listens=MEL_MAX_LISTENS; $('#hListen').disabled=false;
+  hostShowPause(true);   // botón Pausar visible durante toda la partida
   const rmk=$('#btnRankMode'); if(rmk) rmk.style.display='';
   showScreen('s-host-round'); const rs=$('#s-host-round'); rs.classList.remove('mel','toncom');
   if(H.exType==='melodico'){
@@ -1692,7 +1766,7 @@ function hostBeginRound(){
   }
   updateRoundProgress(); updateCounter(); hostBroadcastPhase();
 }
-async function hostListen(){
+async function hostListen(skipCd){
   if(H.exercise && H.exercise.type==='toncom'){ return hostListenTon(); }
   if(H.exercise && H.exercise.type==='cadencias'){ return hostListenCad(); }
   if(H.exercise && H.exercise.type==='modos'){ return hostListenModos(); }
@@ -1707,9 +1781,9 @@ async function hostListen(){
       if(H.exercise.type==='melodico') dur=await playMelody(H.exercise.sol, H.melSpeed, null, primera?1:0.5);   // 2ª escucha al doble de velocidad
       else dur=await playRhythm(H.exercise.solution,H.exercise.compound,H.bpm,H.metro,flashHostNumber);
     }catch(e){}
-    setTimeout(()=>{ sw&&sw.classList.remove('listening'); eq&&eq.classList.remove('on'); if(H.roundId!==rid)return; if(H.listens>0)$('#hListen').disabled=false; else hostArmAutoCorrect(); }, dur*1000);
+    setTimeout(()=>{ sw&&sw.classList.remove('listening'); eq&&eq.classList.remove('on'); if(H.roundId!==rid)return; if(H.listens>0) autoStep(1500,()=>hostListen(true)); else hostArmAutoCorrect(); }, dur*1000);
   };
-  if(primera) runCountdown(go); else go();
+  if(primera && !skipCd) runCountdown(go); else go();
 }
 // CADENCIAS: 1ª reproducción solo suena; 2ª (última) revela la partitura con fundido → cuenta atrás
 async function hostListenCad(){
@@ -1734,6 +1808,7 @@ async function hostListenModos(){
 async function hostListenArm(){ await ensureAudio(); $('#hListen').disabled=true; const D=H.exercise; const m=$('#armMsg'); const rid=H.roundId;
   armPlayBlock(D.notes); if(m) m.innerHTML='Suena el acorde en <b>bloque</b>…';
   setTimeout(()=>{ if(H.phase!=='round'||H.roundId!==rid)return; armPlayArp(D.notes); if(m) m.innerHTML='Ahora <b>arpegiado</b>…'; }, 6000);
+  setTimeout(()=>{ if(H.phase==='round'&&H.roundId===rid){ try{ if(H.channel) H.channel.send({type:'broadcast',event:'collect'}); }catch(_){} } }, 9200);   // recoge el tipo elegido (fase 1)
   setTimeout(()=>{ if(H.phase==='round'&&H.roundId===rid) hostArmPhase2(); }, 10000);
 }
 // ARMÓNICO Fase 2: nota central dada → secuencia de 8 sonidos (4s c/u, con carteles) → 5s de cuenta atrás
@@ -1759,27 +1834,25 @@ function hostArmPhase2(){ if(H.phase!=='round') return; const rid=H.roundId; H.a
     ['Acorde desplegado', ()=>a2arp(all)]
   ];
   let i=0; const cap=()=>$('#arm2Cap');
-  const run=()=>{ if(H.phase!=='round'||H.armPhase!==2||H.roundId!==rid) return; if(i>=steps.length){ hostArm2Countdown(); return; }
-    const st=steps[i]; const c=cap(); if(c) c.innerHTML=st[0]; try{ st[1](); }catch(_){} i++; setTimeout(run, 6000); };   // 6 s entre cada sonido
+  const run=()=>{ if(H.phase!=='round'||H.armPhase!==2||H.roundId!==rid) return; if(H.paused){ setTimeout(run,300); return; } if(i>=steps.length){ hostArm2Countdown(); return; }
+    const st=steps[i]; const c=cap(); if(c) c.innerHTML=st[0]; try{ st[1](); }catch(_){} i++; setTimeout(run, 6000); };   // 6 s entre cada sonido (respeta pausa)
   setTimeout(run, 1200);
 }
 function hostArm2Countdown(){ hostCancelAutoCorrect();
-  try{ if(H.channel) H.channel.send({type:'broadcast',event:'warn'}); }catch(_){}
   const br=$('#bigRemind'), bc=$('#bigRemindCount'); let s=5;
-  const show=n=>{ if(bc) bc.textContent='Corrección en '+n; if(br) br.classList.add('on'); }; show(s);
-  const tick=()=>{ s--; if(s<=0){ hostCancelAutoCorrect(); if(H.phase==='round') hostShowResults(); return; } show(s); _acTimer=setTimeout(tick,1000); };
+  const show=n=>{ if(bc) bc.textContent=n; if(br) br.classList.add('on'); }; show(s);
+  const tick=()=>{ if(H.paused){ _acTimer=setTimeout(tick,250); return; } s--; if(s<=0){ hostCancelAutoCorrect(); hostCollectAndScore(); return; } show(s); _acTimer=setTimeout(tick,1000); };
   _acTimer=setTimeout(tick,1000);
 }
 // --- corrección automática: tras la última reproducción, 10 s y a corregir (adelantable con el botón) ---
 let _acTimer=null;
 function hostCancelAutoCorrect(){ if(_acTimer){clearTimeout(_acTimer);_acTimer=null;} const br=$('#bigRemind'); if(br) br.classList.remove('on'); cadVizStop(); }
-function armCorrectAfter(rid,dur){ setTimeout(()=>{ if(H.roundId!==rid)return; if(H.listens>0)$('#hListen').disabled=false; else hostArmAutoCorrect(); }, dur*1000); }
+function armCorrectAfter(rid,dur){ setTimeout(()=>{ if(H.roundId!==rid)return; if(H.listens>0) autoStep(1500,()=>hostListen(true)); else hostArmAutoCorrect(); }, dur*1000); }
 function hostArmAutoCorrect(){ if(H.phase!=='round') return; hostCancelAutoCorrect();
-  try{ if(H.channel) H.channel.send({type:'broadcast',event:'warn'}); }catch(_){}   // avisa a los móviles: solo el resplandor del botón
-  const br=$('#bigRemind'), bc=$('#bigRemindCount'); let s=5;   // cuenta atrás de 5 s
-  const show=n=>{ if(bc) bc.textContent='Corrección automática en '+n; if(br) br.classList.add('on'); };   // aviso GRANDE solo en el iPad
+  const br=$('#bigRemind'), bc=$('#bigRemindCount'); let s=5;   // cuenta atrás de 5 s → CORRECCIÓN
+  const show=n=>{ if(bc) bc.textContent=n; if(br) br.classList.add('on'); };   // "CORRECCIÓN" + número (solo iPad)
   show(s);
-  const tick=()=>{ s--; if(s<=0){ hostCancelAutoCorrect(); if(H.phase==='round') hostShowResults(); return; } show(s); _acTimer=setTimeout(tick,1000); };
+  const tick=()=>{ if(H.paused){ _acTimer=setTimeout(tick,250); return; } s--; if(s<=0){ hostCancelAutoCorrect(); hostCollectAndScore(); return; } show(s); _acTimer=setTimeout(tick,1000); };
   _acTimer=setTimeout(tick,1000);
 }
 function hostShowResults(){
@@ -1928,12 +2001,12 @@ function renderRanking(mode,animate){
   } else if(animate==='count'){   // ranking general: los puntos suben desde el total anterior, con sonido de conteo
     rows.forEach(r=>r.classList.add('in'));
     rows.forEach((row,i)=>setTimeout(()=>{ const el=row.querySelector('.pts'), to=+row.dataset.val, from=+(row.dataset.from||0);
-      if(to>from){ countUp(el,to,760,suffix,from); sfx('correctTick',Math.min(i,6)); } else { el.textContent=to+suffix; }
+      if(to>from){ countUp(el,to,760,suffix,from); countHammer(760); } else { el.textContent=to+suffix; }
       if(i===rows.length-1) setTimeout(()=>{ if(arr[0]&&value(arr[0])>0) sfx('winner'); }, 500);
     }, 260+i*150));
   } else { rows.forEach(r=>r.classList.add('in')); }
 }
-function hostFinalPodium(){ H.finalShown=true; H.phase='final';
+function hostFinalPodium(){ H.finalShown=true; H.phase='final'; autoClear(); hostShowPause(false);
   const arr=rankingArr('general'), top=arr.slice(0,3), rest=arr.slice(3);
   showScreen('s-podium');
   const medals=['🥇','🥈','🥉'], order=[1,0,2];   // 2º, 1º, 3º (1º en el centro)
@@ -1945,7 +2018,7 @@ function hostFinalPodium(){ H.finalShown=true; H.phase='final';
   sfx('winner'); setTimeout(()=>confettiBurst(), 420);
   try{ if(H.channel) H.channel.send({type:'broadcast',event:'phase',payload:{phase:'final',ranking:arr}}); }catch(_){}
 }
-function hostReset(){ hostCancelAutoCorrect(); H.finalShown=false; H.players={}; H.answers={}; H.phase='lobby'; H.queue=[]; H.qIndex=0; H.gameDone=false;
+function hostReset(){ hostCancelAutoCorrect(); autoClear(); H.paused=false; hostShowPause(false); H.finalShown=false; H.players={}; H.answers={}; H.phase='lobby'; H.queue=[]; H.qIndex=0; H.gameDone=false;
   $('#s-host-round').classList.remove('mel','toncom'); $('#s-host-reveal').classList.remove('mel','toncom','cad');
   const rm=$('#btnRankMode'); if(rm) rm.style.display='';
   showScreen('s-host-lobby'); renderRoster(); hostBroadcastPhase(); }
@@ -1994,20 +2067,51 @@ function initPlayer(code){
 }
 function playerJoin(){
   const a=$('#alias').value.trim(); if(!a){ $('#alias').focus(); return; }
-  ensureAudio(); sfx('go');
+  ensureAudio(); sfx('go'); wakeOn(); tryLockLandscape();   // pantalla encendida + intento de horizontal
   PL.alias=a.slice(0,16); $('#pwAlias').textContent=PL.alias; $('#prAlias').textContent=PL.alias;
   playerConnect();
+}
+function isRoundScreenOn(){ const on=document.querySelector('.screen.on'); return !!(on && ['s-landing','s-player-join','s-player-wait'].indexOf(on.id)<0); }
+/* recoge lo que el alumno tenga marcado (llega 'collect' del iPad al acabar la cuenta atrás) */
+function playerCollect(){
+  if(PL.exType==='armonico' && PL.armPhase===1){   // fase 1: registra el tipo elegido, sin cambiar de pantalla ni bloquear la fase 2
+    const ms=Date.now()-PL.roundStart, aans=PL.armSel;
+    try{ PL.channel.track({alias:PL.alias, rid:PL.roundId, aans, ms}); }catch(_){}
+    try{ PL.channel.send({type:'broadcast',event:'answer',payload:{id:PL.id,alias:PL.alias,aans,ms}}); }catch(_){}
+    return;
+  }
+  if(PL.sent) return; try{ playerSend(); }catch(_){}
+}
+/* pausa del profe: overlay en el móvil */
+function playerPause(on){ let ov=document.getElementById('pPauseOv');
+  if(!ov){ ov=document.createElement('div'); ov.id='pPauseOv'; ov.className='pause-ov';
+    ov.innerHTML='<div class="pause-card"><div class="pc-ico">⏸</div>PAUSA<span>El profe ha pausado</span></div>'; document.body.appendChild(ov); }
+  ov.classList.toggle('on',!!on);
+}
+/* al volver a primer plano (desbloqueo/reapertura): re-sincroniza la fase con el iPad */
+let _resumeNoteT=null;
+function playerOnResume(){ if(!PL.id||!PL.channel) return; PL._resumed=true;
+  try{ PL.channel.send({type:'broadcast',event:'hello',payload:{id:PL.id}}); }catch(_){}   // el iPad reenvía la fase actual → re-render
+  setTimeout(()=>{ PL._resumed=false; }, 2500);
+}
+function playerRejoinNote(){ let n=document.getElementById('rejoinNote');
+  if(!n){ n=document.createElement('div'); n.id='rejoinNote'; n.className='rejoin-note'; document.body.appendChild(n); }
+  n.textContent='Te reincorporarás en la siguiente ronda'; n.classList.add('on');
+  clearTimeout(_resumeNoteT); _resumeNoteT=setTimeout(()=>n.classList.remove('on'), 4600);
 }
 function playerConnect(){
   PL.channel=sb.channel(chan(PL.code),{config:{broadcast:{self:false},presence:{key:PL.id}}});
   PL.channel
     .on('broadcast',{event:'phase'},({payload})=>playerOnPhase(payload))
     .on('broadcast',{event:'warn'},()=>playerWarn())
+    .on('broadcast',{event:'collect'},()=>playerCollect())
+    .on('broadcast',{event:'pause'},({payload})=>playerPause(payload&&payload.on))
     .on('broadcast',{event:'moderecipe'},()=>playerModosRecipe())
     .on('broadcast',{event:'charpulse'},()=>charGlow())
     .on('broadcast',{event:'armp2'},({payload})=>{ if(PL.exType==='armonico'){ PL.armPhase=2; startPlayerRoundArm2(payload&&payload.given); } })
     .subscribe(async status=>{ if(status==='SUBSCRIBED'){ await PL.channel.track({alias:PL.alias});
-        showScreen('s-player-wait'); PL.channel.send({type:'broadcast',event:'hello',payload:{id:PL.id}}); } });
+        if(!isRoundScreenOn()) { showScreen('s-player-wait'); updateFsHint(); }
+        PL.channel.send({type:'broadcast',event:'hello',payload:{id:PL.id}}); } });
 }
 // aviso de "pulsa Enviar" (cuando arranca la cuenta atrás en el iPad)
 function playerWarn(){ if(PL.sent) return;   // móvil: solo el resplandor del botón Enviar (el texto va en el iPad)
@@ -2022,7 +2126,8 @@ function playerOnPhase(p){
     else if(PL.exType==='armonico'){ PL.armPro=!!p.pro; PL.armPhase=1; startPlayerRoundArm(); }
     else { PL.compound=p.compound; startPlayerRound(); } }
   else if(p.phase==='reveal'){ PL.roundId=p.roundId||PL.roundId; const ex=p.ex||'ritmico';
-    if(ex==='melodico') playerRevealMel(p); else if(ex==='toncom') playerRevealTon(p); else if(ex==='cadencias') playerRevealCad(p); else if(ex==='modos') playerRevealModos(p); else if(ex==='armonico') playerRevealArm(p); else playerReveal(p); }
+    if(ex==='melodico') playerRevealMel(p); else if(ex==='toncom') playerRevealTon(p); else if(ex==='cadencias') playerRevealCad(p); else if(ex==='modos') playerRevealModos(p); else if(ex==='armonico') playerRevealArm(p); else playerReveal(p);
+    if(PL._resumed && !PL.sent) playerRejoinNote(); }
   else if(p.phase==='final'){ playerFinal(p); }
   else if(p.phase==='lobby'){ if(!$('#s-player-join').classList.contains('on')) showScreen('s-player-wait'); }
 }
@@ -2090,19 +2195,21 @@ function playerSet(i,cell){
 }
 function refreshPlayerSlots(){ for(let i=0;i<8;i++){ const h=pslot(i); if(h) h.classList.toggle('current',i===PL.current); } }
 function buildPlayerPalette(){
-  const box=$('#prPalette'); box.className='palette-grid'; box.innerHTML='';   // rejilla que llena la pantalla; Enviar = última celda
+  const box=$('#prPalette'); box.className='palette-grid'; box.innerHTML='';   // rejilla que llena la pantalla (sin Enviar: se recoge solo)
   const cells=paletteFor(PL.compound); const n=cells.length;
-  const cols=Math.max(4, Math.ceil((n+1)/2));   // ~2 filas
+  const cols=Math.max(4, Math.ceil(n/2));   // ~2 filas, sin reservar hueco para Enviar
   box.style.setProperty('--pcols',cols);
+  const svgs=[];
   cells.forEach(cell=>{
     const card=document.createElement('div'); card.className='cell-card';
     const svg=drawCellMini(cell,PL.compound,'#241a06'); svg.style.width='100%'; svg.style.height='100%';
     const mini=document.createElement('div'); mini.className='mini'; mini.appendChild(svg);
-    card.appendChild(mini); attachPointer(card,cell); box.appendChild(card);
+    card.appendChild(mini); attachPointer(card,cell); box.appendChild(card); svgs.push(svg);
   });
-  const send=document.createElement('button'); send.className='cell-send'; send.id='btnSend'; send.textContent='Enviar';
-  send.style.gridColumn='span '+Math.max(1, cols*2-n);   // Enviar ocupa hasta el borde derecho de la última fila
-  send.addEventListener('click',playerSend); box.appendChild(send);
+  // TAMAÑO DE FIGURA UNIFORME: viewBox común (el de la figura más densa); cada figura centrada (negra/silencio quedan pequeñas y centradas)
+  let maxW=0,maxH=0; svgs.forEach(s=>{ if(s.__bb){ maxW=Math.max(maxW,s.__bb.w); maxH=Math.max(maxH,s.__bb.h); } });
+  if(maxW>0){ const pad=8; maxW+=2*pad; maxH+=2*pad;
+    svgs.forEach(s=>{ if(s.__bb){ const cx=s.__bb.x+s.__bb.w/2, cy=s.__bb.y+s.__bb.h/2; s.setAttribute('viewBox',(cx-maxW/2)+' '+(cy-maxH/2)+' '+maxW+' '+maxH); } }); }
 }
 function attachPointer(card,cell){
   let sx=0,sy=0,dragging=false,ghost=null,overEl=null;
@@ -2417,6 +2524,8 @@ function sfx(name,idx){ try{ const c=actx(); const t=c.currentTime; switch(name)
   case 'fail': tone(300,t,.18,'sawtooth',.15); tone(220,t+.12,.22,'sawtooth',.15); break;
 }}catch(e){} }
 function countUp(el,to,dur,suffix,from){ if(!el)return; from=from||0; const t0=performance.now(); dur=dur||700; suffix=suffix||''; (function fr(now){ const k=Math.min(1,(now-t0)/dur); el.textContent=Math.round(from+(to-from)*(1-Math.pow(1-k,3)))+suffix; if(k<1)requestAnimationFrame(fr); })(performance.now()); }
+// sonido de conteo: tics agudos y secos que martillean durante el recuento
+function countHammer(dur){ try{ const c=actx(),t0=c.currentTime; const n=Math.max(5,Math.round(dur/85)); for(let i=0;i<n;i++){ const t=t0+(i*dur/1000)/n; tone(1500,t,.04,'square',.09); tone(2250,t+.004,.028,'square',.045); } }catch(e){} }
 function hypeCount(i,isGo){ const c=actx(),t=c.currentTime;
   if(isGo){ [523,659,784,1047].forEach((f,k)=>tone(f,t+k*0.05,.3,'sawtooth',.2)); noiseSweep(t,.42,.16); tone(120,t,.5,'sine',.3); }
   else { const base=[311,392,523][i]||311;
@@ -2424,7 +2533,7 @@ function hypeCount(i,isGo){ const c=actx(),t=c.currentTime;
     const o=c.createOscillator(),g=c.createGain(); o.type='sawtooth'; o.frequency.setValueAtTime(base*0.6,t); o.frequency.exponentialRampToValueAtTime(base*1.5,t+.18);
     g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.10,t+.02); g.gain.exponentialRampToValueAtTime(.0001,t+.2); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+.22); } }
 function runCountdown(done){ const ov=$('#countdown'); ov.classList.add('on'); const seq=['3','2','1','¡YA!']; let i=0; ensureAudio();
-  (function step(){ if(i>=seq.length){ ov.classList.remove('on'); done&&done(); return; } ov.innerHTML='<div class="n'+(i===3?' go':'')+'">'+seq[i]+'</div>'; hypeCount(i, i>=3); i++; setTimeout(step, i<seq.length?600:520); })(); }
+  (function step(){ if(H.paused){ setTimeout(step,250); return; } if(i>=seq.length){ ov.classList.remove('on'); done&&done(); return; } ov.innerHTML='<div class="n'+(i===3?' go':'')+'">'+seq[i]+'</div>'; hypeCount(i, i>=3); i++; setTimeout(step, i<seq.length?600:520); })(); }
 function confettiBurst(){ const cv=$('#confetti'); if(!cv)return; cv.classList.add('on'); const ctx=cv.getContext('2d'); cv.width=innerWidth; cv.height=innerHeight;
   const cols=['#d4af37','#e9c96a','#b8860b','#fff4d0','#f4ecd6']; const P=[];
   for(let i=0;i<150;i++)P.push({x:innerWidth/2+(Math.random()-.5)*220,y:innerHeight*0.3,vx:(Math.random()-.5)*10,vy:Math.random()*-10-2,g:.26+Math.random()*.16,s:5+Math.random()*7,rot:Math.random()*6,vr:(Math.random()-.5)*.42,c:cols[i%cols.length]});

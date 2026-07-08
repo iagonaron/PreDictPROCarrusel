@@ -402,13 +402,43 @@
   /* giro breve de la espiral al cambiar de pantalla/ejercicio */
   .spin-cue{animation:spinCue 1.15s cubic-bezier(.34,1.2,.4,1) both}
   @keyframes spinCue{0%{transform:rotate(-42deg) scale(.9);opacity:.4}100%{transform:rotate(0) scale(1);opacity:1}}
-  .ex-intro-spiral{width:78px;margin:0 auto 12px}
-  .ex-intro-spiral svg{width:100%;height:auto;display:block;filter:drop-shadow(0 4px 14px rgba(0,0,0,.5))}
-  .ex-intro.on .ex-intro-spiral svg{animation:spinIntro 1.5s cubic-bezier(.2,.9,.3,1) both}
-  @keyframes spinIntro{from{transform:rotate(-430deg) scale(.5);opacity:0}55%{opacity:1}to{transform:rotate(0) scale(1);opacity:1}}
+  .ex-intro .ex-intro-inner{position:relative;display:flex;align-items:center;justify-content:center}
+  .ex-intro-spiral{width:clamp(230px,46vh,380px);margin:0}
+  .ex-intro-spiral svg{width:100%;height:auto;display:block;filter:drop-shadow(0 6px 24px rgba(0,0,0,.55))}
+  .ex-intro.on .ex-intro-spiral svg{animation:spinIntro 2.6s cubic-bezier(.25,.1,.25,1) both}
+  @keyframes spinIntro{from{transform:rotate(-40deg) scale(.6);opacity:0}18%{opacity:1}to{transform:rotate(500deg) scale(1);opacity:1}}
+  .ex-intro-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:80%;text-align:center;pointer-events:none;padding:16px;background:radial-gradient(ellipse 72% 62% at 50% 50%, rgba(8,6,2,.62), transparent 74%)}
+  .ex-intro-center .intro-wm{font-size:clamp(19px,3.8vw,34px)}
+  .ex-intro-center .intro-name{font-size:clamp(30px,7vw,74px);font-weight:900;color:var(--gold);letter-spacing:.01em;text-shadow:0 6px 40px rgba(212,175,55,.55);line-height:1}
+  .ex-intro-center .intro-sub{font-size:clamp(12px,2vw,16px);color:var(--muted2);margin-top:8px}
+  .swap-in{animation:swapIn .5s cubic-bezier(.2,1.1,.3,1) both}
+  @keyframes swapIn{from{opacity:0;transform:scale(.72)}to{opacity:1;transform:scale(1)}}
   .dice-row{display:flex;align-items:center;justify-content:center;gap:9px;font-size:13.5px;font-weight:700;color:var(--muted);cursor:pointer;user-select:none;margin:2px 0 4px}
   .dice-row input{width:17px;height:17px;accent-color:var(--gold);cursor:pointer}
   .dice-ico{font-size:18px}
+  /* resplandor sutil en la nota característica (modos, 2ª escucha) */
+  .char-glow{position:fixed;inset:0;pointer-events:none;z-index:150;opacity:0;background:radial-gradient(circle at 50% 42%, rgba(233,201,106,.16), transparent 62%)}
+  .char-glow.on{opacity:1;transition:opacity .28s ease-out}
+  /* PODIO FINAL */
+  #s-podium{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;height:100dvh;padding:20px}
+  .podium-title{font-size:clamp(26px,5vw,46px);font-weight:900;color:var(--gold);text-shadow:0 6px 30px rgba(212,175,55,.4)}
+  .podium-top{display:flex;align-items:flex-end;justify-content:center;gap:14px;width:min(760px,92vw)}
+  .pod-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;justify-content:flex-end}
+  .pod-medal{font-size:clamp(30px,5vw,48px)}
+  .pod-alias{font-weight:800;font-size:clamp(15px,2.4vw,22px);color:var(--ink);text-align:center;line-height:1.1}
+  .pod-pts{font-size:13px;color:var(--gold-soft);font-weight:700}
+  .pod-block{width:100%;border-radius:12px 12px 0 0;background:linear-gradient(180deg,var(--gold),var(--gold2));box-shadow:0 -2px 20px rgba(212,175,55,.35);transform-origin:bottom;animation:podRise .7s cubic-bezier(.2,1.1,.3,1) both}
+  .pod1 .pod-block{height:150px}
+  .pod2 .pod-block{height:110px;background:linear-gradient(180deg,#e9e4d0,#b9b3a0);animation-delay:.1s}
+  .pod3 .pod-block{height:84px;background:linear-gradient(180deg,#e2b483,#b9793f);animation-delay:.18s}
+  .pod-block.empty{background:transparent;box-shadow:none;height:60px;animation:none}
+  @keyframes podRise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+  .podium-rest{width:min(560px,92vw);display:flex;flex-direction:column;gap:5px;max-height:24vh;overflow-y:auto}
+  .pod-row{display:flex;align-items:center;gap:10px;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:9px;padding:7px 12px}
+  .pod-rank{font-weight:800;color:var(--muted2);width:38px}
+  .pod-name{flex:1;color:var(--ink);font-weight:600}
+  .pod-rpts{color:var(--gold-soft);font-weight:700;font-size:13px}
+  #s-podium .btn-gold{max-width:280px}
   @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
   /* brillo en botones dorados */
   .btn-gold,.btn-listen,.btn-send{position:relative;overflow:hidden}
@@ -439,7 +469,16 @@
 <body>
 <canvas class="fx-confetti" id="confetti"></canvas>
 <div class="countdown" id="countdown"></div>
-<div id="exIntro" class="ex-intro"><div class="ex-intro-inner"><div class="ex-intro-spiral" aria-hidden="true"><svg viewBox="0 0 200 200"><defs><linearGradient id="heroSp2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7e6a8"/><stop offset="0.5" stop-color="#d4af37"/><stop offset="1" stop-color="#a9801d"/></linearGradient></defs><path d="M 100.00 158.00 L 90.35 157.51 L 80.85 155.42 L 71.79 151.77 L 63.41 146.63 L 55.96 140.14 L 49.66 132.47 L 44.69 123.82 L 41.20 114.40 L 39.31 104.49 L 39.08 94.36 L 40.55 84.27 L 43.69 74.51 L 48.42 65.36 L 54.64 57.08 L 62.18 49.91 L 70.84 44.06 L 80.41 39.70 L 90.61 36.98 L 101.18 35.98 L 111.82 36.74 L 122.24 39.28 L 132.15 43.52 L 141.25 49.37 L 149.31 56.69 L 156.06 65.29 L 161.33 74.93 L 164.95 85.36 L 166.79 96.29 L 167.03 101.86 L 166.11 112.99 L 163.34 123.87 L 158.79 134.18 L 152.56 143.65 L 144.82 151.99 L 135.76 158.96 L 125.62 164.36 L 114.68 168.03 L 103.23 169.84 L 91.58 169.72 L 80.07 167.67 L 69.00 163.72 L 58.69 157.97 L 49.44 150.56 L 41.51 141.67 L 35.13 131.56 L 30.50 120.47 L 27.75 108.72 L 26.99 96.62 L 28.25 84.52 L 31.50 72.73 L 36.69 61.61 L 43.68 51.45 L 52.29 42.55 L 62.30 35.17 L 73.44 29.53 L 85.42 25.79 L 97.90 24.08 L 110.54 24.47 L 122.99 26.95 L 134.91 31.48 L 145.96 37.95 L 155.83 46.20 L 164.23 56.00 L 170.91 67.11 L 175.69 79.22 L 178.40 92.00 L 178.96 105.11 L 177.33 118.19 L 173.55 130.86 L 167.69 142.78 L 159.91 153.61 L 150.41 163.04 L 139.43 170.79 L 127.27 176.64 L 114.26 180.41 L 100.76 181.98 L 87.13 181.29 L 73.74 178.33 L 60.99 173.19 L 49.22 165.97 L 38.76 156.87 L 29.93 146.12 L 22.97 134.01 L 18.09 120.87 L 15.45 107.05 L 15.00 100.00" fill="none" stroke="url(#heroSp2)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="100" cy="158" r="5" fill="#f7e6a8"/></svg></div><div class="ex-intro-kick">a continuación</div><div class="ex-intro-name"></div><div class="ex-intro-sub"></div></div></div>
+<div class="char-glow" id="charGlow"></div>
+
+<!-- ========================= PODIO FINAL (iPad) ========================= -->
+<div class="screen" id="s-podium">
+  <div class="podium-title">🏆 Clasificación final</div>
+  <div class="podium-top" id="podiumTop"></div>
+  <div class="podium-rest" id="podiumRest"></div>
+  <button class="btn-gold" id="btnPodiumNext">Siguiente →</button>
+</div>
+<div id="exIntro" class="ex-intro"><div class="ex-intro-inner"><div class="ex-intro-spiral" aria-hidden="true"><svg viewBox="0 0 200 200"><defs><linearGradient id="heroSp2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7e6a8"/><stop offset="0.5" stop-color="#d4af37"/><stop offset="1" stop-color="#a9801d"/></linearGradient></defs><path d="M 100.00 158.00 L 90.35 157.51 L 80.85 155.42 L 71.79 151.77 L 63.41 146.63 L 55.96 140.14 L 49.66 132.47 L 44.69 123.82 L 41.20 114.40 L 39.31 104.49 L 39.08 94.36 L 40.55 84.27 L 43.69 74.51 L 48.42 65.36 L 54.64 57.08 L 62.18 49.91 L 70.84 44.06 L 80.41 39.70 L 90.61 36.98 L 101.18 35.98 L 111.82 36.74 L 122.24 39.28 L 132.15 43.52 L 141.25 49.37 L 149.31 56.69 L 156.06 65.29 L 161.33 74.93 L 164.95 85.36 L 166.79 96.29 L 167.03 101.86 L 166.11 112.99 L 163.34 123.87 L 158.79 134.18 L 152.56 143.65 L 144.82 151.99 L 135.76 158.96 L 125.62 164.36 L 114.68 168.03 L 103.23 169.84 L 91.58 169.72 L 80.07 167.67 L 69.00 163.72 L 58.69 157.97 L 49.44 150.56 L 41.51 141.67 L 35.13 131.56 L 30.50 120.47 L 27.75 108.72 L 26.99 96.62 L 28.25 84.52 L 31.50 72.73 L 36.69 61.61 L 43.68 51.45 L 52.29 42.55 L 62.30 35.17 L 73.44 29.53 L 85.42 25.79 L 97.90 24.08 L 110.54 24.47 L 122.99 26.95 L 134.91 31.48 L 145.96 37.95 L 155.83 46.20 L 164.23 56.00 L 170.91 67.11 L 175.69 79.22 L 178.40 92.00 L 178.96 105.11 L 177.33 118.19 L 173.55 130.86 L 167.69 142.78 L 159.91 153.61 L 150.41 163.04 L 139.43 170.79 L 127.27 176.64 L 114.26 180.41 L 100.76 181.98 L 87.13 181.29 L 73.74 178.33 L 60.99 173.19 L 49.22 165.97 L 38.76 156.87 L 29.93 146.12 L 22.97 134.01 L 18.09 120.87 L 15.45 107.05 L 15.00 100.00" fill="none" stroke="url(#heroSp2)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="100" cy="158" r="5" fill="#f7e6a8"/></svg></div><div class="ex-intro-center" id="exIntroCenter"></div></div></div>
 <button id="exitBtn" class="exit-btn" title="Salir del juego">✕</button>
 <div id="bigRemind" class="big-remind"><div class="big-remind-txt">Pulsa ENVIAR<br>si no lo has hecho<span id="bigRemindCount"></span></div></div>
 <div id="exitConfirm" class="exit-confirm"><div class="exit-box"><div class="exit-q">¿Seguro que quieres volver a la pantalla de inicio?</div><div class="exit-btns"><button id="exitYes" class="btn-gold">Sí, salir</button><button id="exitNo">Cancelar</button></div></div></div>
@@ -1438,27 +1477,27 @@ function shuffleArr(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.r
 function buildQueue(){ const types=['ritmico','melodico','toncom','cadencias','modos','armonico'];
   const dr=document.getElementById('diceRandom'); const order=(!dr||dr.checked)?shuffleArr(types.slice()):types;   // 🎲 tipos en orden aleatorio; rondas del mismo tipo van seguidas
   const q=[]; order.forEach(x=>{ for(let i=0;i<(H.setlist[x]||0);i++) q.push(x); }); return q; }
-function hostStartGame(){ H.queue=buildQueue(); if(!H.queue.length) return; H.qIndex=0; H.gameDone=false; H.players={}; H.answers={}; hostStartRound(); }
+function hostStartGame(){ H.queue=buildQueue(); if(!H.queue.length) return; H.qIndex=0; H.gameDone=false; H.finalShown=false; H.players={}; H.answers={}; hostStartRound(); }
 // botón único "Continuar": ranking del ejercicio → ranking general (animación) → siguiente ejercicio
 function hostContinue(){
+  if(H.finalShown){ hostReset(); return; }                                  // tras el podio → volver al lobby
   if(H.rankMode==='exercise'){ renderRanking('general','flip'); H.rankMode='general'; updateContinueLabel(); sfx('nav'); return; }
-  if(H.qIndex < H.queue.length-1){ H.qIndex++; hostStartRound(); }        // siguiente ejercicio (con intro)
-  else hostReset();                                                        // fin de partida
+  if(H.qIndex < H.queue.length-1){ H.qIndex++; hostStartRound(); }          // siguiente ejercicio (con intro)
+  else hostFinalPodium();                                                   // última ronda → podio final
 }
-function updateContinueLabel(){ const b=$('#btnAgain'); if(!b)return;
-  if(H.rankMode==='exercise') b.textContent='Ver general →';
-  else b.textContent = (H.qIndex < H.queue.length-1) ? 'Siguiente ejercicio →' : '🏁 Nueva partida'; }
+function updateContinueLabel(){ const b=$('#btnAgain'); if(!b)return; b.textContent='Siguiente →'; }
 function hostRevealButtons(){ H.rankMode='exercise'; updateContinueLabel(); }
 function updateRoundProgress(){ const p=$('#hProg'); if(p) p.textContent = H.queue.length? ('Ronda '+(H.qIndex+1)+' / '+H.queue.length) : ''; }
 // INTRO grande del ejercicio, que se esfuma dejando ver la interfaz
 function exDisplayName(x){ return {ritmico:'Rítmico', melodico:'Melódico', toncom:'TonCom', cadencias:'Cadencias', modos:'Modos', armonico:'Armónico'}[x]||x; }
 function exSubtitle(x){ return {ritmico:'Escucha y reconstruye el ritmo', melodico:'Escribe la melodía que oigas', toncom:'Identifica tonalidad, armadura y compás', cadencias:'Identifica la cadencia de oído', modos:'Identifica el modo de oído', armonico:'Identifica el acorde y constrúyelo'}[x]||''; }
 function hostIntro(x, done){ const ov=$('#exIntro'); if(!ov){ done&&done(); return; }
-  ov.querySelector('.ex-intro-name').textContent=exDisplayName(x);
-  ov.querySelector('.ex-intro-sub').textContent=exSubtitle(x);
+  const center=$('#exIntroCenter');
+  if(center) center.innerHTML='<div class="wm intro-wm swap-in"><span class="pd"><span class="pre">Pre</span><span class="dict">Dict</span></span><span class="pro">PRO</span><span class="carr">Carrusel</span></div>';
   ov.classList.remove('out'); ov.classList.add('on'); try{sfx('go');}catch(_){}
-  setTimeout(()=>ov.classList.add('out'), 1500);
-  setTimeout(()=>{ ov.classList.remove('on','out'); done&&done(); }, 2050); }
+  setTimeout(()=>{ if(center) center.innerHTML='<div class="intro-name swap-in">'+exDisplayName(x)+'</div><div class="intro-sub">'+exSubtitle(x)+'</div>'; }, 1100);   // el texto se cambia por el ejercicio, dentro de la espiral girando
+  setTimeout(()=>ov.classList.add('out'), 2500);
+  setTimeout(()=>{ ov.classList.remove('on','out'); done&&done(); }, 3050); }
 function hostOnAnswer(p){ if(H.phase!=='round')return; H.answers[p.id]={placedIds:p.placedIds,midis:p.midis,tans:p.tans,cans:p.cans,mos:p.mos,aans:p.aans,atiple:p.atiple,abajo:p.abajo,ainv:p.ainv,ms:p.ms,alias:p.alias};
   if(!H.players[p.id])H.players[p.id]={alias:p.alias,points:0}; updateCounter(); }
 function updateCounter(){
@@ -1484,17 +1523,25 @@ const MODE_RECIPE={jonico:'M',dorico:'m 6↑',frigio:'m 2↓',lidio:'M 4↑',mix
 function modosFatArrows(s){ return String(s).replace(/↑/g,'<span class="mo-up">↑</span>').replace(/↓/g,'<span class="mo-dn">↓</span>'); }
 function modBuildScale(tonicMidi,mode,lo,hi){ const steps=MODE_SEMIS[mode],out=[]; for(let oct=-1;oct<=2;oct++){ for(let i=0;i<7;i++){ const midi=tonicMidi+steps[i]+12*oct; if(midi>=lo&&midi<=hi) out.push({midi,deg:i+1}); } } out.sort((a,b)=>a.midi-b.midi); return out; }
 function modDegW(mode,deg){ let w=1.0; if(deg===1)w+=2.0; if(deg===5)w+=0.7; if(deg===MODE_CHAR_DEG[mode])w+=1.8; if(MODE_CHAR_DEG2[mode]===deg)w+=1.2; return w; }
-function modPhrase(scale,mode,tonicMidi,len,startIdx){ const charDeg=MODE_CHAR_DEG[mode]; const seq=[]; let idx=startIdx; seq.push(scale[idx]); let charPlaced=false;
-  for(let n=1;n<len-1;n++){ const cands=[]; for(let d=-3;d<=3;d++){ if(d===0)continue; const j=idx+d; if(j<0||j>=scale.length)continue; const step=Math.abs(d); let w=step===1?3.0:step===2?1.1:0.4; w*=modDegW(mode,scale[j].deg); if(!charPlaced&&scale[j].deg===charDeg)w*=(n>len-4?4.0:1.8); if(Math.abs(scale[j].midi-tonicMidi)>10)w*=0.3; cands.push({j,w}); }
+function modPhrase(scale,mode,tonicMidi,len,startIdx,forceEndTonic){ const charDeg=MODE_CHAR_DEG[mode]; const seq=[]; let idx=startIdx; seq.push(scale[idx]); let charPlaced=false;
+  const inner=forceEndTonic?len-1:len;
+  for(let n=1;n<inner;n++){ const cands=[]; for(let d=-4;d<=4;d++){ if(d===0)continue; const j=idx+d; if(j<0||j>=scale.length)continue; const step=Math.abs(d); let w=step===1?3.0:step===2?1.3:step===3?0.7:0.35; w*=modDegW(mode,scale[j].deg); if(!charPlaced&&scale[j].deg===charDeg)w*=1.6; if(Math.abs(scale[j].midi-tonicMidi)>12)w*=0.35; cands.push({j,w}); }
     const tot=cands.reduce((a,c)=>a+c.w,0); let r=Math.random()*tot,ch=cands[cands.length-1]; for(const c of cands){ r-=c.w; if(r<=0){ch=c;break;} } idx=ch.j; if(scale[idx].deg===charDeg)charPlaced=true; seq.push(scale[idx]); }
-  const lastMidi=seq[seq.length-1].midi; const tonics=scale.filter(s=>s.deg===1); const endT=tonics.reduce((b,s)=>Math.abs(s.midi-lastMidi)<Math.abs(b.midi-lastMidi)?s:b,tonics[0]); seq.push(endT); return seq; }
-function genModos(){ const mode=pick(MODOS_ALL); const tonicMidi=60+Math.floor(Math.random()*12); const lo=tonicMidi-2,hi=tonicMidi+12; const scale=modBuildScale(tonicMidi,mode,lo,hi);
-  let ti=scale.findIndex(s=>s.midi===tonicMidi); if(ti<0)ti=scale.findIndex(s=>s.deg===1); const P=7;
-  const f1=modPhrase(scale,mode,tonicMidi,P,ti); const e1=scale.findIndex(s=>s.midi===f1[f1.length-1].midi); const f2=modPhrase(scale,mode,tonicMidi,P,e1>=0?e1:ti);
-  const REST={rest:true}, mk=s=>({midi:s.midi,rest:false}); const notes=[...f1.map(mk),REST,...f2.map(mk),REST];
+  if(forceEndTonic){ const lastMidi=seq[seq.length-1].midi; const tonics=scale.filter(s=>s.deg===1); const endT=tonics.reduce((b,s)=>Math.abs(s.midi-lastMidi)<Math.abs(b.midi-lastMidi)?s:b,tonics[0]); seq.push(endT); }
+  return seq; }
+// 4 semifrases: cada una empieza en la tónica; la 4ª acaba en tónica; entre las 4 aparecen los 7 grados
+function genModos(){ const mode=pick(MODOS_ALL); const tonicMidi=60+Math.floor(Math.random()*12); const lo=tonicMidi-3,hi=tonicMidi+15; const scale=modBuildScale(tonicMidi,mode,lo,hi);
+  let ti=scale.findIndex(s=>s.midi===tonicMidi); if(ti<0)ti=scale.findIndex(s=>s.deg===1); const charDeg=MODE_CHAR_DEG[mode]; const P=5;
+  let best=null, bestCov=-1;
+  for(let attempt=0;attempt<80;attempt++){ const phs=[]; for(let ph=0;ph<4;ph++) phs.push(modPhrase(scale,mode,tonicMidi,P,ti,ph===3));
+    const degs=new Set(); phs.forEach(f=>f.forEach(s=>degs.add(s.deg))); if(degs.size>bestCov){bestCov=degs.size;best=phs;} if(degs.size>=7) break; }
+  const REST={rest:true}, notes=[];
+  best.forEach(f=>{ f.forEach(s=>notes.push({midi:s.midi,rest:false,isChar:(s.deg===charDeg||MODE_CHAR_DEG2[mode]===s.deg)})); notes.push(REST); });
   return {type:'modos', mode, tonicMidi, notes}; }
-async function playModos(notes){ const c=actx(); if(c.state==='suspended')await c.resume(); const tempo=92,beat=60/tempo,dur=beat*0.92,t0=c.currentTime+0.15;
-  notes.forEach((nt,k)=>{ if(!nt.rest) pianoTone(nt.midi, t0+k*beat, dur); }); return notes.length*beat+0.3; }
+async function playModos(notes, opts){ opts=opts||{}; const c=actx(); if(c.state==='suspended')await c.resume(); const tempo=92,beat=60/tempo,dur=beat*0.92,t0=c.currentTime+0.15;
+  notes.forEach((nt,k)=>{ if(!nt.rest){ pianoTone(nt.midi, t0+k*beat, dur);
+    if(opts.onChar && nt.isChar){ const ms=(t0+k*beat-c.currentTime)*1000; setTimeout(()=>{ try{opts.onChar();}catch(_){} }, Math.max(0,ms)); } } }); return notes.length*beat+0.3; }
+function charGlow(){ const g=document.getElementById('charGlow'); if(!g)return; g.classList.remove('on'); void g.offsetWidth; g.classList.add('on'); setTimeout(()=>g.classList.remove('on'), 240); }
 
 /* =========================================================================
    MOTOR ARMÓNICO — Fase 1: identificar el tipo de acorde (símbolos tal cual teoriapro)
@@ -1521,7 +1568,7 @@ const A2_LETTERS=['C','D','E','F','G','A','B'];
 const A2_LPC={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
 const A2_SOLF={C:'Do',D:'Re',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
 const A2_TRI={may:{i3:4,i5:7,l3:2,label:'Mayor'},men:{i3:3,i5:7,l3:2,label:'menor'},aum:{i3:4,i5:8,l3:2,label:'Aumentado'},dis:{i3:3,i5:6,l3:2,label:'Disminuido'},sus4:{i3:5,i5:7,l3:3,label:'Cuarta suspendida'}};
-const A2_LIST=['may','men','aum','dis','sus4'];
+const A2_LIST=['may','men','dis','sus4'];   // Fase 2: sin aumentados (Iago)
 const A2_INV=['E.F.','6','6/4'];
 function a2acc(letter,pc){ let d=(((pc-A2_LPC[letter])%12)+12)%12; if(d>6)d-=12; return d===0?'':d===1?'#':d===-1?'b':d===2?'##':d===-2?'bb':null; }
 function a2semis(a){ return a==='#'?1:a==='b'?-1:a==='##'?2:a==='bb'?-2:0; }
@@ -1550,12 +1597,13 @@ function mountArmStaff(container, notes, opts){ opts=opts||{}; if(!container) re
   const render=()=>{ if(typeof Vex==='undefined'){ container.innerHTML='<div style="color:#241a06;font-size:20px;text-align:center;padding:20px">'+notes.map(n=>n.solf+n.oct).join(' · ')+'</div>'; return; }
     let W=Math.round(container.clientWidth)||300, H=Math.round(container.clientHeight)||160; if(W<140)W=300; if(H<90)H=160;
     container.innerHTML=''; const VF=Vex.Flow; const r=new VF.Renderer(container, VF.Renderer.Backends.SVG); r.resize(W,H); const ctx=r.getContext();
-    const stave=new VF.Stave(6, Math.max(6,H/2-46), W-12); stave.addClef('treble'); stave.setContext(ctx).draw();
+    const sw=Math.min(W-12, 210), sx=Math.max(6,(W-sw)/2);   // un solo compás (no alargado)
+    const stave=new VF.Stave(sx, Math.max(6,H/2-46), sw); stave.addClef('treble'); try{ stave.setEndBarType(VF.Barline.type.END); }catch(_){} stave.setContext(ctx).draw();
     const keys=notes.map(n=> n.letter.toLowerCase()+(n.acc||'')+'/'+n.oct );
     const sn=new VF.StaveNote({keys, duration:'w'});
     notes.forEach((n,i)=>{ if(n.acc) try{ sn.addModifier(new VF.Accidental(n.acc), i); }catch(_){}
       if(n.color) try{ sn.setKeyStyle(i,{fillStyle:n.color,strokeStyle:n.color}); }catch(_){} });
-    try{ const v=new VF.Voice({num_beats:4,beat_value:4}); v.addTickables([sn]); new VF.Formatter().joinVoices([v]).format([v], Math.max(60,W-80)); v.draw(ctx,stave); }catch(e){}
+    try{ const v=new VF.Voice({num_beats:4,beat_value:4}); v.addTickables([sn]); new VF.Formatter().joinVoices([v]).format([v], Math.max(50,sw-70)); v.draw(ctx,stave); }catch(e){}
   };
   container._activeRender=render; container._staffCfg=null; container._melCfg=null; render(); requestAnimationFrame(render);
   if(window.ResizeObserver&&!_staffRO.has(container)){ const ro=new ResizeObserver(()=>{ if(container.offsetParent!==null&&container._activeRender)container._activeRender(); }); ro.observe(container); _staffRO.set(container,ro); }
@@ -1651,7 +1699,8 @@ async function hostListenModos(){
   const first=(H.listens===MEL_MAX_LISTENS); H.listens--; const hl=$('#hLeft'); if(hl) hl.textContent=H.listens; $('#hListen').disabled=true;
   if(!first){ try{ if(H.channel) H.channel.send({type:'broadcast',event:'moderecipe'}); }catch(_){}
     const m=$('#modMsg'); if(m) m.innerHTML='Suena otra vez · fíjate en la receta de cada modo'; }
-  let dur=5; try{ dur=await playModos(H.exercise.notes); }catch(e){}
+  const onChar=first?null:()=>{ charGlow(); try{ if(H.channel) H.channel.send({type:'broadcast',event:'charpulse'}); }catch(_){} };   // resplandor sutil en la nota característica (2ª escucha)
+  let dur=5; try{ dur=await playModos(H.exercise.notes, {onChar}); }catch(e){}
   setTimeout(()=>{ if(H.listens>0)$('#hListen').disabled=false; else hostArmAutoCorrect(); }, dur*1000);
 }
 // ARMÓNICO Fase 1: acorde en bloque (0s), arpegiado (6s), a corregir (10s) — sin temporizador visible
@@ -1684,7 +1733,7 @@ function hostArmPhase2(){ if(H.phase!=='round') return; H.armPhase=2;
   ];
   let i=0; const cap=()=>$('#arm2Cap');
   const run=()=>{ if(H.phase!=='round'||H.armPhase!==2) return; if(i>=steps.length){ hostArm2Countdown(); return; }
-    const st=steps[i]; const c=cap(); if(c) c.innerHTML=st[0]; try{ st[1](); }catch(_){} i++; setTimeout(run, 4000); };
+    const st=steps[i]; const c=cap(); if(c) c.innerHTML=st[0]; try{ st[1](); }catch(_){} i++; setTimeout(run, 6000); };   // 6 s entre cada sonido
   setTimeout(run, 1200);
 }
 function hostArm2Countdown(){ hostCancelAutoCorrect();
@@ -1848,7 +1897,19 @@ function renderRanking(mode,animate){
     }, 220+i*150));
   } else { rows.forEach(r=>r.classList.add('in')); }
 }
-function hostReset(){ hostCancelAutoCorrect(); H.players={}; H.answers={}; H.phase='lobby'; H.queue=[]; H.qIndex=0; H.gameDone=false;
+function hostFinalPodium(){ H.finalShown=true; H.phase='final';
+  const arr=rankingArr('general'), top=arr.slice(0,3), rest=arr.slice(3);
+  showScreen('s-podium');
+  const medals=['🥇','🥈','🥉'], order=[1,0,2];   // 2º, 1º, 3º (1º en el centro)
+  const topEl=$('#podiumTop'); if(topEl){ topEl.innerHTML=''; order.forEach(pos=>{ const r=top[pos]; const d=document.createElement('div'); d.className='pod-col pod'+(pos+1);
+    d.innerHTML = r ? ('<div class="pod-medal">'+medals[pos]+'</div><div class="pod-alias">'+escapeHtml(r.alias)+'</div><div class="pod-pts">'+r.points+' pts</div><div class="pod-block"></div>')
+                    : '<div class="pod-block empty"></div>'; topEl.appendChild(d); }); }
+  const restEl=$('#podiumRest'); if(restEl){ restEl.innerHTML = rest.map((r,i)=>'<div class="pod-row"><span class="pod-rank">'+(i+4)+'º</span><span class="pod-name">'+escapeHtml(r.alias)+'</span><span class="pod-rpts">'+r.points+' pts</span></div>').join(''); }
+  const b=$('#btnPodiumNext'); if(b) b.onclick=hostContinue;
+  sfx('winner'); setTimeout(()=>confettiBurst(), 420);
+  try{ if(H.channel) H.channel.send({type:'broadcast',event:'phase',payload:{phase:'final',ranking:arr}}); }catch(_){}
+}
+function hostReset(){ hostCancelAutoCorrect(); H.finalShown=false; H.players={}; H.answers={}; H.phase='lobby'; H.queue=[]; H.qIndex=0; H.gameDone=false;
   $('#s-host-round').classList.remove('mel','toncom'); $('#s-host-reveal').classList.remove('mel','toncom','cad');
   const rm=$('#btnRankMode'); if(rm) rm.style.display='';
   showScreen('s-host-lobby'); renderRoster(); hostBroadcastPhase(); }
@@ -1907,6 +1968,7 @@ function playerConnect(){
     .on('broadcast',{event:'phase'},({payload})=>playerOnPhase(payload))
     .on('broadcast',{event:'warn'},()=>playerWarn())
     .on('broadcast',{event:'moderecipe'},()=>playerModosRecipe())
+    .on('broadcast',{event:'charpulse'},()=>charGlow())
     .on('broadcast',{event:'armp2'},({payload})=>{ if(PL.exType==='armonico'){ PL.armPhase=2; startPlayerRoundArm2(payload&&payload.given); } })
     .subscribe(async status=>{ if(status==='SUBSCRIBED'){ await PL.channel.track({alias:PL.alias});
         showScreen('s-player-wait'); PL.channel.send({type:'broadcast',event:'hello',payload:{id:PL.id}}); } });
@@ -1925,6 +1987,7 @@ function playerOnPhase(p){
     else { PL.compound=p.compound; startPlayerRound(); } }
   else if(p.phase==='reveal'){ PL.roundId=p.roundId||PL.roundId; const ex=p.ex||'ritmico';
     if(ex==='melodico') playerRevealMel(p); else if(ex==='toncom') playerRevealTon(p); else if(ex==='cadencias') playerRevealCad(p); else if(ex==='modos') playerRevealModos(p); else if(ex==='armonico') playerRevealArm(p); else playerReveal(p); }
+  else if(p.phase==='final'){ playerFinal(p); }
   else if(p.phase==='lobby'){ if(!$('#s-player-join').classList.contains('on')) showScreen('s-player-wait'); }
 }
 function startPlayerRound(){
@@ -2272,6 +2335,15 @@ function playerRevealModos(p){
   $('#pRank').textContent = pos>=0 ? (emoji+'  Puesto '+(pos+1)+' de '+arr.length+' · '+(me?me.points:0)+' pts') : 'Sin respuesta esta ronda';
   $('#pMini').innerHTML = arr.slice(0,3).map((r,i)=>['🥇','🥈','🥉'][i]+' '+escapeHtml(r.alias)+' ('+r.points+')').join(' &nbsp; ');
   if(pos===0){ sfx('winner'); confettiBurst(); } else if(ok){ sfx('winner'); } else sfx('reveal');
+}
+function playerFinal(p){ const arr=p.ranking||[], pos=arr.findIndex(r=>r.id===PL.id), me=arr.find(r=>r.id===PL.id);
+  showScreen('s-player-reveal');
+  const w=$('#pMelWrap'); if(w){ w.style.display=''; w.className=''; w.style.height='auto';
+    w.innerHTML='<div style="text-align:center;padding:16px 10px"><div style="font-size:12px;letter-spacing:.14em;color:var(--muted2)">CLASIFICACIÓN FINAL</div><div style="font-size:34px;font-weight:900;color:var(--gold)">'+(pos>=0?(pos+1)+'º':'—')+'</div><div style="font-size:13px;color:var(--muted2)">de '+arr.length+'</div></div>'; }
+  $('#pScore').textContent=(me?me.points:0)+' pts';
+  $('#pRank').textContent = pos===0?'🥇 ¡Campeón!':pos===1?'🥈 ¡Subcampeón!':pos===2?'🥉 ¡Podio!':(pos>=0?'¡Buen trabajo!':'Fin de la partida');
+  $('#pMini').innerHTML = arr.slice(0,3).map((r,i)=>['🥇','🥈','🥉'][i]+' '+escapeHtml(r.alias)+' ('+r.points+')').join(' &nbsp; ');
+  if(pos>=0&&pos<3){ sfx('winner'); confettiBurst(); } else sfx('reveal');
 }
 function playerRevealMel(p){
   const arr=p.ranking||[]; const me=arr.find(r=>r.id===PL.id); const pos=arr.findIndex(r=>r.id===PL.id);

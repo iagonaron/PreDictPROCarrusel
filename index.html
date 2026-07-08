@@ -132,7 +132,7 @@
 
   /* PLAYER round — pentagrama arriba (~34%), tarjetas abajo; TODO en bloques del mismo tamaño */
   #s-player-round{flex-direction:column;gap:4px;height:100dvh;padding:3px max(12px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
-  #s-player-round .staffwrap{flex:0 0 34%;min-height:78px;padding:2px 4px;align-items:stretch;justify-content:stretch}
+  #s-player-round .staffwrap{flex:0 0 27%;min-height:70px;padding:2px 4px;align-items:stretch;justify-content:stretch}
   .pr-you{position:absolute;top:4px;right:calc(52px + env(safe-area-inset-right));font-size:12px;color:var(--muted2);z-index:6}
   .pr-you b{color:var(--gold)}
   #prHint{color:var(--gold);font-weight:800}
@@ -147,7 +147,7 @@
   .cell-ctrl{color:var(--gold)}
   .cell-send{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a2005;border-color:transparent;font-weight:800;font-size:17px;min-width:104px}
   .cell-send:disabled{background:var(--paper);color:#9a8a5a}
-  .cell-card{flex:0 0 auto;height:clamp(48px,13vh,72px);min-width:54px;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:5px 10px;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none}
+  .cell-card{flex:0 0 auto;height:clamp(64px,18vh,96px);min-width:66px;background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:7px 13px;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none}
   .cell-card:active{transform:scale(.95)}
   .cell-card .mini{height:100%;display:flex;align-items:center;justify-content:center;overflow:visible}
   .cell-card svg{height:100%;width:auto;display:block}
@@ -253,8 +253,9 @@
   .autocorr.on{display:inline-block}
   @keyframes acpulse{0%,100%{opacity:.75}50%{opacity:1}}
   /* salir del juego (móvil) */
-  .exit-btn{position:fixed;top:calc(5px + env(safe-area-inset-top));left:calc(6px + env(safe-area-inset-left));z-index:400;display:none;width:26px;height:26px;border-radius:8px;background:rgba(18,12,3,.35);border:1px solid rgba(233,201,106,.28);color:var(--muted2);font-size:15px;line-height:1;cursor:pointer;align-items:center;justify-content:center;padding:0}
+  .exit-btn{position:fixed;top:calc(6px + env(safe-area-inset-top));left:calc(8px + env(safe-area-inset-left));z-index:500;display:none;width:36px;height:36px;border-radius:10px;background:rgba(18,12,3,.62);border:1px solid rgba(233,201,106,.45);color:var(--gold-soft);font-size:20px;line-height:1;cursor:pointer;align-items:center;justify-content:center;padding:0}
   .exit-btn.on{display:flex}
+  .exit-sub{font-size:14px;color:var(--muted2);margin-top:6px}
   .exit-btn:hover{color:var(--gold-soft);background:rgba(18,12,3,.6)}
   .exit-btn:active{transform:scale(.92)}
   .exit-confirm{position:fixed;inset:0;z-index:6000;display:none;align-items:center;justify-content:center;background:rgba(6,4,2,.84);padding:20px}
@@ -481,7 +482,7 @@
 <div id="exIntro" class="ex-intro"><div class="ex-intro-inner"><div class="ex-intro-spiral" aria-hidden="true"><svg viewBox="0 0 200 200"><defs><linearGradient id="heroSp2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7e6a8"/><stop offset="0.5" stop-color="#d4af37"/><stop offset="1" stop-color="#a9801d"/></linearGradient></defs><path d="M 100.00 158.00 L 90.35 157.51 L 80.85 155.42 L 71.79 151.77 L 63.41 146.63 L 55.96 140.14 L 49.66 132.47 L 44.69 123.82 L 41.20 114.40 L 39.31 104.49 L 39.08 94.36 L 40.55 84.27 L 43.69 74.51 L 48.42 65.36 L 54.64 57.08 L 62.18 49.91 L 70.84 44.06 L 80.41 39.70 L 90.61 36.98 L 101.18 35.98 L 111.82 36.74 L 122.24 39.28 L 132.15 43.52 L 141.25 49.37 L 149.31 56.69 L 156.06 65.29 L 161.33 74.93 L 164.95 85.36 L 166.79 96.29 L 167.03 101.86 L 166.11 112.99 L 163.34 123.87 L 158.79 134.18 L 152.56 143.65 L 144.82 151.99 L 135.76 158.96 L 125.62 164.36 L 114.68 168.03 L 103.23 169.84 L 91.58 169.72 L 80.07 167.67 L 69.00 163.72 L 58.69 157.97 L 49.44 150.56 L 41.51 141.67 L 35.13 131.56 L 30.50 120.47 L 27.75 108.72 L 26.99 96.62 L 28.25 84.52 L 31.50 72.73 L 36.69 61.61 L 43.68 51.45 L 52.29 42.55 L 62.30 35.17 L 73.44 29.53 L 85.42 25.79 L 97.90 24.08 L 110.54 24.47 L 122.99 26.95 L 134.91 31.48 L 145.96 37.95 L 155.83 46.20 L 164.23 56.00 L 170.91 67.11 L 175.69 79.22 L 178.40 92.00 L 178.96 105.11 L 177.33 118.19 L 173.55 130.86 L 167.69 142.78 L 159.91 153.61 L 150.41 163.04 L 139.43 170.79 L 127.27 176.64 L 114.26 180.41 L 100.76 181.98 L 87.13 181.29 L 73.74 178.33 L 60.99 173.19 L 49.22 165.97 L 38.76 156.87 L 29.93 146.12 L 22.97 134.01 L 18.09 120.87 L 15.45 107.05 L 15.00 100.00" fill="none" stroke="url(#heroSp2)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="100" cy="158" r="5" fill="#f7e6a8"/></svg></div><div class="ex-intro-center" id="exIntroCenter"></div></div></div>
 <button id="exitBtn" class="exit-btn" title="Salir del juego">✕</button>
 <div id="bigRemind" class="big-remind"><div class="big-remind-txt">Pulsa ENVIAR<br>si no lo has hecho<span id="bigRemindCount"></span></div></div>
-<div id="exitConfirm" class="exit-confirm"><div class="exit-box"><div class="exit-q">¿Seguro que quieres volver a la pantalla de inicio?</div><div class="exit-btns"><button id="exitYes" class="btn-gold">Sí, salir</button><button id="exitNo">Cancelar</button></div></div></div>
+<div id="exitConfirm" class="exit-confirm"><div class="exit-box"><div class="exit-q">¿Seguro que quieres salir de la partida?</div><div class="exit-sub">Tu puntuación se perderá.</div><div class="exit-btns"><button id="exitYes" class="btn-gold">Sí, salir</button><button id="exitNo">Seguir jugando</button></div></div></div>
 <button id="fsBtn" class="fs-btn" title="Pantalla completa">⛶</button>
 
 <!-- ========================= INICIO (portada) ========================= -->
@@ -570,14 +571,13 @@
   <div class="hp-top">
     <h2 class="brand">Solución <span class="b" id="hvTs">2/4</span></h2>
     <div class="spacer"></div>
-    <button id="btnAgain" class="btn-gold">Continuar →</button>
-    <button id="btnReset">Nueva partida</button>
   </div>
   <div class="reveal-wrap">
     <div class="staffwrap" style="flex:1">
       <div class="staffbox" id="hvStaff"></div>
     </div>
     <div class="rank">
+      <button id="btnAgain" class="btn-gold rank-next">Siguiente →</button>
       <h3>🏆 <span id="rankTitle">Ranking del ejercicio</span></h3>
       <div id="rankList"></div>
     </div>
@@ -1245,8 +1245,9 @@ async function playTonSequence(ex, onLabel){
   await tonHostCountdown(10, onLabel);
   onLabel&&onLabel('dictado'); const d=await playTonDict(ex.dict, ex.compas, null); await tonWait(d*1000);
   onLabel&&onLabel('idle'); }
-async function hostListenTon(){ await ensureAudio(); const btn=$('#hListen'); if(btn.disabled)return; btn.disabled=true;
+async function hostListenTon(){ await ensureAudio(); const btn=$('#hListen'); if(btn.disabled)return; btn.disabled=true; const rid=H.roundId;
   try{ await playTonSequence(H.exercise, hostTonLabel); }catch(e){}   // sin animación de "listening" (evita que parezca el pulso)
+  if(H.roundId!==rid) return;   // se avanzó de ronda mientras sonaba → no corregir sobre el ejercicio nuevo
   btn.disabled=false; hostArmAutoCorrect(); }   // tras la última reproducción → cuenta atrás → corrección
 
 /* =========================================================================
@@ -1433,7 +1434,7 @@ function initHost(){
   $('#hMetro').addEventListener('change',e=>H.metro=e.target.checked);
   $('#btnResults').addEventListener('click',hostShowResults);
   $('#btnAgain').addEventListener('click',hostContinue);
-  $('#btnReset').addEventListener('click',hostReset);
+  { const br=$('#btnReset'); if(br) br.addEventListener('click',hostReset); }   // botón "Nueva partida" eliminado
   $('#manualGo').addEventListener('click',()=>{const c=$('#manualCode').value.trim().toUpperCase(); if(c.length>=3) location.href=location.origin+location.pathname+'?room='+c;});
 }
 function hostConnect(){
@@ -1485,7 +1486,8 @@ function hostContinue(){
   if(H.qIndex < H.queue.length-1){ H.qIndex++; hostStartRound(); }          // siguiente ejercicio (con intro)
   else hostFinalPodium();                                                   // última ronda → podio final
 }
-function updateContinueLabel(){ const b=$('#btnAgain'); if(!b)return; b.textContent='Siguiente →'; }
+function updateContinueLabel(){ const b=$('#btnAgain'); if(!b)return; const last=H.qIndex>=H.queue.length-1;
+  if(H.rankMode!=='exercise' && last) b.innerHTML='🏆 Clasificación final'; else b.textContent='Siguiente →'; }
 function hostRevealButtons(){ H.rankMode='exercise'; updateContinueLabel(); }
 function updateRoundProgress(){ const p=$('#hProg'); if(p) p.textContent = H.queue.length? ('Ronda '+(H.qIndex+1)+' / '+H.queue.length) : ''; }
 // INTRO grande del ejercicio, que se esfuma dejando ver la interfaz
@@ -1523,11 +1525,21 @@ const MODE_RECIPE={jonico:'M',dorico:'m 6↑',frigio:'m 2↓',lidio:'M 4↑',mix
 function modosFatArrows(s){ return String(s).replace(/↑/g,'<span class="mo-up">↑</span>').replace(/↓/g,'<span class="mo-dn">↓</span>'); }
 function modBuildScale(tonicMidi,mode,lo,hi){ const steps=MODE_SEMIS[mode],out=[]; for(let oct=-1;oct<=2;oct++){ for(let i=0;i<7;i++){ const midi=tonicMidi+steps[i]+12*oct; if(midi>=lo&&midi<=hi) out.push({midi,deg:i+1}); } } out.sort((a,b)=>a.midi-b.midi); return out; }
 function modDegW(mode,deg){ let w=1.0; if(deg===1)w+=2.0; if(deg===5)w+=0.7; if(deg===MODE_CHAR_DEG[mode])w+=1.8; if(MODE_CHAR_DEG2[mode]===deg)w+=1.2; return w; }
+// Frase musical (reglas del dictado): grados conjuntos preferentes, saltos compensados, máx. 2 terceras seguidas
 function modPhrase(scale,mode,tonicMidi,len,startIdx,forceEndTonic){ const charDeg=MODE_CHAR_DEG[mode]; const seq=[]; let idx=startIdx; seq.push(scale[idx]); let charPlaced=false;
-  const inner=forceEndTonic?len-1:len;
-  for(let n=1;n<inner;n++){ const cands=[]; for(let d=-4;d<=4;d++){ if(d===0)continue; const j=idx+d; if(j<0||j>=scale.length)continue; const step=Math.abs(d); let w=step===1?3.0:step===2?1.3:step===3?0.7:0.35; w*=modDegW(mode,scale[j].deg); if(!charPlaced&&scale[j].deg===charDeg)w*=1.6; if(Math.abs(scale[j].midi-tonicMidi)>12)w*=0.35; cands.push({j,w}); }
-    const tot=cands.reduce((a,c)=>a+c.w,0); let r=Math.random()*tot,ch=cands[cands.length-1]; for(const c of cands){ r-=c.w; if(r<=0){ch=c;break;} } idx=ch.j; if(scale[idx].deg===charDeg)charPlaced=true; seq.push(scale[idx]); }
-  if(forceEndTonic){ const lastMidi=seq[seq.length-1].midi; const tonics=scale.filter(s=>s.deg===1); const endT=tonics.reduce((b,s)=>Math.abs(s.midi-lastMidi)<Math.abs(b.midi-lastMidi)?s:b,tonics[0]); seq.push(endT); }
+  const inner=forceEndTonic?len-1:len; let prevD=0, thirdRun=0;
+  for(let n=1;n<inner;n++){ const cands=[];
+    for(let d=-4;d<=4;d++){ if(d===0)continue; const j=idx+d; if(j<0||j>=scale.length)continue; const step=Math.abs(d);
+      if(step===2 && thirdRun>=2 && Math.sign(d)===Math.sign(prevD)) continue;   // no más de 2 terceras seguidas (arpegio)
+      let w=step===1?3.4:step===2?1.2:step===3?0.5:0.28;
+      if(Math.abs(prevD)>=2){ if(step===1 && Math.sign(d)!==Math.sign(prevD)) w*=2.6; else if(step>=2) w*=0.4; }   // compensar el salto con grado conjunto contrario
+      w*=modDegW(mode,scale[j].deg); if(!charPlaced&&scale[j].deg===charDeg)w*=1.6; if(Math.abs(scale[j].midi-tonicMidi)>12)w*=0.35; cands.push({j,w,d}); }
+    if(!cands.length){ for(let d=-2;d<=2;d++){ if(d===0)continue; const j=idx+d; if(j>=0&&j<scale.length) cands.push({j,w:1,d}); } }
+    const tot=cands.reduce((a,c)=>a+c.w,0); let r=Math.random()*tot,ch=cands[cands.length-1]; for(const c of cands){ r-=c.w; if(r<=0){ch=c;break;} }
+    const dd=ch.d; thirdRun=(Math.abs(dd)===2 && Math.sign(dd)===Math.sign(prevD))?thirdRun+1:(Math.abs(dd)===2?1:0); prevD=dd; idx=ch.j; if(scale[idx].deg===charDeg)charPlaced=true; seq.push(scale[idx]); }
+  if(forceEndTonic){ const lastMidi=seq[seq.length-1].midi; const tonics=scale.filter(s=>s.deg===1);
+    let pool=tonics; if(thirdRun>=2){ const nt=tonics.filter(s=>{const iv=Math.abs(s.midi-lastMidi);return iv<3||iv>4;}); if(nt.length)pool=nt; }   // que el cierre no forme una 3ª tercera seguida
+    const endT=pool.reduce((b,s)=>Math.abs(s.midi-lastMidi)<Math.abs(b.midi-lastMidi)?s:b,pool[0]); seq.push(endT); }
   return seq; }
 // 4 semifrases: cada una empieza en la tónica; la 4ª acaba en tónica; entre las 4 aparecen los 7 grados
 function genModos(){ const mode=pick(MODOS_ALL); const tonicMidi=60+Math.floor(Math.random()*12); const lo=tonicMidi-3,hi=tonicMidi+15; const scale=modBuildScale(tonicMidi,mode,lo,hi);
@@ -1612,7 +1624,7 @@ function a2chord(mids,dur){ const c=actx(); const t0=c.currentTime+0.05; (mids||
 function a2arp(mids){ const c=actx(); const t0=c.currentTime+0.05; const b=0.34; mids.forEach((m,i)=>pianoTone(m,t0+i*b,0.5)); }
 
 function hostBeginRound(){
-  hostCancelAutoCorrect();
+  hostCancelAutoCorrect(); stopAudio();   // corta cualquier audio/temporizador de la ronda anterior (evita corregir sobre el ejercicio nuevo)
   if(H.queue.length) H.exType=H.queue[H.qIndex];
   H.answers={}; H.phase='round'; H.roundId++; H.gameDone=false;
   H.listens=MEL_MAX_LISTENS; $('#hListen').disabled=false;
@@ -1673,44 +1685,44 @@ async function hostListen(){
   if(H.listens<=0)return; await ensureAudio();
   const primera=(H.listens===MEL_MAX_LISTENS);
   const go=async()=>{
-    H.listens--; $('#hLeft').textContent=H.listens; $('#hListen').disabled=true;
+    const rid=H.roundId; H.listens--; $('#hLeft').textContent=H.listens; $('#hListen').disabled=true;
     const sw=$('#s-host-round .staffwrap'), eq=$('#hEq'); sw&&sw.classList.add('listening'); eq&&eq.classList.add('on');
     let dur=6;
     try{
       if(H.exercise.type==='melodico') dur=await playMelody(H.exercise.sol, H.melSpeed, null, primera?1:0.5);   // 2ª escucha al doble de velocidad
       else dur=await playRhythm(H.exercise.solution,H.exercise.compound,H.bpm,H.metro,flashHostNumber);
     }catch(e){}
-    setTimeout(()=>{ sw&&sw.classList.remove('listening'); eq&&eq.classList.remove('on'); if(H.listens>0)$('#hListen').disabled=false; else hostArmAutoCorrect(); }, dur*1000);
+    setTimeout(()=>{ sw&&sw.classList.remove('listening'); eq&&eq.classList.remove('on'); if(H.roundId!==rid)return; if(H.listens>0)$('#hListen').disabled=false; else hostArmAutoCorrect(); }, dur*1000);
   };
   if(primera) runCountdown(go); else go();
 }
 // CADENCIAS: 1ª reproducción solo suena; 2ª (última) revela la partitura con fundido → cuenta atrás
 async function hostListenCad(){
-  if(H.listens<=0) return; await ensureAudio();
+  if(H.listens<=0) return; await ensureAudio(); const rid=H.roundId;
   const first=(H.listens===MEL_MAX_LISTENS); H.listens--; const hl=$('#hLeft'); if(hl) hl.textContent=H.listens; $('#hListen').disabled=true;
   if(!first){ cadVizStop(); const msg=$('#cadMsg'), vz=$('#cadViz'); if(msg)msg.style.display='none'; if(vz)vz.style.display='none';   // revelar partitura (fundido)
     const sc=$('#cadScore'); if(sc){ sc.style.display='flex'; renderCadScore(sc, H.exercise.cad); requestAnimationFrame(()=>sc.classList.add('shown')); } }
   let dur=4; try{ dur=await playCadencia(H.exercise.cad); }catch(e){}
-  setTimeout(()=>{ if(H.listens>0)$('#hListen').disabled=false; else hostArmAutoCorrect(); }, dur*1000);
+  armCorrectAfter(rid, dur);
 }
 // MODOS: dos frases; en la 2ª reproducción avisa a los móviles para que muestren la receta
 async function hostListenModos(){
-  if(H.listens<=0) return; await ensureAudio();
+  if(H.listens<=0) return; await ensureAudio(); const rid=H.roundId;
   const first=(H.listens===MEL_MAX_LISTENS); H.listens--; const hl=$('#hLeft'); if(hl) hl.textContent=H.listens; $('#hListen').disabled=true;
   if(!first){ try{ if(H.channel) H.channel.send({type:'broadcast',event:'moderecipe'}); }catch(_){}
     const m=$('#modMsg'); if(m) m.innerHTML='Suena otra vez · fíjate en la receta de cada modo'; }
   const onChar=first?null:()=>{ charGlow(); try{ if(H.channel) H.channel.send({type:'broadcast',event:'charpulse'}); }catch(_){} };   // resplandor sutil en la nota característica (2ª escucha)
   let dur=5; try{ dur=await playModos(H.exercise.notes, {onChar}); }catch(e){}
-  setTimeout(()=>{ if(H.listens>0)$('#hListen').disabled=false; else hostArmAutoCorrect(); }, dur*1000);
+  armCorrectAfter(rid, dur);
 }
 // ARMÓNICO Fase 1: acorde en bloque (0s), arpegiado (6s), a corregir (10s) — sin temporizador visible
-async function hostListenArm(){ await ensureAudio(); $('#hListen').disabled=true; const D=H.exercise; const m=$('#armMsg');
+async function hostListenArm(){ await ensureAudio(); $('#hListen').disabled=true; const D=H.exercise; const m=$('#armMsg'); const rid=H.roundId;
   armPlayBlock(D.notes); if(m) m.innerHTML='Suena el acorde en <b>bloque</b>…';
-  setTimeout(()=>{ if(H.phase!=='round')return; armPlayArp(D.notes); if(m) m.innerHTML='Ahora <b>arpegiado</b>…'; }, 6000);
-  setTimeout(()=>{ if(H.phase==='round') hostArmPhase2(); }, 10000);
+  setTimeout(()=>{ if(H.phase!=='round'||H.roundId!==rid)return; armPlayArp(D.notes); if(m) m.innerHTML='Ahora <b>arpegiado</b>…'; }, 6000);
+  setTimeout(()=>{ if(H.phase==='round'&&H.roundId===rid) hostArmPhase2(); }, 10000);
 }
 // ARMÓNICO Fase 2: nota central dada → secuencia de 8 sonidos (4s c/u, con carteles) → 5s de cuenta atrás
-function hostArmPhase2(){ if(H.phase!=='round') return; H.armPhase=2;
+function hostArmPhase2(){ if(H.phase!=='round') return; const rid=H.roundId; H.armPhase=2;
   H.armP1={}; Object.keys(H.answers).forEach(id=>{ H.armP1[id]={aans:H.answers[id].aans, alias:H.answers[id].alias, ms:H.answers[id].ms}; });
   H.answers={}; updateCounter();
   const D=H.exercise.p2; const all=D.notes.map(n=>n.midi), g=D.given.midi, top=D.top.midi, bass=D.bass.midi;
@@ -1732,7 +1744,7 @@ function hostArmPhase2(){ if(H.phase!=='round') return; H.armPhase=2;
     ['Acorde desplegado', ()=>a2arp(all)]
   ];
   let i=0; const cap=()=>$('#arm2Cap');
-  const run=()=>{ if(H.phase!=='round'||H.armPhase!==2) return; if(i>=steps.length){ hostArm2Countdown(); return; }
+  const run=()=>{ if(H.phase!=='round'||H.armPhase!==2||H.roundId!==rid) return; if(i>=steps.length){ hostArm2Countdown(); return; }
     const st=steps[i]; const c=cap(); if(c) c.innerHTML=st[0]; try{ st[1](); }catch(_){} i++; setTimeout(run, 6000); };   // 6 s entre cada sonido
   setTimeout(run, 1200);
 }
@@ -1746,9 +1758,10 @@ function hostArm2Countdown(){ hostCancelAutoCorrect();
 // --- corrección automática: tras la última reproducción, 10 s y a corregir (adelantable con el botón) ---
 let _acTimer=null;
 function hostCancelAutoCorrect(){ if(_acTimer){clearTimeout(_acTimer);_acTimer=null;} const br=$('#bigRemind'); if(br) br.classList.remove('on'); cadVizStop(); }
+function armCorrectAfter(rid,dur){ setTimeout(()=>{ if(H.roundId!==rid)return; if(H.listens>0)$('#hListen').disabled=false; else hostArmAutoCorrect(); }, dur*1000); }
 function hostArmAutoCorrect(){ if(H.phase!=='round') return; hostCancelAutoCorrect();
   try{ if(H.channel) H.channel.send({type:'broadcast',event:'warn'}); }catch(_){}   // avisa a los móviles: solo el resplandor del botón
-  const br=$('#bigRemind'), bc=$('#bigRemindCount'); let s=10;
+  const br=$('#bigRemind'), bc=$('#bigRemindCount'); let s=5;   // cuenta atrás de 5 s
   const show=n=>{ if(bc) bc.textContent='Corrección automática en '+n; if(br) br.classList.add('on'); };   // aviso GRANDE solo en el iPad
   show(s);
   const tick=()=>{ s--; if(s<=0){ hostCancelAutoCorrect(); if(H.phase==='round') hostShowResults(); return; } show(s); _acTimer=setTimeout(tick,1000); };

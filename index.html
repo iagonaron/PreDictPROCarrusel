@@ -112,7 +112,8 @@
   .rank .rank-next{width:100%;margin:0 0 13px;flex:0 0 auto}
   #rankList{overflow-y:auto;flex:1}
   .rrow{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:10px;margin-bottom:5px;background:rgba(255,255,255,.02)}
-  .rrow .pos{width:30px;text-align:center;font-weight:900;color:var(--muted2);font-size:16px}
+  .rrow .pos{width:34px;text-align:center;font-weight:900;color:var(--muted2);font-size:16px}
+  .rrow .pos .pos-medal{font-size:23px;line-height:1}
   .rrow.p1 .pos{color:var(--gold)} .rrow.p1{background:rgba(212,175,55,.12)}
   .rrow.p2 .pos{color:#cdd3e0} .rrow.p3 .pos{color:#e0a16a}
   .rrow .al{flex:1;font-weight:800}
@@ -134,7 +135,7 @@
 
   /* PLAYER round — pentagrama arriba (~34%), tarjetas abajo; TODO en bloques del mismo tamaño */
   #s-player-round{flex-direction:column;gap:4px;height:100dvh;padding:3px max(12px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
-  #s-player-round .staffwrap{flex:0 0 auto;height:clamp(80px,23vh,128px);min-height:80px;padding:2px 4px;align-items:stretch;justify-content:stretch}
+  #s-player-round .staffwrap{flex:0 0 auto;height:clamp(92px,27vh,150px);min-height:88px;padding:6px 12px;align-items:stretch;justify-content:stretch}
   .pr-you{position:absolute;top:4px;right:calc(52px + env(safe-area-inset-right));font-size:12px;color:var(--muted2);z-index:6}
   .pr-you b{color:var(--gold)}
   #prHint{color:var(--gold);font-weight:800}
@@ -913,7 +914,7 @@ function renderStaffSVG(spec,slots,W,H,colors){
     for(let p=0;p<spec.pulsos;p++) boxes.push({slot:slotIndex+p,x:uX0+p*sW,w:sW});
     slotIndex+=spec.pulsos; x+=w;
   }
-  const svg=holder.querySelector('svg'); svg.setAttribute('viewBox','0 0 '+LW+' '+LH); svg.setAttribute('width',W); svg.setAttribute('height',H); svg.setAttribute('preserveAspectRatio','none'); svg.style.width='100%'; svg.style.height='100%'; svg.style.display='block';
+  const svg=holder.querySelector('svg'); svg.setAttribute('viewBox','0 0 '+LW+' '+LH); svg.setAttribute('width',W); svg.setAttribute('height',H); svg.setAttribute('preserveAspectRatio','xMidYMid meet'); svg.style.width='100%'; svg.style.height='100%'; svg.style.display='block';
   return {svg,boxes,LW,LH,staffTop:y};
 }
 function specOf(compound){ return {ts:compound?'6/8':'2/4',pulsos:2,compound:!!compound}; }
@@ -947,7 +948,9 @@ function mountStaff(container,compound,slots,opts){ opts=opts||{};
    ========================================================================= */
 let audioCtx=null, MASTER=null, ANALYSER=null;
 function actx(){ if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==='suspended')audioCtx.resume(); return audioCtx; }
-function master(){ const c=actx(); if(!MASTER){ MASTER=c.createGain(); MASTER.gain.value=1; try{ ANALYSER=c.createAnalyser(); ANALYSER.fftSize=512; ANALYSER.smoothingTimeConstant=0.8; MASTER.connect(ANALYSER); ANALYSER.connect(c.destination); }catch(e){ MASTER.connect(c.destination); } } return MASTER; }
+let OUT=null;
+function out(){ const c=actx(); if(!OUT){ OUT=c.createGain(); OUT.gain.value=0.85; OUT.connect(c.destination); } return OUT; }   // salida global: baja un poco todo el volumen
+function master(){ const c=actx(); if(!MASTER){ MASTER=c.createGain(); MASTER.gain.value=1; try{ ANALYSER=c.createAnalyser(); ANALYSER.fftSize=512; ANALYSER.smoothingTimeConstant=0.8; MASTER.connect(ANALYSER); ANALYSER.connect(out()); }catch(e){ MASTER.connect(out()); } } return MASTER; }
 // corta el audio de piano en curso (silencia MASTER un instante; los sfx de interfaz van aparte y no se ven afectados)
 function stopAudio(){ try{ const c=actx(); const m=master(); m.gain.cancelScheduledValues(c.currentTime); m.gain.setValueAtTime(0.0001, c.currentTime); m.gain.setValueAtTime(0.0001, c.currentTime+0.18); m.gain.linearRampToValueAtTime(1, c.currentTime+0.26); }catch(_){} }
 let _cadVizRAF=null;
@@ -1082,7 +1085,7 @@ function renderMelStaffSVG(midis, W, H, opts){ opts=opts||{};
       ctx.fillStyle=bg; if(ctx.fillRect) ctx.fillRect(xm-bw/2, by, bw, bh);
       ctx.fillStyle='#fff'; try{ctx.setFont('Arial',opts.ivFont||14,'bold');}catch(_){}
       ctx.fillText(iv.txt, xm-bw/2+9, by+bh-6); ctx.restore&&ctx.restore(); } } }
-  const svg=holder.querySelector('svg'); svg.setAttribute('viewBox','0 0 '+LW+' '+LH); svg.setAttribute('width',W); svg.setAttribute('height',H); svg.setAttribute('preserveAspectRatio','none'); svg.style.width='100%'; svg.style.height='100%'; svg.style.display='block';
+  const svg=holder.querySelector('svg'); svg.setAttribute('viewBox','0 0 '+LW+' '+LH); svg.setAttribute('width',W); svg.setAttribute('height',H); svg.setAttribute('preserveAspectRatio','xMidYMid meet'); svg.style.width='100%'; svg.style.height='100%'; svg.style.display='block';
   const boxes=[]; for(let i=0;i<N;i++){ const xL=(i===0?x0:(xs[i-1]+xs[i])/2), xR=(i===N-1?LW-pad:(xs[i]+xs[i+1])/2); boxes.push({slot:i,x:xL,w:Math.max(12,xR-xL)}); }
   return {svg,boxes,LW,LH};
 }
@@ -1533,6 +1536,7 @@ function initHost(){
   { const pb=$('#btnPause'); if(pb) pb.addEventListener('click',hostTogglePause); }
   { const pr=$('#pauseResume'); if(pr) pr.addEventListener('click',hostResume); }
   { const pe=$('#pauseEnd'); if(pe) pe.addEventListener('click',hostEndGame); }
+  { const ap=$('#armPro'); if(ap){ try{ ap.checked=(localStorage.getItem('carrusel_armpro')==='1'); }catch(_){} ap.addEventListener('change',()=>{ try{ localStorage.setItem('carrusel_armpro', ap.checked?'1':'0'); }catch(_){} sfx('nav'); }); } }   // Armónico PRO recuerda su estado entre partidas
   wakeOn();   // mantener el iPad encendido
   $('#hTest').addEventListener('click',()=>testAudio(H.bpm));
   $('#hListen').addEventListener('click',()=>hostListen());
@@ -1863,8 +1867,8 @@ function hostArmPhase2(){ if(H.phase!=='round') return; const rid=H.roundId; H.a
 }
 function hostArm2Countdown(){ hostCancelAutoCorrect();
   const br=$('#bigRemind'), bc=$('#bigRemindCount'); let s=5;
-  const show=n=>{ if(bc) bc.textContent=n; if(br) br.classList.add('on'); }; show(s);
-  const tick=()=>{ if(H.paused){ _acTimer=setTimeout(tick,250); return; } s--; if(s<=0){ hostCancelAutoCorrect(); hostCollectAndScore(); return; } show(s); _acTimer=setTimeout(tick,1000); };
+  const show=n=>{ if(bc) bc.textContent=n; if(br) br.classList.add('on'); corrBeep(n); }; show(s);
+  const tick=()=>{ if(H.paused){ _acTimer=setTimeout(tick,250); return; } s--; if(s<=0){ corrBeep(0); hostCancelAutoCorrect(); hostCollectAndScore(); return; } show(s); _acTimer=setTimeout(tick,1000); };
   _acTimer=setTimeout(tick,1000);
 }
 // --- corrección automática: tras la última reproducción, 10 s y a corregir (adelantable con el botón) ---
@@ -1873,9 +1877,9 @@ function hostCancelAutoCorrect(){ if(_acTimer){clearTimeout(_acTimer);_acTimer=n
 function armCorrectAfter(rid,dur){ setTimeout(()=>{ if(H.roundId!==rid)return; if(H.listens>0) autoStep(1500,()=>hostListen(true)); else hostArmAutoCorrect(); }, dur*1000); }
 function hostArmAutoCorrect(){ if(H.phase!=='round') return; hostCancelAutoCorrect();
   const br=$('#bigRemind'), bc=$('#bigRemindCount'); let s=5;   // cuenta atrás de 5 s → CORRECCIÓN
-  const show=n=>{ if(bc) bc.textContent=n; if(br) br.classList.add('on'); };   // "CORRECCIÓN" + número (solo iPad)
+  const show=n=>{ if(bc) bc.textContent=n; if(br) br.classList.add('on'); corrBeep(n); };   // "CORRECCIÓN" + número + pitido (solo iPad)
   show(s);
-  const tick=()=>{ if(H.paused){ _acTimer=setTimeout(tick,250); return; } s--; if(s<=0){ hostCancelAutoCorrect(); hostCollectAndScore(); return; } show(s); _acTimer=setTimeout(tick,1000); };
+  const tick=()=>{ if(H.paused){ _acTimer=setTimeout(tick,250); return; } s--; if(s<=0){ corrBeep(0); hostCancelAutoCorrect(); hostCollectAndScore(); return; } show(s); _acTimer=setTimeout(tick,1000); };
   _acTimer=setTimeout(tick,1000);
 }
 function hostShowResults(){
@@ -2008,11 +2012,13 @@ function renderRanking(mode,animate){
   if(!arr.length){ box.innerHTML='<div style="color:var(--muted2)">sin respuestas todavía…</div>'; return; }
   const value=r=> mode==='exercise'? r.last : r.points;
   const suffix=mode==='exercise'?'%':'';
-  const sub=r=> mode==='exercise'? ('envío: '+(r.lastMs>=9e9?'—':(r.lastMs/1000).toFixed(1)+' s')) : ('esta ronda: '+r.last+'%');
+  const sub=r=> mode==='exercise'? ('envío: '+(r.lastMs>=9e9?'—':(r.lastMs/1000).toFixed(1)+' s')) : '';   // general: no repetir la puntuación (ya está a la derecha)
+  const medals=['🥇','🥈','🥉'];
+  const posCell=(i)=> (mode!=='exercise' && i<3) ? '<span class="pos-medal">'+medals[i]+'</span>' : (i+1);   // medallas en el ranking general (provisional)
   const firstTop={}; [...box.querySelectorAll('.rrow')].forEach(r=>{ firstTop[r.dataset.id]=r.getBoundingClientRect().top; });
   const fromOf=r=> mode==='exercise'?0:Math.max(0,(r.points||0)-(r.last||0));   // total antes de sumar esta ronda
   const initPts=r=> animate===true?0:(animate==='count'?fromOf(r):value(r));
-  box.innerHTML=arr.map((r,i)=>'<div class="rrow p'+(i+1)+'" data-id="'+r.id+'" data-val="'+value(r)+'" data-from="'+fromOf(r)+'"><div class="pos">'+(i+1)+'</div><div class="al">'+escapeHtml(r.alias)+'<div class="last">'+sub(r)+'</div></div><div class="pts">'+initPts(r)+suffix+'</div></div>').join('');
+  box.innerHTML=arr.map((r,i)=>'<div class="rrow p'+(i+1)+'" data-id="'+r.id+'" data-val="'+value(r)+'" data-from="'+fromOf(r)+'"><div class="pos">'+posCell(i)+'</div><div class="al">'+escapeHtml(r.alias)+(sub(r)?'<div class="last">'+sub(r)+'</div>':'')+'</div><div class="pts">'+initPts(r)+suffix+'</div></div>').join('');
   const rows=[...box.querySelectorAll('.rrow')];
   let flipped=false;
   rows.forEach(r=>{ const id=r.dataset.id; if(firstTop[id]!=null){ const dy=firstTop[id]-r.getBoundingClientRect().top; if(Math.abs(dy)>1){ flipped=true; r.style.transform='translateY('+dy+'px)'; r.style.transition='none'; } } });
@@ -2098,7 +2104,7 @@ function isRoundScreenOn(){ const on=document.querySelector('.screen.on'); retur
 /* recoge lo que el alumno tenga marcado (llega 'collect' del iPad al acabar la cuenta atrás) */
 function playerCollect(){
   if(PL.exType==='armonico' && PL.armPhase===1){   // fase 1: registra el tipo elegido, sin cambiar de pantalla ni bloquear la fase 2
-    const ms=Date.now()-PL.roundStart, aans=PL.armSel;
+    const ms=(PL.lastInputMs!=null?PL.lastInputMs:(Date.now()-PL.roundStart)), aans=PL.armSel;
     try{ PL.channel.track({alias:PL.alias, rid:PL.roundId, aans, ms}); }catch(_){}
     try{ PL.channel.send({type:'broadcast',event:'answer',payload:{id:PL.id,alias:PL.alias,aans,ms}}); }catch(_){}
     return;
@@ -2141,7 +2147,7 @@ function playerWarn(){ if(PL.sent) return;   // móvil: solo el resplandor del b
   ['btnSend','tcSend','cadSend','modSend','armSend'].forEach(id=>{ const b=document.getElementById(id); if(b) b.classList.add('remind'); }); }
 function clearSendRemind(){ ['btnSend','tcSend','cadSend','modSend','armSend'].forEach(id=>{ const b=document.getElementById(id); if(b) b.classList.remove('remind'); }); }
 function playerOnPhase(p){
-  if(p.phase==='round'){ if(p.roundId && p.roundId===PL.roundId) return; PL.roundId=p.roundId||0; PL.exType=p.ex||'ritmico'; clearSendRemind();
+  if(p.phase==='round'){ if(p.roundId && p.roundId===PL.roundId) return; PL.roundId=p.roundId||0; PL.exType=p.ex||'ritmico'; clearSendRemind(); PL.lastInputMs=null;
     if(PL.exType==='melodico'){ PL.melFirst=p.first; startPlayerRoundMel(); }
     else if(PL.exType==='toncom'){ startPlayerRoundTon(); }
     else if(PL.exType==='cadencias'){ startPlayerRoundCad(); }
@@ -2256,7 +2262,7 @@ function attachPointer(card,cell){
 }
 function playerSend(){
   if(PL.sent) return;
-  const ms=Date.now()-PL.roundStart;
+  const ms=(PL.lastInputMs!=null?PL.lastInputMs:(Date.now()-PL.roundStart));   // desempate: momento del último dato introducido
   if(PL.exType==='cadencias'){
     const cans=PL.cadSel; PL.cadSentAns=cans;
     try{ PL.channel.track({alias:PL.alias, rid:PL.roundId, cans, ms}); }catch(_){}
@@ -2459,7 +2465,7 @@ function buildArmUI(){
   box.className='arm-opts'+(PL.armPro?' pro':''); box.innerHTML='';
   pool.forEach(id=>{ const t=ARM_TIPOS[id]; const b=document.createElement('button'); b.className='arm-opt'+(PL.armSel===id?' on':''); b.dataset.a=id;
     b.innerHTML='<span class="arm-opt-l">'+t.name+'</span><span class="arm-opt-sym">'+(t.sym||'')+'</span>';
-    b.onclick=()=>{ PL.armSel=id; buildArmUI(); sfx('place'); try{ if(PL.channel) PL.channel.track({alias:PL.alias, rid:PL.roundId, aans:id, ms:Date.now()-PL.roundStart}); }catch(_){} }; box.appendChild(b); });   // registra la elección de fase 1 al instante (fiable)
+    b.onclick=()=>{ PL.armSel=id; PL.armSentAns=id; buildArmUI(); sfx('place'); try{ if(PL.channel) PL.channel.track({alias:PL.alias, rid:PL.roundId, aans:id, ms:(PL.lastInputMs!=null?PL.lastInputMs:Date.now()-PL.roundStart)}); }catch(_){} }; box.appendChild(b); });   // registra la elección de fase 1 al instante (fiable) + guarda lo elegido para el reveal
   const send=$('#armSend'); if(send) send.onclick=playerSend;
 }
 const A2_WHEEL=['Si','La','Sol','Fa','Mi','Re','Do'];
@@ -2562,8 +2568,8 @@ function playerRevealMel(p){
    JUICE: sonidos sintetizados, cuenta atrás, confeti, recuento
    ========================================================================= */
 async function ensureAudio(){ const c=actx(); if(c.state==='suspended'){ try{await c.resume();}catch(_){} } loadPiano(); }
-function tone(freq,when,dur,type,gain){ const c=actx(); const o=c.createOscillator(),g=c.createGain(); o.type=type||'sine'; o.frequency.value=freq; o.connect(g); g.connect(c.destination); g.gain.setValueAtTime(0.0001,when); g.gain.exponentialRampToValueAtTime(gain||.3,when+.012); g.gain.exponentialRampToValueAtTime(0.0001,when+dur); o.start(when); o.stop(when+dur+.03); }
-function noiseSweep(when,dur,g0){ const c=actx(); const n=c.createBufferSource(); const buf=c.createBuffer(1,Math.max(1,Math.floor(c.sampleRate*dur)),c.sampleRate); const d=buf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*(1-i/d.length); n.buffer=buf; const f=c.createBiquadFilter(); f.type='bandpass'; f.frequency.setValueAtTime(700,when); f.frequency.exponentialRampToValueAtTime(3600,when+dur); const g=c.createGain(); g.gain.setValueAtTime(g0||.16,when); g.gain.exponentialRampToValueAtTime(0.0001,when+dur); n.connect(f); f.connect(g); g.connect(c.destination); n.start(when); n.stop(when+dur+.02); }
+function tone(freq,when,dur,type,gain){ const c=actx(); const o=c.createOscillator(),g=c.createGain(); o.type=type||'sine'; o.frequency.value=freq; o.connect(g); g.connect(out()); g.gain.setValueAtTime(0.0001,when); g.gain.exponentialRampToValueAtTime(gain||.3,when+.012); g.gain.exponentialRampToValueAtTime(0.0001,when+dur); o.start(when); o.stop(when+dur+.03); }
+function noiseSweep(when,dur,g0){ const c=actx(); const n=c.createBufferSource(); const buf=c.createBuffer(1,Math.max(1,Math.floor(c.sampleRate*dur)),c.sampleRate); const d=buf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*(1-i/d.length); n.buffer=buf; const f=c.createBiquadFilter(); f.type='bandpass'; f.frequency.setValueAtTime(700,when); f.frequency.exponentialRampToValueAtTime(3600,when+dur); const g=c.createGain(); g.gain.setValueAtTime(g0||.16,when); g.gain.exponentialRampToValueAtTime(0.0001,when+dur); n.connect(f); f.connect(g); g.connect(out()); n.start(when); n.stop(when+dur+.02); }
 function sfx(name,idx){ try{ const c=actx(); const t=c.currentTime; switch(name){
   case 'nav': tone(520,t,.08,'triangle',.12); break;
   case 'place': tone(660+(idx||0)*22,t,.09,'triangle',.2); tone(1040,t+.02,.06,'sine',.09); break;
@@ -2581,8 +2587,12 @@ function sfx(name,idx){ try{ const c=actx(); const t=c.currentTime; switch(name)
 function wheelTick(k){ try{ const c=actx(),t=c.currentTime; const f=430+((k||0)%7)*15; tone(f,t,.024,'triangle',.045); }catch(e){} }   // detente suave al pasar cada opción
 function wheelSettle(){ try{ const c=actx(),t=c.currentTime; tone(560,t,.05,'triangle',.07); tone(280,t,.06,'sine',.045); }catch(e){} }   // encaje al soltar
 function uiTap(){ try{ const c=actx(),t=c.currentTime; tone(300,t,.045,'sine',.075); tone(720,t,.02,'triangle',.03); }catch(e){} }   // toque cálido de botón
+function corrBeep(n){ try{ const c=actx(),t=c.currentTime; if(n<=0){ tone(880,t,.13,'triangle',.15); tone(1320,t+.02,.1,'sine',.08); } else { tone(430+(5-n)*58,t,.09,'triangle',.1); } }catch(e){} }   // pitido de la cuenta atrás de CORRECCIÓN
 // toque sutil al pulsar cualquier selector del alumno (además del sonido de acción)
 document.addEventListener('pointerdown',e=>{ const b=e.target&&e.target.closest?e.target.closest('.arm-opt,.cad-opt,.mode-opt,.tc-acc,.tc-mm,.tc-compas button,.a2t-acc,.a2b-acc,.a2inv button'):null; if(b) uiTap(); }, true);
+// desempate por tiempo = momento del ÚLTIMO dato que introdujo el alumno (el que dejó de tocar antes gana el empate)
+function pTouch(){ if(PL.roundStart) PL.lastInputMs=Date.now()-PL.roundStart; }
+['pointerdown','pointerup'].forEach(ev=>document.addEventListener(ev,e=>{ if(e.target&&e.target.closest&&e.target.closest('#s-player-round,#s-player-toncom,#s-player-cadencias,#s-player-armonico,#s-player-armonico2,#s-player-modos')) pTouch(); },true));
 function countUp(el,to,dur,suffix,from){ if(!el)return; from=from||0; const t0=performance.now(); dur=dur||700; suffix=suffix||''; (function fr(now){ const k=Math.min(1,(now-t0)/dur); el.textContent=Math.round(from+(to-from)*(1-Math.pow(1-k,3)))+suffix; if(k<1)requestAnimationFrame(fr); })(performance.now()); }
 // sonido de conteo: tics agudos y secos que martillean durante el recuento
 function countHammer(dur){ try{ const c=actx(),t0=c.currentTime; const n=Math.max(5,Math.round(dur/85)); for(let i=0;i<n;i++){ const t=t0+(i*dur/1000)/n; tone(1500,t,.04,'square',.09); tone(2250,t+.004,.028,'square',.045); } }catch(e){} }
@@ -2591,7 +2601,7 @@ function hypeCount(i,isGo){ const c=actx(),t=c.currentTime;
   else { const base=[311,392,523][i]||311;
     tone(base,t,.2,'sawtooth',.095); tone(base*2,t+.01,.16,'triangle',.06);
     const o=c.createOscillator(),g=c.createGain(); o.type='sawtooth'; o.frequency.setValueAtTime(base*0.6,t); o.frequency.exponentialRampToValueAtTime(base*1.5,t+.18);
-    g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.055,t+.02); g.gain.exponentialRampToValueAtTime(.0001,t+.2); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+.22); } }
+    g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.055,t+.02); g.gain.exponentialRampToValueAtTime(.0001,t+.2); o.connect(g); g.connect(out()); o.start(t); o.stop(t+.22); } }
 function runCountdown(done){ const ov=$('#countdown'); ov.classList.add('on'); const seq=['3','2','1','¡YA!']; let i=0; ensureAudio();
   (function step(){ if(H.paused){ setTimeout(step,250); return; } if(i>=seq.length){ ov.classList.remove('on'); done&&done(); return; } ov.innerHTML='<div class="n'+(i===3?' go':'')+'">'+seq[i]+'</div>'; hypeCount(i, i>=3); i++; setTimeout(step, i<seq.length?600:520); })(); }
 function confettiBurst(){ const cv=$('#confetti'); if(!cv)return; cv.classList.add('on'); const ctx=cv.getContext('2d'); cv.width=innerWidth; cv.height=innerHeight;

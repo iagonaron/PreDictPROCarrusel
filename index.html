@@ -89,7 +89,6 @@
   .hit .parrow{position:absolute;left:50%;transform:translateX(-50%);font-size:14px;line-height:1;color:rgba(150,110,25,.42);transition:color .12s,transform .12s}
   .hit.current .parrow{color:var(--gold);transform:translateX(-50%) scale(1.55);text-shadow:0 0 10px rgba(212,175,55,.7)}
   .hit.current .pn{color:var(--gold2)}
-  #s-player-round.mel .hit.current{background:rgba(212,175,55,.17);box-shadow:inset 0 0 0 2px var(--gold),0 0 16px rgba(212,175,55,.4)}   /* nota melódica seleccionada: se ilumina dorada */
   .hit.over{background:rgba(233,201,106,.32);box-shadow:inset 0 0 0 2px var(--gold-soft)}
   .hit.flash{animation:hitFlash .34s ease-out}
   @keyframes hitFlash{0%{background:rgba(212,175,55,.55)}100%{background:transparent}}
@@ -1071,7 +1070,7 @@ function renderMelStaffSVG(midis, W, H, opts){ opts=opts||{};
   for(let i=0;i<N;i++){ const m=midis[i];
     if(m!=null){ const k=melVFkey(m); const sp=melSpell(m); const kk=sp.letter+sp.oct, des=(sp.acc==='#')?'#':'n', cur=accState[kk]||'n'; const sn=new VF.StaveNote({keys:[k.key],duration:'w'});
       if(des!==cur){ const gl=(des==='#')?'#':'n'; try{ sn.addModifier(new VF.Accidental(gl),0); }catch(e){ try{ sn.addAccidental(0,new VF.Accidental(gl)); }catch(_){} } accState[kk]=des; }
-      const col=(opts.colors&&opts.colors[i])||((i===0&&opts.given)?'#b8860b':'#241a06');
+      const col=(opts.colors&&opts.colors[i])||(opts.cur===i&&m!=null?'#d4af37':((i===0&&opts.given)?'#b8860b':'#241a06'));   // la nota seleccionada se pinta dorada (no la región)
       sn.setStyle({fillStyle:col,strokeStyle:col}); notes.push(sn);
     } else { const sn=new VF.StaveNote({keys:['b/4'],duration:'w'}); sn.setStyle({fillStyle:'rgba(0,0,0,0)',strokeStyle:'rgba(0,0,0,0)'}); notes.push(sn); } }
   const voice=new VF.Voice({num_beats:N*4,beat_value:4}); voice.setStrict(false); voice.addTickables(notes);
@@ -1806,7 +1805,7 @@ async function hostListen(skipCd){
       if(H.exercise.type==='melodico') dur=await playMelody(H.exercise.sol, H.melSpeed, null, primera?1:0.5);   // 2ª escucha al doble de velocidad
       else dur=await playRhythm(H.exercise.solution,H.exercise.compound,H.bpm,H.metro,flashHostNumber);
     }catch(e){}
-    setTimeout(()=>{ sw&&sw.classList.remove('listening'); eq&&eq.classList.remove('on'); if(H.roundId!==rid)return; if(H.listens>0) autoStep(1500,()=>hostListen(true)); else hostArmAutoCorrect(); }, dur*1000);
+    setTimeout(()=>{ sw&&sw.classList.remove('listening'); eq&&eq.classList.remove('on'); if(H.roundId!==rid)return; const gap=(H.exercise&&H.exercise.type==='ritmico')?6500:1500; if(H.listens>0) autoStep(gap,()=>hostListen(true)); else hostArmAutoCorrect(); }, dur*1000);   // rítmico: ~5 s más entre las dos vueltas
   };
   if(primera && !skipCd) runCountdown(go); else go();
 }
@@ -2587,7 +2586,8 @@ function sfx(name,idx){ try{ const c=actx(); const t=c.currentTime; switch(name)
 function wheelTick(k){ try{ const c=actx(),t=c.currentTime; const f=430+((k||0)%7)*15; tone(f,t,.024,'triangle',.045); }catch(e){} }   // detente suave al pasar cada opción
 function wheelSettle(){ try{ const c=actx(),t=c.currentTime; tone(560,t,.05,'triangle',.07); tone(280,t,.06,'sine',.045); }catch(e){} }   // encaje al soltar
 function uiTap(){ try{ const c=actx(),t=c.currentTime; tone(300,t,.045,'sine',.075); tone(720,t,.02,'triangle',.03); }catch(e){} }   // toque cálido de botón
-function corrBeep(n){ try{ const c=actx(),t=c.currentTime; if(n<=0){ tone(880,t,.13,'triangle',.15); tone(1320,t+.02,.1,'sine',.08); } else { tone(430+(5-n)*58,t,.09,'triangle',.1); } }catch(e){} }   // pitido de la cuenta atrás de CORRECCIÓN
+function corrBeep(n){ try{ const c=actx(),t=c.currentTime; const tic=(n%2===0);   // tic-tac de reloj en la cuenta atrás de CORRECCIÓN
+    tone(tic?2000:1550,t,.03,'square',.085); tone(tic?1040:800,t+.002,.022,'sine',.03); }catch(e){} }
 // toque sutil al pulsar cualquier selector del alumno (además del sonido de acción)
 document.addEventListener('pointerdown',e=>{ const b=e.target&&e.target.closest?e.target.closest('.arm-opt,.cad-opt,.mode-opt,.tc-acc,.tc-mm,.tc-compas button,.a2t-acc,.a2b-acc,.a2inv button'):null; if(b) uiTap(); }, true);
 // desempate por tiempo = momento del ÚLTIMO dato que introdujo el alumno (el que dejó de tocar antes gana el empate)

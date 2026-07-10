@@ -510,6 +510,74 @@
   .wm .carr{ /* tipografía "at home": Georgia itálica, girada, dorado suave */
     font-size:.74em;font-style:italic;font-family:Georgia,"Times New Roman",serif;font-weight:500;
     color:#d8caa6;transform:rotate(-3deg);display:inline-block;margin-left:.32em;vertical-align:.02em}
+
+  /* ===================== LOBBY centrado · QR grande + botón Configurar ===================== */
+  #s-host-lobby{flex-direction:column;align-items:center;justify-content:center;
+    gap:clamp(14px,2.4vh,26px);padding:clamp(16px,3vh,32px) clamp(18px,3vw,40px);
+    text-align:center;overflow:hidden}
+  #s-host-lobby.on{display:flex}
+  .lobby-inner{display:flex;flex-direction:column;align-items:center;
+    gap:clamp(14px,2.4vh,26px);width:100%;max-width:760px}
+  .lobby-brand{display:flex;flex-direction:column;align-items:center;gap:3px}
+  #s-host-lobby h1.brand{font-size:clamp(30px,3.6vw,46px);margin:0}
+
+  /* QR grande y centrado (como estaba) */
+  .qcard{gap:clamp(24px,2.6vw,36px);padding:clamp(22px,2.6vh,30px) clamp(24px,2.6vw,32px);max-width:none}
+  .qbox img,.qbox canvas{width:clamp(210px,26vh,270px);height:clamp(210px,26vh,270px)}
+  .qside{max-width:340px}
+  .conn-block{display:flex;flex-direction:column;align-items:center;gap:6px}
+  .roster{max-width:620px;min-height:30px}
+
+  /* acciones centradas: Configurar + Empezar */
+  .lobby-actions{display:flex;align-items:center;justify-content:center;gap:clamp(12px,1.6vw,20px);flex-wrap:wrap}
+  .btn-cfg{display:inline-flex;align-items:center;gap:9px;font-size:clamp(15px,1.4vw,17px);
+    font-weight:800;padding:12px clamp(18px,1.6vw,24px);border-radius:12px;
+    color:var(--gold-soft);border:1px solid rgba(212,175,55,.5);
+    background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(184,134,11,.06))}
+  .btn-cfg:hover{background:linear-gradient(135deg,rgba(212,175,55,.26),rgba(184,134,11,.14));
+    border-color:rgba(212,175,55,.8)}
+  .btn-cfg .cfg-gear{font-size:18px;line-height:1}
+  .btn-start{font-size:clamp(15px,1.5vw,18px);padding:12px clamp(20px,1.8vw,28px);border-radius:12px;white-space:nowrap}
+
+  /* ===================== MODAL · Configurar ejercicios ===================== */
+  .cfg-overlay{position:fixed;inset:0;z-index:6000;display:none;align-items:center;justify-content:center;
+    background:rgba(6,4,2,.82);padding:clamp(14px,3vh,28px);backdrop-filter:blur(2px)}
+  .cfg-overlay.on{display:flex;animation:cfgFade .18s ease}
+  @keyframes cfgFade{from{opacity:0}to{opacity:1}}
+  .cfg-box{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
+    border-radius:22px;padding:clamp(20px,3vh,30px) clamp(20px,2.6vw,32px);
+    width:100%;max-width:720px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 70px rgba(0,0,0,.6);
+    display:flex;flex-direction:column;gap:clamp(14px,2vh,20px);text-align:center;
+    animation:cfgPop .22s cubic-bezier(.2,1.05,.3,1)}
+  @keyframes cfgPop{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+  .cfg-head h2{margin:0;font-size:clamp(19px,2vw,24px);font-weight:900;color:var(--ink)}
+  .cfg-sub{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted2);margin-top:5px}
+
+  /* rejilla simétrica: 6 tarjetas idénticas, verticales */
+  .exlist{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(10px,1.4vw,14px);width:100%}
+  .exrow{flex-direction:column;align-items:center;justify-content:center;gap:11px;
+    padding:clamp(13px,1.8vh,17px) 12px;min-height:104px}
+  .exrow .ex-top{display:flex;align-items:center;justify-content:center;gap:8px;min-height:24px}
+  .exname{font-size:15px}
+
+  /* Armónico PRO como pastilla, sin alterar la altura de la tarjeta */
+  .arm-pill{position:relative;display:inline-flex;align-items:center;cursor:pointer;user-select:none}
+  .arm-pill input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+  .arm-pill span{font-size:11px;font-weight:900;letter-spacing:.05em;color:var(--muted2);
+    border:1px solid var(--line);border-radius:999px;padding:3px 10px;transition:all .15s;line-height:1.15}
+  .arm-pill input:checked + span{color:#241a06;border-color:#8a6410;
+    background:linear-gradient(135deg,#e9c96a,#b8860b);box-shadow:0 1px 6px rgba(0,0,0,.3)}
+
+  .dice-row{margin:0}
+  .cfg-done{align-self:center;font-size:16px;padding:12px 34px;border-radius:12px}
+
+  /* pantallas estrechas: 2 columnas en el modal */
+  @media (max-width:620px){
+    .exlist{grid-template-columns:repeat(2,1fr)}
+    .qcard{flex-direction:column;gap:16px}
+    .qside{text-align:center}
+    #s-host-lobby{overflow-y:auto;justify-content:flex-start}
+  }
 </style>
 </head>
 <body>
@@ -556,37 +624,52 @@
 
 <!-- ========================= HOST · LOBBY ========================= -->
 <div class="screen" id="s-host-lobby">
-  <div class="kick">educación auditiva · en directo</div>
-  <h1 class="brand wm" style="font-size:44px"><span class="pd"><span class="pre">Pre</span><span class="dict">Dict</span></span><span class="pro">PRO</span><span class="carr">Carrusel</span></h1>
-  <div class="qcard">
-    <div class="qbox" id="qrbox"></div>
-    <div class="qside">
-      <div class="kick">Código de sala</div>
-      <div class="code" id="codeTxt">····</div>
-      <p>Los alumnos <b>escanean el QR</b> con el móvil, ponen un alias y entran. No se guarda nada.</p>
-      <div id="joinUrl" style="font-size:12px;color:var(--muted2);margin-top:8px;word-break:break-all"></div>
-      <div id="fileWarn" style="display:none;margin-top:10px;padding:9px 11px;border:1px solid #7a3b12;background:rgba(255,120,60,.12);border-radius:10px;color:#ffcaa8;font-size:12.5px;line-height:1.35"></div>
+  <div class="lobby-inner">
+    <div class="lobby-brand">
+      <div class="kick">educación auditiva · en directo</div>
+      <h1 class="brand wm"><span class="pd"><span class="pre">Pre</span><span class="dict">Dict</span></span><span class="pro">PRO</span><span class="carr">Carrusel</span></h1>
+    </div>
+
+    <div class="qcard">
+      <div class="qbox" id="qrbox"></div>
+      <div class="qside">
+        <div class="kick">Código de sala</div>
+        <div class="code" id="codeTxt">····</div>
+        <p>Los alumnos <b>escanean el QR</b> con el móvil, ponen un alias y entran. No se guarda nada.</p>
+        <div id="joinUrl" style="font-size:12px;color:var(--muted2);margin-top:8px;word-break:break-all"></div>
+        <div id="fileWarn" style="display:none;margin-top:10px;padding:9px 11px;border:1px solid #7a3b12;background:rgba(255,120,60,.12);border-radius:10px;color:#ffcaa8;font-size:12.5px;line-height:1.35"></div>
+      </div>
+    </div>
+
+    <div class="conn-block">
+      <div class="kick">Conectados</div>
+      <div class="roster" id="roster"><span style="color:var(--muted2)">esperando alumnos…</span></div>
+    </div>
+
+    <div class="lobby-actions">
+      <button class="btn-cfg" id="btnConfig"><span class="cfg-gear">⚙</span> Configurar</button>
+      <button class="btn-gold btn-start" id="btnStart" disabled>Empezar partida</button>
     </div>
   </div>
-  <div class="kick">Conectados</div>
-  <div class="roster" id="roster"><span style="color:var(--muted2)">esperando alumnos…</span></div>
-  <div class="setlist">
-    <div class="kick" style="align-self:center">Ejercicios de la partida · elige cuántas rondas de cada uno</div>
-    <div class="exlist" id="exList">
-      <div class="exrow" data-x="ritmico"><span class="exname">Rítmico</span><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-ritmico">1</b><button class="st" data-d="1">+</button></div></div>
-      <div class="exrow" data-x="melodico"><span class="exname">Melódico</span><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-melodico">1</b><button class="st" data-d="1">+</button></div></div>
-      <div class="exrow" data-x="toncom"><span class="exname">TonCom</span><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-toncom">1</b><button class="st" data-d="1">+</button></div></div>
-      <div class="exrow" data-x="cadencias"><span class="exname">Cadencias</span><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-cadencias">1</b><button class="st" data-d="1">+</button></div></div>
-      <div class="exrow" data-x="armonico"><span class="exname">Armónico</span><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-armonico">1</b><button class="st" data-d="1">+</button></div></div>
-      <div class="exrow" data-x="modos"><span class="exname">Modos</span><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-modos">1</b><button class="st" data-d="1">+</button></div></div>
+
+  <!-- ===== MODAL · Configurar ejercicios ===== -->
+  <div class="cfg-overlay" id="cfgOverlay">
+    <div class="cfg-box">
+      <div class="cfg-head">
+        <h2>Ejercicios de la partida</h2>
+        <div class="cfg-sub">elige cuántas rondas de cada uno</div>
+      </div>
+      <div class="exlist" id="exList">
+        <div class="exrow" data-x="ritmico"><div class="ex-top"><span class="exname">Rítmico</span></div><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-ritmico">1</b><button class="st" data-d="1">+</button></div></div>
+        <div class="exrow" data-x="melodico"><div class="ex-top"><span class="exname">Melódico</span></div><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-melodico">1</b><button class="st" data-d="1">+</button></div></div>
+        <div class="exrow" data-x="toncom"><div class="ex-top"><span class="exname">TonCom</span></div><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-toncom">1</b><button class="st" data-d="1">+</button></div></div>
+        <div class="exrow" data-x="cadencias"><div class="ex-top"><span class="exname">Cadencias</span></div><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-cadencias">1</b><button class="st" data-d="1">+</button></div></div>
+        <div class="exrow arm" data-x="armonico"><div class="ex-top"><span class="exname">Armónico</span><label class="arm-pill" title="Armónico PRO · 10 tipos de acorde"><input type="checkbox" id="armPro"><span>PRO</span></label></div><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-armonico">1</b><button class="st" data-d="1">+</button></div></div>
+        <div class="exrow" data-x="modos"><div class="ex-top"><span class="exname">Modos</span></div><div class="stepper"><button class="st" data-d="-1">−</button><b id="cnt-modos">1</b><button class="st" data-d="1">+</button></div></div>
+      </div>
+      <label class="dice-row"><input type="checkbox" id="diceRandom" checked><span class="dice-ico">🎲</span> <span>Orden aleatorio de ejercicios</span></label>
+      <button class="btn-gold cfg-done" id="cfgDone">Listo</button>
     </div>
-    <label class="dice-row"><input type="checkbox" id="diceRandom" checked><span class="dice-ico">🎲</span> <span>Orden aleatorio de ejercicios</span></label>
-    <label class="dice-row"><input type="checkbox" id="armPro"><span>Armónico <b style="color:var(--gold-soft)">PRO</b> · 10 tipos de acorde</span></label>
-    <button class="btn-gold" id="btnStart" disabled>Empezar partida</button>
-  </div>
-  <div class="joinline">¿Alumno sin cámara? Código:
-    <input type="text" id="manualCode" maxlength="4" placeholder="XXXX">
-    <button id="manualGo">Entrar</button>
   </div>
 </div>
 
@@ -1545,7 +1628,14 @@ function initHost(){
   $('#btnResults').addEventListener('click',()=>{ if(H.phase==='round') hostArmAutoCorrect(); });   // "Mostrar resultados" → cuenta atrás de 5 s + aviso de enviar
   $('#btnAgain').addEventListener('click',hostContinue);
   { const br=$('#btnReset'); if(br) br.addEventListener('click',hostReset); }   // botón "Nueva partida" eliminado
-  $('#manualGo').addEventListener('click',()=>{const c=$('#manualCode').value.trim().toUpperCase(); if(c.length>=3) location.href=location.origin+location.pathname+'?room='+c;});
+  { const mg=$('#manualGo'), mc=$('#manualCode');   // "alumno sin cámara" ya no está en el lobby; se mantiene protegido por si acaso
+    if(mg&&mc) mg.addEventListener('click',()=>{const c=mc.value.trim().toUpperCase(); if(c.length>=3) location.href=location.origin+location.pathname+'?room='+c;}); }
+  // Modal "Configurar": abre/cierra el panel de ejercicios
+  { const bc=$('#btnConfig'), ov=$('#cfgOverlay'), cd=$('#cfgDone');
+    if(bc&&ov){ bc.addEventListener('click',()=>{ ov.classList.add('on'); sfx('nav'); });
+      if(cd) cd.addEventListener('click',()=>{ ov.classList.remove('on'); sfx('nav'); });
+      ov.addEventListener('click',e=>{ if(e.target===ov) ov.classList.remove('on'); });
+      document.addEventListener('keydown',e=>{ if(e.key==='Escape' && ov.classList.contains('on')) ov.classList.remove('on'); }); } }
 }
 function hostConnect(){
   H.channel=sb.channel(chan(H.code),{config:{broadcast:{self:false}}});

@@ -1424,7 +1424,7 @@ window.addEventListener('load',()=>{ if(roomParam) initPlayer(roomParam.toUpperC
 function initLanding(){
   document.addEventListener('pointerdown',()=>ensureAudio(),{once:true});
   showScreen('s-landing');
-  $('#btnCreate').addEventListener('click',()=>{ const p=prompt('Contraseña de profesor:'); if(p===null) return; if(p.trim()==='010513') initHost(); else alert('Contraseña incorrecta.'); });
+  $('#btnCreate').addEventListener('click',()=>{ initHost(); });
   $('#btnLandJoin').addEventListener('click',()=>{ const c=$('#landCode').value.trim().toUpperCase(); if(c.length>=3) goPlayer(c); });
   $('#landCode').addEventListener('keydown',e=>{ if(e.key==='Enter') $('#btnLandJoin').click(); });
   $('#btnScan').addEventListener('click',startScan);

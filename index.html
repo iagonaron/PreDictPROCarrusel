@@ -2469,8 +2469,28 @@ function mountWheel(container, items, index, onChange){
   container.onpointermove=e=>{ if(dragging){ e.preventDefault(); moveTo(e.clientY); } };
   container.onpointerup=e=>up(e.clientY,e);
   container.onpointercancel=()=>{ if(dragging){ dragging=false; place(cur,true); } };
+  container._wheelH=H; container._wheelSpec={items:items, onChange:onChange};   // (15-sep-2026) para volver a montar si cambia el alto
   return { set:i=>{ cur=clamp(i); place(cur,false); }, get:()=>cur };
 }
+/* (Iago 15-sep-2026) Al escanear el QR, Safari (iPhone) abre la página en
+   VERTICAL y el alumno gira después: la rueda se había medido con el carril
+   alto y, al girar, la banda central y las opciones quedaban fuera de sitio
+   (se veían encima de ♭/♯). Ahora, cuando cambia el alto de un carril visible,
+   la rueda se vuelve a montar con las medidas nuevas y la misma opción elegida. */
+(function(){
+  let tmr=null;
+  function remontar(){
+    document.querySelectorAll('.wheelbox').forEach(c=>{
+      const w=c._wheel, s=c._wheelSpec; if(!w||!s||!c.offsetParent) return;
+      const H=Math.max(66, c.clientHeight||120); if(H===c._wheelH) return;
+      try{ c._wheel=mountWheel(c, s.items, w.get(), s.onChange); }catch(_){}
+    });
+  }
+  function programar(){ clearTimeout(tmr); tmr=setTimeout(remontar,120); }
+  window.addEventListener('resize',programar);
+  window.addEventListener('orientationchange',()=>{ programar(); setTimeout(remontar,500); });
+  if(window.visualViewport) window.visualViewport.addEventListener('resize',programar);
+})();
 function syncWheel(container, items, index, onChange){ if(!container) return;
   if(!container._wheel){ container._wheel=mountWheel(container, items, index, onChange); } else container._wheel.set(index); }
 function renderNoteSpin(){ syncWheel($('#tcNote'), TON_NOTE_WHEEL, PL.tc.noteI, i=>{ PL.tc.noteI=Math.max(0,Math.min(TON_NOTE_WHEEL.length-1,i)); tcUpdateAns(); }); }

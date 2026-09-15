@@ -1349,10 +1349,10 @@ function voiceUnderTop(chord, topMidi){
 async function playTonDict(dict, compas, onBeat){ const c=actx(); if(c.state==='suspended')await c.resume();
   let bt=c.currentTime+0.35;
   dict.events.forEach(ev=>{
-    // (Iago 15-sep-2026) acento del 1 más evidente: claqueta bastante más fuerte en el pulso
-    // fuerte (antes 0.30 vs 0.12) y la propia nota del 1 suena un 55 % más fuerte que el resto
-    if(ev.beatStart) click(bt, !!ev.strong, ev.strong?0.55:0.10);
-    if(!ev.rest) pianoTone(ev.midi, bt, Math.max(0.22,ev.durSec*0.96), ev.strong?1.55:1);
+    // (Iago 15-sep-2026) claqueta como siempre (suave, acento en el 1); la nota del
+    // primer pulso de cada compás suena un 30 % más fuerte que el resto
+    if(ev.beatStart) click(bt, !!ev.strong, ev.strong?0.30:0.12);
+    if(!ev.rest) pianoTone(ev.midi, bt, Math.max(0.22,ev.durSec*0.96), ev.strong?1.30:1);
     bt+=ev.durSec; });
   return bt-c.currentTime+0.5;
 }

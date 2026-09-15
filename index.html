@@ -1201,10 +1201,11 @@ function pianoFlash(container,midi){ const k=container&&container.querySelector(
 let _sfPiano=null, _sfTried=false;
 function loadPiano(){ if(_sfPiano||_sfTried||!window.Soundfont) return; _sfTried=true;
   try{ Soundfont.instrument(actx(), 'acoustic_grand_piano', {soundfont:'MusyngKite', destination:pianoBus()}).then(inst=>{ _sfPiano=inst; }).catch(()=>{}); }catch(e){} }
-function pianoTone(midi, when, dur){
-  if(_sfPiano){ try{ _sfPiano.play(midi, when, {duration:dur, gain:2.4}); return; }catch(e){} }   // piano real (soundfont) si cargó
+function pianoTone(midi, when, dur, vel){   // (15-sep-2026) vel: 1 = normal, >1 = nota acentuada
+  const V=(vel==null?1:vel);
+  if(_sfPiano){ try{ _sfPiano.play(midi, when, {duration:dur, gain:2.4*V}); return; }catch(e){} }   // piano real (soundfont) si cargó
   const c=actx(), dest=pianoBus(); const freq=440*Math.pow(2,(midi-69)/12), t=when, end=t+dur;
-  const g=c.createGain(); g.connect(dest); g.gain.setValueAtTime(1,t); g.gain.setValueAtTime(1,Math.max(t,end-0.08)); g.gain.exponentialRampToValueAtTime(0.0001,end+0.15);
+  const g=c.createGain(); g.connect(dest); g.gain.setValueAtTime(V,t); g.gain.setValueAtTime(V,Math.max(t,end-0.08)); g.gain.exponentialRampToValueAtTime(0.0001,end+0.15);
   [[1,1,1],[2,.62,.8],[3,.4,.62],[4,.26,.5],[5,.16,.4],[6,.10,.32],[7,.065,.26],[8,.04,.2]].forEach(([mult,amp,decF])=>{
     const o=c.createOscillator(); o.type='sine'; o.frequency.value=freq*mult*(1+0.0004*mult*mult);
     const pg=c.createGain(), peak=amp*0.5; pg.gain.setValueAtTime(0.0001,t); pg.gain.exponentialRampToValueAtTime(peak,t+0.004);
@@ -1348,8 +1349,10 @@ function voiceUnderTop(chord, topMidi){
 async function playTonDict(dict, compas, onBeat){ const c=actx(); if(c.state==='suspended')await c.resume();
   let bt=c.currentTime+0.35;
   dict.events.forEach(ev=>{
-    if(ev.beatStart) click(bt, !!ev.strong, ev.strong?0.30:0.12);          // muy suave; acento en el pulso 1 del compás
-    if(!ev.rest) pianoTone(ev.midi, bt, Math.max(0.22,ev.durSec*0.96));
+    // (Iago 15-sep-2026) acento del 1 más evidente: claqueta bastante más fuerte en el pulso
+    // fuerte (antes 0.30 vs 0.12) y la propia nota del 1 suena un 55 % más fuerte que el resto
+    if(ev.beatStart) click(bt, !!ev.strong, ev.strong?0.55:0.10);
+    if(!ev.rest) pianoTone(ev.midi, bt, Math.max(0.22,ev.durSec*0.96), ev.strong?1.55:1);
     bt+=ev.durSec; });
   return bt-c.currentTime+0.5;
 }

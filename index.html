@@ -121,20 +121,30 @@ if(window.Sentry && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)){
   .toggle{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
 
   /* ranking */
-  .reveal-wrap{display:flex;gap:14px;flex:1;min-height:0;align-items:stretch}
-  #s-host-reveal .staffwrap{flex:1;height:clamp(108px,22vh,168px);align-self:center;align-items:stretch;justify-content:stretch}
-  .rank{flex:0 0 clamp(190px,20vw,244px);align-self:stretch;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:10px 11px;overflow:hidden;display:flex;flex-direction:column}
-  .rank h3{margin:0 0 13px;font-size:14px;color:var(--gold-soft);letter-spacing:.04em;flex:0 0 auto;display:flex;align-items:center;gap:6px}
-  .rank .rank-next{width:100%;margin:0 0 13px;flex:0 0 auto}
-  #rankList{overflow-y:auto;flex:1}
-  .rrow{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:10px;margin-bottom:5px;background:rgba(255,255,255,.02)}
-  .rrow .pos{width:34px;text-align:center;font-weight:900;color:var(--muted2);font-size:16px}
-  .rrow .pos .pos-medal{font-size:23px;line-height:1}
+  /* (17-sep-2026) SOLUCION A PANTALLA COMPLETA. Antes: el ejercicio flotando a
+     la izquierda y el ranking en una columna estrecha a la derecha, con medio
+     televisor en negro. Ahora: el ejercicio ARRIBA a todo el ancho y el ranking
+     DEBAJO, repartido en tantas columnas como quepan, con la letra mas grande
+     para leerlo desde el fondo del aula. */
+  .reveal-wrap{display:flex;flex-direction:column;gap:14px;flex:1;min-height:0}
+  #s-host-reveal .staffwrap{flex:0 0 auto;width:100%;height:clamp(108px,22vh,168px);align-self:stretch;align-items:stretch;justify-content:stretch}
+  .rank{flex:1 1 auto;width:100%;min-height:0;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:12px 14px;overflow:hidden;
+        display:grid;grid-template-columns:1fr auto;grid-template-rows:auto 1fr;gap:10px 14px;align-items:start}
+  .rank h3{grid-column:1;grid-row:1;margin:0;font-size:16px;color:var(--gold-soft);letter-spacing:.04em;display:flex;align-items:center;gap:6px;align-self:center}
+  .rank .rank-next{grid-column:2;grid-row:1;width:auto;margin:0;justify-self:end;align-self:center}
+  #rankList{grid-column:1 / -1;grid-row:2;align-self:stretch;overflow-y:auto;min-height:0;
+        display:grid;grid-template-columns:repeat(auto-fill,minmax(520px,1fr));gap:10px 20px;align-content:start}
+  .rrow{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:11px;margin-bottom:0;background:rgba(255,255,255,.02)}
+  .rrow .pos{width:38px;text-align:center;font-weight:900;color:var(--muted2);font-size:19px}
+  .rrow .pos .pos-medal{font-size:25px;line-height:1}
   .rrow.p1 .pos{color:var(--gold)} .rrow.p1{background:rgba(212,175,55,.12)}
   .rrow.p2 .pos{color:#cdd3e0} .rrow.p3 .pos{color:#e0a16a}
-  .rrow .al{flex:1;font-weight:800}
-  .rrow .last{font-size:12px;color:var(--muted2)}
-  .rrow .pts{font-weight:900;color:var(--gold);font-variant-numeric:tabular-nums}
+  .rrow .al{flex:1;font-weight:800;font-size:19px;line-height:1.15}
+  .rrow .last{font-size:13px;color:var(--muted2);font-weight:600}
+  .rrow .pts{font-weight:900;color:var(--gold);font-variant-numeric:tabular-nums;font-size:22px}
+  /* sin respuesta en esta ronda: se ve, pero apagado */
+  .rrow.sinresp{opacity:.55}
+  .rrow.sinresp .pts{color:var(--muted2)}
 
   /* ===== PLAYER ===== */
   #s-player-join,#s-player-wait,#s-player-sent,#s-player-reveal{flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:26px;text-align:center}
@@ -248,7 +258,7 @@ if(window.Sentry && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)){
   .tc-hostcard{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-size:26px;color:var(--ink);text-align:center;padding:14px}
   .tc-hostcard b{color:var(--gold)}
   .tc-hostcard span{font-size:15px;color:var(--muted);font-weight:500;max-width:580px}
-  #s-host-reveal.toncom .staffwrap{height:auto;align-self:center;padding:22px 20px}
+  #s-host-reveal.toncom .staffwrap{height:auto;align-self:stretch;padding:22px 20px}
   #s-host-reveal.toncom .tcrev{height:auto}
   .tcrev .tcr-card{padding:20px 16px}
   /* ENVIAR destacado (tono ámbar cálido, distinto del oro del resto) */
@@ -317,9 +327,9 @@ if(window.Sentry && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)){
   /* (17-sep-2026) SOLUCION DE CADENCIAS · La tarjeta se ajusta a la partitura (sin
      franja blanca muerta), va pegada al titulo y la partitura se estira a todo el
      ancho: en la tele se ve casi el doble de grande y ya no se recorta. */
-  #s-host-reveal.cad .staffwrap{height:auto;align-self:flex-start;flex:1;padding:12px 14px}
+  #s-host-reveal.cad .staffwrap{height:auto;align-self:stretch;flex:0 0 auto;padding:12px 14px}
   #s-host-reveal.cad .staffbox{height:auto;overflow:visible}
-  #s-host-reveal.cad .cad-score{height:auto;flex:0 0 auto;display:block}
+  #s-host-reveal.cad .cad-score{height:auto;flex:0 0 auto;display:flex;align-items:center;justify-content:center}
   #s-host-reveal.cad .cad-score svg{display:block;width:100%;height:auto;max-width:100%;max-height:none}
   /* CADENCIAS · móvil */
   #s-player-cadencias{flex-direction:column;gap:8px;height:100dvh;padding:10px max(12px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
@@ -727,7 +737,8 @@ if(window.Sentry && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)){
     <div class="spacer"></div>
   </div>
   <div class="reveal-wrap">
-    <div class="staffwrap" style="flex:1">
+    <!-- (17-sep-2026) sin style="flex:1": en la columna ese flex fijaba el ALTO y la partitura se salia de la tarjeta -->
+    <div class="staffwrap">
       <div class="staffbox" id="hvStaff"></div>
     </div>
     <div class="rank">
@@ -1526,10 +1537,28 @@ function renderCadScore(container, gen, colorMode){
     const svg=container.querySelector('svg');
     if(esRev && svg && svg.getBBox){
       const bb=svg.getBBox(), m=12;
-      svg.setAttribute('viewBox',(bb.x-m)+' '+(bb.y-m)+' '+(bb.width+2*m)+' '+(bb.height+2*m));
+      const vbW=bb.width+2*m, vbH=bb.height+2*m;
+      svg.setAttribute('viewBox',(bb.x-m)+' '+(bb.y-m)+' '+vbW+' '+vbH);
       svg.setAttribute('preserveAspectRatio','xMidYMid meet');
       svg.removeAttribute('width'); svg.removeAttribute('height');
-      svg.style.width='100%'; svg.style.height='auto';
+      svg.style.width='100%';
+      // (17-sep-2026) El alto se FIJA en px a partir del ancho real. Con
+      // height:auto el navegador calculaba mal el alto dentro de la columna y la
+      // partitura se salia de la tarjeta por abajo, pintandose encima del
+      // ranking. Se reajusta al cambiar el tamano de la ventana.
+      svg.style.aspectRatio = (vbW/vbH).toFixed(5);
+      const _ajusta=function(){ try{
+        const w=container.clientWidth||svg.getBoundingClientRect().width; if(!(w>0)) return;
+        // tope de alto: la mitad de la pantalla, para que el ranking de abajo
+        // siempre tenga sitio. Si topa, se estrecha a la vez para no deformar.
+        const maxH=Math.max(180, Math.round((window.innerHeight||900)*0.50));
+        let h=Math.round(w*vbH/vbW);
+        if(h>maxH){ h=maxH; svg.style.width=Math.round(h*vbW/vbH)+'px'; } else { svg.style.width='100%'; }
+        svg.style.height=h+'px';
+      }catch(e){} };
+      svg.style.height='auto'; requestAnimationFrame(_ajusta); setTimeout(_ajusta,80);
+      if(container._onRz) window.removeEventListener('resize',container._onRz);
+      container._onRz=_ajusta; window.addEventListener('resize',_ajusta);
     }
   }catch(e){}
 }
@@ -2138,8 +2167,18 @@ function hostShowResultsModos(){
   hostRevealButtons(); hostBroadcastPhase();
 }
 function rankingArr(mode){
-  const arr=Object.keys(H.players).filter(id=>H.roster[id]||H.players[id].points>0||H.answers[id])
-    .map(id=>({id,alias:H.players[id].alias,points:H.players[id].points||0,last:H.players[id].lastPct||0,lastMs:H.players[id].lastMs||9e9,totalMs:H.players[id].totalMs||9e9}));
+  // (17-sep-2026) TODOS LOS DE LA SALA. Antes se recorria solo H.players, donde
+  // unicamente entra quien ya ha respondido alguna vez: el alumno presente que
+  // no habia contestado nunca no aparecia en NINGUN ranking, justo el que mas
+  // interesa ver. Ahora la lista sale de la union de la sala (H.roster), las
+  // respuestas de esta ronda y quien ya tiene puntos.
+  const _ids=new Set([].concat(Object.keys(H.roster||{}), Object.keys(H.answers||{}), Object.keys(H.players||{})));
+  const arr=Array.from(_ids).filter(id=>(H.roster&&H.roster[id])||(H.answers&&H.answers[id])||(H.players[id]&&H.players[id].points>0))
+    .map(id=>{ const p=H.players[id]||{}, rr=(H.roster&&H.roster[id])||{}, an=(H.answers&&H.answers[id])||{};
+      return {id, alias:p.alias||rr.alias||an.alias||'\u2014', points:p.points||0, last:p.lastPct||0,
+              lastMs:(p.lastMs!=null?p.lastMs:9e9), totalMs:(p.totalMs!=null?p.totalMs:9e9),
+              respondio:!!(H.answers&&H.answers[id])};
+    });
   if(mode==='exercise') arr.sort((a,b)=> b.last-a.last || a.lastMs-b.lastMs || String(a.alias).localeCompare(b.alias));   // empate: quien envió antes
   else arr.sort((a,b)=> b.points-a.points || a.totalMs-b.totalMs || String(a.alias).localeCompare(b.alias));
   return arr;
@@ -2157,7 +2196,7 @@ function renderRanking(mode,animate){
   const firstTop={}; [...box.querySelectorAll('.rrow')].forEach(r=>{ firstTop[r.dataset.id]=r.getBoundingClientRect().top; });
   const fromOf=r=> mode==='exercise'?0:Math.max(0,(r.points||0)-(r.last||0));   // total antes de sumar esta ronda
   const initPts=r=> animate===true?0:(animate==='count'?fromOf(r):value(r));
-  box.innerHTML=arr.map((r,i)=>'<div class="rrow p'+(i+1)+'" data-id="'+r.id+'" data-val="'+value(r)+'" data-from="'+fromOf(r)+'"><div class="pos">'+posCell(i)+'</div><div class="al">'+escapeHtml(r.alias)+(sub(r)?'<div class="last">'+sub(r)+'</div>':'')+'</div><div class="pts">'+initPts(r)+suffix+'</div></div>').join('');
+  box.innerHTML=arr.map((r,i)=>'<div class="rrow p'+(i+1)+(mode==='exercise'&&!r.respondio?' sinresp':'')+'" data-id="'+r.id+'" data-val="'+value(r)+'" data-from="'+fromOf(r)+'"><div class="pos">'+posCell(i)+'</div><div class="al">'+escapeHtml(r.alias)+(sub(r)?'<div class="last">'+sub(r)+'</div>':'')+'</div><div class="pts">'+initPts(r)+suffix+'</div></div>').join('');
   const rows=[...box.querySelectorAll('.rrow')];
   let flipped=false;
   rows.forEach(r=>{ const id=r.dataset.id; if(firstTop[id]!=null){ const dy=firstTop[id]-r.getBoundingClientRect().top; if(Math.abs(dy)>1){ flipped=true; r.style.transform='translateY('+dy+'px)'; r.style.transition='none'; } } });

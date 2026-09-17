@@ -314,7 +314,13 @@ if(window.Sentry && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)){
   .cad-score{width:100%;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;background:var(--paper);border-radius:14px;opacity:0;transition:opacity 1s ease}
   .cad-score.shown{opacity:1}
   .cad-score svg{max-width:100%}
-  #s-host-reveal.cad .staffwrap{height:clamp(220px,44vh,300px);align-self:center;padding:10px}
+  /* (17-sep-2026) SOLUCION DE CADENCIAS · La tarjeta se ajusta a la partitura (sin
+     franja blanca muerta), va pegada al titulo y la partitura se estira a todo el
+     ancho: en la tele se ve casi el doble de grande y ya no se recorta. */
+  #s-host-reveal.cad .staffwrap{height:auto;align-self:flex-start;flex:1;padding:12px 14px}
+  #s-host-reveal.cad .staffbox{height:auto;overflow:visible}
+  #s-host-reveal.cad .cad-score{height:auto;flex:0 0 auto;display:block}
+  #s-host-reveal.cad .cad-score svg{display:block;width:100%;height:auto;max-width:100%;max-height:none}
   /* CADENCIAS · móvil */
   #s-player-cadencias{flex-direction:column;gap:8px;height:100dvh;padding:10px max(12px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
   .cad-title{text-align:center;font-size:15px;font-weight:800;color:var(--gold-soft);letter-spacing:.03em}
@@ -1481,9 +1487,18 @@ function genCadencia(){
 /* --- partitura: pentagrama doble SATB (llave + armadura) --- */
 function renderCadScore(container, gen, colorMode){
   container.innerHTML=''; if(!gen||typeof Vex==='undefined') return;
-  const W=Math.max(560,Math.min((container.clientWidth||1000),1180)), H=Math.max(200,Math.min(container.clientHeight||240,270));
+  // (17-sep-2026) En la pantalla de SOLUCION el lienzo es LOGICO y fijo: el SVG sale
+  // con viewBox ajustado al contenido (ver el final de esta funcion), asi que luego se
+  // estira al ancho real de la tarjeta. Cuanto mas estrecho el lienzo, mas grande se ve
+  // la partitura en la tele (antes se quedaba en 270 px de alto, flotando en medio de
+  // la pantalla, y encima se recortaba por arriba y por abajo). La pantalla de la ronda
+  // (la partitura de la 2a escucha) se queda EXACTAMENTE como estaba.
+  const esRev = container.id === 'cadRevScore';
+  const W = esRev ? 820 : Math.max(560,Math.min((container.clientWidth||1000),1180));
+  const H = esRev ? 260 : Math.max(200,Math.min(container.clientHeight||240,270));
   const r=new VF.Renderer(container,VF.Renderer.Backends.SVG); r.resize(W,H); const ctx=r.getContext();
-  const topY=Math.round(H*0.12), botY=Math.round(H*0.52);
+  const topY = esRev ?  24 : Math.round(H*0.12);
+  const botY = esRev ? 134 : Math.round(H*0.52);
   const top=new VF.Stave(12,topY,W-24), bot=new VF.Stave(12,botY,W-24);
   top.addClef('treble').addKeySignature(gen.vexKey); bot.addClef('bass').addKeySignature(gen.vexKey);
   top.setEndBarType(VF.Barline.type.END); bot.setEndBarType(VF.Barline.type.END);
@@ -1505,6 +1520,18 @@ function renderCadScore(container, gen, colorMode){
   const vS=V(nS),vA=V(nA),vT=V(nT),vB=V(nB);
   new VF.Formatter().joinVoices([vS]).joinVoices([vA]).joinVoices([vT]).joinVoices([vB]).format([vS,vA,vT,vB], W-160);
   vS.draw(ctx,top); vA.draw(ctx,top); vT.draw(ctx,bot); vB.draw(ctx,bot);
+  // viewBox ajustado al CONTENIDO real (no al lienzo): la tarjeta queda a medida, sin
+  // blanco muerto, y la partitura ocupa todo el ancho disponible. Solo en la solucion.
+  try{
+    const svg=container.querySelector('svg');
+    if(esRev && svg && svg.getBBox){
+      const bb=svg.getBBox(), m=12;
+      svg.setAttribute('viewBox',(bb.x-m)+' '+(bb.y-m)+' '+(bb.width+2*m)+' '+(bb.height+2*m));
+      svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+      svg.removeAttribute('width'); svg.removeAttribute('height');
+      svg.style.width='100%'; svg.style.height='auto';
+    }
+  }catch(e){}
 }
 async function playCadencia(gen){ const c=actx(); if(c.state==='suspended')await c.resume();
   const spb=60/gen.tempo, t0=c.currentTime+0.15; let t=0;

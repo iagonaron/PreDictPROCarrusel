@@ -121,27 +121,35 @@ if(window.Sentry && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)){
   .toggle{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
 
   /* ranking */
-  /* (17-sep-2026) SOLUCION A PANTALLA COMPLETA. Antes: el ejercicio flotando a
-     la izquierda y el ranking en una columna estrecha a la derecha, con medio
-     televisor en negro. Ahora: el ejercicio ARRIBA a todo el ancho y el ranking
-     DEBAJO, repartido en tantas columnas como quepan, con la letra mas grande
-     para leerlo desde el fondo del aula. */
-  .reveal-wrap{display:flex;flex-direction:column;gap:14px;flex:1;min-height:0}
-  #s-host-reveal .staffwrap{flex:0 0 auto;width:100%;height:clamp(108px,22vh,168px);align-self:stretch;align-items:stretch;justify-content:stretch}
-  .rank{flex:1 1 auto;width:100%;min-height:0;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:12px 14px;overflow:hidden;
-        display:grid;grid-template-columns:1fr auto;grid-template-rows:auto 1fr;gap:10px 14px;align-items:start}
-  .rank h3{grid-column:1;grid-row:1;margin:0;font-size:16px;color:var(--gold-soft);letter-spacing:.04em;display:flex;align-items:center;gap:6px;align-self:center}
-  .rank .rank-next{grid-column:2;grid-row:1;width:auto;margin:0;justify-self:end;align-self:center}
-  #rankList{grid-column:1 / -1;grid-row:2;align-self:stretch;overflow-y:auto;min-height:0;
-        display:grid;grid-template-columns:repeat(auto-fill,minmax(520px,1fr));gap:10px 20px;align-content:start}
-  .rrow{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:11px;margin-bottom:0;background:rgba(255,255,255,.02)}
-  .rrow .pos{width:38px;text-align:center;font-weight:900;color:var(--muted2);font-size:19px}
-  .rrow .pos .pos-medal{font-size:25px;line-height:1}
+  /* (17-sep-2026 · v2, Iago) El ranking vuelve a la DERECHA y es igual en todas
+     las fases del carrusel. Lo que estaba mal no era el sitio: eran las filas,
+     que en el ranking del ejercicio (nombre + «envio: 1.2 s») se hacian altas,
+     el nombre partia en dos lineas y con 12 alumnos la lista se salia por abajo.
+     Ahora el nombre NUNCA parte (una linea, con puntos suspensivos si no cabe),
+     la columna es mas ancha, y si aun asi no cupieran todos, las filas se
+     compactan solas (clase .muchos) para que se vean TODOS sin cortar.
+     El ejercicio, centrado de verdad en vertical: la tarjeta se ajusta a su
+     contenido, asi que ya no queda desplazado hacia abajo ni recortado. */
+  .reveal-wrap{display:flex;gap:14px;flex:1;min-height:0;align-items:center}
+  #s-host-reveal .staffwrap{flex:1;min-width:0;height:clamp(108px,22vh,168px);align-self:center;align-items:stretch;justify-content:stretch}
+  .rank{flex:0 0 clamp(230px,22vw,340px);align-self:stretch;min-height:0;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:11px 12px;overflow:hidden;display:flex;flex-direction:column}
+  .rank h3{margin:0 0 10px;font-size:14px;color:var(--gold-soft);letter-spacing:.04em;flex:0 0 auto;display:flex;align-items:center;gap:6px}
+  .rank .rank-next{width:100%;margin:0 0 10px;flex:0 0 auto}
+  #rankList{overflow-y:auto;flex:1;min-height:0}
+  .rrow{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:9px;margin-bottom:4px;background:rgba(255,255,255,.02)}
+  .rrow .pos{width:26px;flex:0 0 auto;text-align:center;font-weight:900;color:var(--muted2);font-size:15px}
+  .rrow .pos .pos-medal{font-size:21px;line-height:1}
   .rrow.p1 .pos{color:var(--gold)} .rrow.p1{background:rgba(212,175,55,.12)}
   .rrow.p2 .pos{color:#cdd3e0} .rrow.p3 .pos{color:#e0a16a}
-  .rrow .al{flex:1;font-weight:800;font-size:19px;line-height:1.15}
-  .rrow .last{font-size:13px;color:var(--muted2);font-weight:600}
-  .rrow .pts{font-weight:900;color:var(--gold);font-variant-numeric:tabular-nums;font-size:22px}
+  .rrow .al{flex:1;min-width:0;font-weight:800;font-size:15px;line-height:1.16;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rrow .last{font-size:11px;color:var(--muted2);font-weight:600;white-space:nowrap}
+  .rrow .pts{flex:0 0 auto;font-weight:900;color:var(--gold);font-variant-numeric:tabular-nums;font-size:16px}
+  /* si no caben todos, se aprietan (pero se ven TODOS) */
+  #rankList.muchos .rrow{padding:3px 8px;margin-bottom:3px;gap:6px}
+  #rankList.muchos .rrow .al{font-size:13px}
+  #rankList.muchos .rrow .last{font-size:9.5px}
+  #rankList.muchos .rrow .pts{font-size:14px}
+  #rankList.muchos .rrow .pos{font-size:13px;width:22px}
   /* sin respuesta en esta ronda: se ve, pero apagado */
   .rrow.sinresp{opacity:.55}
   .rrow.sinresp .pts{color:var(--muted2)}
@@ -258,7 +266,7 @@ if(window.Sentry && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)){
   .tc-hostcard{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-size:26px;color:var(--ink);text-align:center;padding:14px}
   .tc-hostcard b{color:var(--gold)}
   .tc-hostcard span{font-size:15px;color:var(--muted);font-weight:500;max-width:580px}
-  #s-host-reveal.toncom .staffwrap{height:auto;align-self:stretch;padding:22px 20px}
+  #s-host-reveal.toncom .staffwrap{height:auto;align-self:center;padding:22px 20px}
   #s-host-reveal.toncom .tcrev{height:auto}
   .tcrev .tcr-card{padding:20px 16px}
   /* ENVIAR destacado (tono ámbar cálido, distinto del oro del resto) */
@@ -327,7 +335,7 @@ if(window.Sentry && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)){
   /* (17-sep-2026) SOLUCION DE CADENCIAS · La tarjeta se ajusta a la partitura (sin
      franja blanca muerta), va pegada al titulo y la partitura se estira a todo el
      ancho: en la tele se ve casi el doble de grande y ya no se recorta. */
-  #s-host-reveal.cad .staffwrap{display:block;height:auto;align-self:stretch;flex:0 0 auto;padding:12px 14px}
+  #s-host-reveal.cad .staffwrap{display:block;height:auto;align-self:center;flex:1;min-width:0;padding:12px 14px}
   #s-host-reveal.cad .staffbox{display:block;height:auto;overflow:visible}
   #s-host-reveal.cad .cad-score{height:auto;flex:0 0 auto;display:flex;align-items:center;justify-content:center}
   #s-host-reveal.cad .cad-score svg{display:block;width:100%;height:auto;max-width:100%;max-height:none}
@@ -2221,6 +2229,13 @@ function renderRanking(mode,animate){
       if(i===rows.length-1) setTimeout(()=>{ if(arr[0]&&value(arr[0])>0) sfx('winner'); }, 500);
     }, 260+i*150));
   } else { rows.forEach(r=>r.classList.add('in')); }
+  // (17-sep-2026) Que se vean TODOS: si la lista se sale por abajo, se aprietan
+  // las filas. Antes, con 12 alumnos y el nombre partido en dos lineas, los
+  // ultimos se quedaban fuera de la pantalla.
+  try{
+    box.classList.remove('muchos');
+    if(box.scrollHeight > box.clientHeight + 2) box.classList.add('muchos');
+  }catch(e){}
 }
 function hostFinalPodium(){ H.finalShown=true; H.phase='final'; autoClear(); hostShowPause(false);
   const arr=rankingArr('general'), top=arr.slice(0,3), rest=arr.slice(3);

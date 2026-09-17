@@ -1549,6 +1549,19 @@ function renderCadScore(container, gen, colorMode){
   // blanco muerto, y la partitura ocupa todo el ancho disponible. Solo en la solucion.
   try{
     const svg=container.querySelector('svg');
+    // (17-sep-2026) En la RONDA: viewBox al contenido y el SVG se ENCAJA dentro
+    // de su caja (max-width/max-height), asi que se ve entero y centrado en vez
+    // de desbordar por abajo y recortarse.
+    if(!esRev && svg && svg.getBBox){
+      try{
+        const bb=svg.getBBox(), m=10;
+        svg.setAttribute('viewBox',(bb.x-m)+' '+(bb.y-m)+' '+(bb.width+2*m)+' '+(bb.height+2*m));
+        svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+        svg.removeAttribute('width'); svg.removeAttribute('height');
+        svg.style.width='auto'; svg.style.height='auto';
+        svg.style.maxWidth='100%'; svg.style.maxHeight='100%';
+      }catch(e){}
+    }
     if(esRev && svg && svg.getBBox){
       const bb=svg.getBBox(), m=12;
       const vbW=bb.width+2*m, vbH=bb.height+2*m;
@@ -1997,6 +2010,10 @@ async function hostListenCad(){
   if(H.listens<=0) return; await ensureAudio(); const rid=H.roundId;
   const first=(H.listens===MEL_MAX_LISTENS); H.listens--; const hl=$('#hLeft'); if(hl) hl.textContent=H.listens; $('#hListen').disabled=true;
   if(!first){ cadVizStop(); const msg=$('#cadMsg'), vz=$('#cadViz'); if(msg)msg.style.display='none'; if(vz)vz.style.display='none';   // revelar partitura (fundido)
+    // (17-sep-2026) Al salir la partitura se retira la animacion del canvas: si
+    // no, la partitura compartia la tarjeta con ella y quedaba por DEBAJO del
+    // centro (y encima se recortaba por abajo).
+    const cv=$('#cadViz'); if(cv) cv.style.display='none';
     const sc=$('#cadScore'); if(sc){ sc.style.display='flex'; renderCadScore(sc, H.exercise.cad); requestAnimationFrame(()=>sc.classList.add('shown')); } }
   let dur=4; try{ dur=await playCadencia(H.exercise.cad); }catch(e){}
   armCorrectAfter(rid, dur);

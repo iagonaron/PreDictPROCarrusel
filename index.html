@@ -19,7 +19,7 @@ if(window.Sentry && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)){
 </script>
 
 <meta charset="UTF-8">
-<script>/* LM piel (28-sep-2026): estetica nueva SOLO en los navegadores de Iago Tester/Protester (marca lm_piel=1, que en este dominio pone el enlace del portal con ?piel=1). Los moviles de los alumnos entran por el QR, sin piel. Para quitarla, borra esta linea. */try{if((' '+document.cookie).indexOf(' lm_piel=1')>-1||location.search.indexOf('piel=1')>-1)document.write('<script src="https://ge.lmathome.es/piel/lm-piel.js" data-app="carrusel-gp"></scr'+'ipt>')}catch(e){}</script>
+<script>/* LM piel (28-sep-2026, noche): estetica nueva PARA TODOS, en la pantalla del profe y en los moviles que entran por el QR (Iago: «Actualiza el carrusel»). Decide piel/lm-piel.js; ?piel=0 la apaga en un navegador. Para volver a «solo Tester/Protester», sube esta linea del commit deed5cc; para quitarla del todo, borrala. */try{document.write('<script src="https://ge.lmathome.es/piel/lm-piel.js" data-app="carrusel-gp"></scr'+'ipt>')}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">

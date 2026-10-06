@@ -438,6 +438,33 @@ if(window.Sentry && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)){
   .pause-act.end:active{background:rgba(255,255,255,.06)}
   .rejoin-note{position:fixed;left:50%;top:12px;transform:translateX(-50%) translateY(-20px);z-index:320;background:linear-gradient(180deg,var(--gold),var(--gold2));color:#2a1a02;font-weight:800;font-size:13.5px;padding:9px 16px;border-radius:999px;box-shadow:0 8px 26px rgba(0,0,0,.5);opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;max-width:90vw;text-align:center}
   .rejoin-note.on{opacity:1;transform:translateX(-50%) translateY(0)}
+  /* (6-oct-2026, Iago) PAUSA con el QR y el código de la sala: «para entrar al momento» */
+  .pause-card.con-qr{gap:clamp(8px,1.7vh,16px);width:100%;max-width:min(960px,94vw);padding:0 12px}
+  .pause-card.con-qr .pq-tit{display:flex;align-items:center;justify-content:center;gap:.3em;font-size:clamp(26px,5.4vh,52px);line-height:1}
+  .pause-card.con-qr .pq-tit .pc-ico{font-size:1em;line-height:1;display:flex;align-items:center}
+  .pause-card.con-qr .pause-acts{margin-top:2px}
+  .qcard.pause-qr{animation:none;gap:clamp(18px,2.8vw,38px);padding:clamp(14px,2.2vh,26px) clamp(16px,2.4vw,30px);max-width:none;letter-spacing:normal;font-weight:400;text-align:left}
+  .pause-qr .qbox{flex:none;padding:clamp(10px,1.6vh,16px)}
+  .pause-qr .qbox img,.pause-qr .qbox canvas{width:clamp(170px,37vh,350px);height:clamp(170px,37vh,350px)}
+  .pause-qr .pq-side{display:flex;flex-direction:column;gap:clamp(4px,1vh,10px);min-width:0;max-width:430px}
+  .pq-kick{font-size:clamp(11px,1.6vh,13px);letter-spacing:.2em;text-transform:uppercase;color:var(--muted2);font-weight:600;line-height:1.2}
+  .pq-code{font-size:clamp(46px,9vh,88px);font-weight:900;letter-spacing:.14em;color:var(--gold);line-height:1;font-variant-numeric:tabular-nums}
+  .pq-txt{font-size:clamp(14px,2.2vh,19px);line-height:1.4;color:var(--muted);font-weight:400;letter-spacing:normal;text-wrap:balance}
+  .pq-txt b{color:var(--ink);font-weight:700}
+  .pq-estado{min-height:1.4em;font-size:clamp(13px,2.1vh,18px);line-height:1.4;letter-spacing:normal;font-weight:600;color:var(--muted);text-align:center}
+  .pq-estado b{color:var(--ink);font-weight:800}
+  .pq-estado .pq-dot{display:inline-block;width:.62em;height:.62em;border-radius:50%;background:#37b26a;margin:0 .45em 0 .1em;vertical-align:.02em}
+  @media (max-width:640px){ .qcard.pause-qr{flex-direction:column;text-align:center} .pause-qr .pq-side{align-items:center} }
+  /* (6-oct-2026) el aviso de arriba del móvil: tan ancho como su texto (antes se quedaba en media pantalla y un texto largo
+     salía en tres líneas), con esquinas que aguantan dos líneas y sin tapar la ✕ ni el botón de pantalla completa:
+     en apaisado deja libres las dos esquinas; en vertical baja un poco */
+  .rejoin-note{width:max-content;max-width:min(90vw,calc(100vw - 150px));border-radius:22px;line-height:1.3}
+  @media (max-width:520px){ .rejoin-note{top:62px;max-width:90vw} }
+  /* (6-oct-2026) móvil que entra con la partida ya empezada (QR de la pausa) */
+  .pj-encurso{width:100%;max-width:340px;font-size:13.5px;line-height:1.4;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:9px 12px}
+  .pj-encurso b{display:block;color:var(--gold);font-size:15.5px;font-weight:800;margin-bottom:2px}
+  #s-player-join.encurso .big-emoji{display:none}
+  @media (max-height:350px){ #s-player-join.encurso{gap:8px;padding:8px 26px} #s-player-join.encurso h1{font-size:22px !important} #s-player-join.encurso .pj-encurso{padding:6px 10px;font-size:12.5px} #s-player-join.encurso .pj-encurso b{font-size:14px} }
   /* juego automático: se ocultan los controles manuales del iPad (todo va solo) */
   body.autoplay #hListen, body.autoplay #btnResults, body.autoplay #hTest, body.autoplay #btnAgain, body.autoplay #btnRankMode, body.autoplay .rit-only, body.autoplay .hbpm{display:none !important}
   body.autoplay .hp-top{padding-right:158px}   /* deja hueco a los botones fijos (Pausar + pantalla completa) para que no tapen el contador */
@@ -650,12 +677,12 @@ if(window.Sentry && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)){
 <div id="exIntro" class="ex-intro"><div class="ex-intro-inner"><div class="ex-intro-spiral" aria-hidden="true"><svg viewBox="0 0 200 200"><defs><linearGradient id="heroSp2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7e6a8"/><stop offset="0.5" stop-color="#d4af37"/><stop offset="1" stop-color="#a9801d"/></linearGradient></defs><path d="M 100.00 158.00 L 90.35 157.51 L 80.85 155.42 L 71.79 151.77 L 63.41 146.63 L 55.96 140.14 L 49.66 132.47 L 44.69 123.82 L 41.20 114.40 L 39.31 104.49 L 39.08 94.36 L 40.55 84.27 L 43.69 74.51 L 48.42 65.36 L 54.64 57.08 L 62.18 49.91 L 70.84 44.06 L 80.41 39.70 L 90.61 36.98 L 101.18 35.98 L 111.82 36.74 L 122.24 39.28 L 132.15 43.52 L 141.25 49.37 L 149.31 56.69 L 156.06 65.29 L 161.33 74.93 L 164.95 85.36 L 166.79 96.29 L 167.03 101.86 L 166.11 112.99 L 163.34 123.87 L 158.79 134.18 L 152.56 143.65 L 144.82 151.99 L 135.76 158.96 L 125.62 164.36 L 114.68 168.03 L 103.23 169.84 L 91.58 169.72 L 80.07 167.67 L 69.00 163.72 L 58.69 157.97 L 49.44 150.56 L 41.51 141.67 L 35.13 131.56 L 30.50 120.47 L 27.75 108.72 L 26.99 96.62 L 28.25 84.52 L 31.50 72.73 L 36.69 61.61 L 43.68 51.45 L 52.29 42.55 L 62.30 35.17 L 73.44 29.53 L 85.42 25.79 L 97.90 24.08 L 110.54 24.47 L 122.99 26.95 L 134.91 31.48 L 145.96 37.95 L 155.83 46.20 L 164.23 56.00 L 170.91 67.11 L 175.69 79.22 L 178.40 92.00 L 178.96 105.11 L 177.33 118.19 L 173.55 130.86 L 167.69 142.78 L 159.91 153.61 L 150.41 163.04 L 139.43 170.79 L 127.27 176.64 L 114.26 180.41 L 100.76 181.98 L 87.13 181.29 L 73.74 178.33 L 60.99 173.19 L 49.22 165.97 L 38.76 156.87 L 29.93 146.12 L 22.97 134.01 L 18.09 120.87 L 15.45 107.05 L 15.00 100.00" fill="none" stroke="url(#heroSp2)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="100" cy="158" r="5" fill="#f7e6a8"/></svg></div><div class="ex-intro-center" id="exIntroCenter"></div></div></div>
 <button id="exitBtn" class="exit-btn" title="Salir del juego">✕</button>
 <div id="bigRemind" class="big-remind"><div class="big-remind-txt">CORRECCIÓN<span id="bigRemindCount" class="brc-num"></span></div></div>
-<div id="exitConfirm" class="exit-confirm"><div class="exit-box"><div class="exit-q">¿Seguro que quieres salir de la partida?</div><div class="exit-sub">Tu puntuación se perderá.</div><div class="exit-btns"><button id="exitYes" class="btn-gold">Sí, salir</button><button id="exitNo">Seguir jugando</button></div></div></div>
+<div id="exitConfirm" class="exit-confirm"><div class="exit-box"><div class="exit-q">¿Seguro que quieres salir de la partida?</div><div class="exit-sub">Si vuelves a entrar con el mismo nombre, conservas tus puntos.</div><div class="exit-btns"><button id="exitYes" class="btn-gold">Sí, salir</button><button id="exitNo">Seguir jugando</button></div></div></div>
 <button id="fsBtn" class="fs-btn" title="Pantalla completa">⛶</button>
 <button id="lmVolver" type="button" title="Volver al portal" aria-label="Volver al portal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
 <div id="fsArrow" class="fs-arrow-hint" style="display:none"><svg class="fsa-ar" viewBox="0 0 24 32" width="22" height="28"><path d="M12 3 L12 29 M12 3 L5 11 M12 3 L19 11" stroke="currentColor" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="fsa-lb">pantalla completa</span></div>
 <button id="btnPause" class="pause-btn" style="display:none">⏸ Pausar</button>
-<div id="pauseOv" class="pause-ov"><div class="pause-card"><div class="pc-ico">⏸</div>PAUSA<div class="pause-acts"><button id="pauseResume" class="pause-act resume">▶ Reanudar</button><button id="pauseEnd" class="pause-act end">Terminar partida</button></div></div></div>
+<div id="pauseOv" class="pause-ov"><div class="pause-card con-qr"><div class="pq-tit"><div class="pc-ico">⏸</div>PAUSA</div><div class="qcard pause-qr"><div class="qbox" id="pauseQrBox"></div><div class="qside pq-side"><div class="pq-kick">Para entrar ahora</div><div class="pq-code" id="pauseCode">····</div><div class="pq-txt">Escanea el QR o escribe el código.<br>Si ya estabas jugando, <b>conservas tus puntos</b>.</div></div></div><div class="pq-estado" id="pauseEstado"></div><div class="pause-acts"><button id="pauseResume" class="pause-act resume">▶ Reanudar</button><button id="pauseEnd" class="pause-act end">Terminar partida</button></div></div></div>
 
 <!-- ========================= INICIO (portada) ========================= -->
 <div class="screen" id="s-landing">
@@ -777,6 +804,7 @@ if(window.Sentry && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname)){
   <div class="big-emoji">🎧</div>
   <h1 class="brand wm" style="font-size:30px"><span class="pd"><span class="pre">Pre</span><span class="dict">Dict</span></span><span class="pro">PRO</span><span class="carr">Carrusel</span></h1>
   <div class="waitmsg" style="font-size:15px">Sala <b id="pjCode" style="color:var(--gold)">····</b></div>
+  <div class="pj-encurso" id="pjEnCurso" style="display:none"><b>Partida en curso</b>¿Ya estabas jugando? Escribe el mismo nombre y conservas tus puntos.</div>
   <div class="box">
     <input type="text" id="alias" maxlength="16" placeholder="Tu nombre o alias" autocomplete="off">
     <button class="btn-gold" id="btnJoin">Entrar</button>
@@ -1638,7 +1666,7 @@ function lmVolver(){
    ========================================================================= */
 const params=new URLSearchParams(location.search);
 const roomParam=params.get('room');
-window.addEventListener('load',()=>{ if(roomParam) initPlayer(roomParam.toUpperCase()); else initLanding(); });
+window.addEventListener('load',()=>{ if(roomParam) initPlayer(roomParam.toUpperCase(), params.get('encurso')==='1'); else initLanding(); });
 
 /* ===== INICIO (portada) + escáner de QR ===== */
 function initLanding(){
@@ -1650,7 +1678,7 @@ function initLanding(){
   $('#btnScan').addEventListener('click',startScan);
   $('#scanCancel').addEventListener('click',stopScan);
 }
-function goPlayer(code){ try{ history.replaceState(null,'',location.pathname+'?room='+code); }catch(_){} initPlayer(code); }
+function goPlayer(code,enCurso){ try{ history.replaceState(null,'',location.pathname+'?room='+code+(enCurso?'&encurso=1':'')); }catch(_){} initPlayer(code,enCurso); }
 let _scanStream=null,_scanRAF=null;
 async function startScan(){ const ov=$('#scanOverlay'); ov.classList.add('on');
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){ ov.classList.remove('on'); alert('Aquí no puedo abrir la cámara. Escribe el código a mano.'); return; }
@@ -1661,7 +1689,7 @@ async function startScan(){ const ov=$('#scanOverlay'); ov.classList.add('on');
   (function tick(){ if(!_scanStream) return;
     if(v.readyState>=2 && v.videoWidth){ cvs.width=v.videoWidth; cvs.height=v.videoHeight; cx.drawImage(v,0,0,cvs.width,cvs.height);
       try{ const img=cx.getImageData(0,0,cvs.width,cvs.height); const code=window.jsQR&&window.jsQR(img.data,img.width,img.height,{inversionAttempts:'dontInvert'});
-        if(code&&code.data){ const m=code.data.match(/[?&]room=([A-Za-z0-9]{3,6})/i)||code.data.match(/(^|[^A-Za-z0-9])([A-Za-z0-9]{4})([^A-Za-z0-9]|$)/); const cc=((m&&(m[1]||m[2]))||'').toUpperCase(); if(cc&&cc.length>=3){ stopScan(); goPlayer(cc); return; } } }catch(_){} }
+        if(code&&code.data){ const m=code.data.match(/[?&]room=([A-Za-z0-9]{3,6})/i)||code.data.match(/(^|[^A-Za-z0-9])([A-Za-z0-9]{4})([^A-Za-z0-9]|$)/); const cc=((m&&(m[1]||m[2]))||'').toUpperCase(); if(cc&&cc.length>=3){ stopScan(); goPlayer(cc, /[?&]encurso=1(&|#|$)/i.test(code.data)); return; } } }catch(_){} }
     _scanRAF=requestAnimationFrame(tick); })();
 }
 function stopScan(){ const ov=$('#scanOverlay'); ov.classList.remove('on'); if(_scanRAF){cancelAnimationFrame(_scanRAF);_scanRAF=null;} if(_scanStream){ _scanStream.getTracks().forEach(t=>t.stop()); _scanStream=null; } const v=$('#scanVideo'); if(v) v.srcObject=null; }
@@ -1710,6 +1738,7 @@ function hostPause(){ if(H.paused)return; H.paused=true;
   const o=$('#pauseOv'); if(o) o.classList.add('on');
   const pb=$('#btnPause'); if(pb) pb.textContent='▶ Reanudar';
   try{ if(H.channel) H.channel.send({type:'broadcast',event:'pause',payload:{on:true}}); }catch(_){}
+  H._pqIds=[]; hostPausaEstado();   // (6-oct-2026) «N conectados» bajo el QR de la pausa
 }
 function hostResume(){ if(!H.paused)return; H.paused=false;
   const o=$('#pauseOv'); if(o) o.classList.remove('on');
@@ -1742,6 +1771,10 @@ function initHost(){
   const joinURL=location.origin+location.pathname+'?room='+H.code;
   new QRCode($('#qrbox'),{text:joinURL, width:230, height:230, colorDark:'#160f04', colorLight:'#f4ecd6', correctLevel:QRCode.CorrectLevel.M});
   $('#joinUrl').textContent=joinURL;
+  // (6-oct-2026, Iago) el QR y el código salen también en la PAUSA, para entrar al momento. Lleva «&encurso=1»: el móvil
+  // que llega por ahí sabe que la partida ya está en marcha («Partida en curso · Sumarse»).
+  { const pq=$('#pauseQrBox'), pc=$('#pauseCode'); if(pc) pc.textContent=H.code;
+    if(pq){ try{ pq.innerHTML=''; new QRCode(pq,{text:joinURL+'&encurso=1', width:340, height:340, colorDark:'#160f04', colorLight:'#f4ecd6', correctLevel:QRCode.CorrectLevel.M}); }catch(_){} } }
   if(location.protocol==='file:'){ const w=$('#fileWarn'); w.style.display='block'; w.innerHTML='⚠️ Estás abriéndolo como archivo local, así que el QR apunta a tu ordenador y el móvil no puede abrirlo. Súbelo a una URL (GitHub Pages) y ábrelo desde ahí para que el QR funcione.'; }
   showScreen('s-host-lobby');
   hostConnect();
@@ -1780,13 +1813,93 @@ function hostConnect(){
   H.channel
     .on('presence',{event:'sync'},hostSyncRoster)
     .on('broadcast',{event:'answer'},({payload})=>hostOnAnswer(payload))
-    .on('broadcast',{event:'hello'},()=>hostBroadcastPhase())
+    .on('broadcast',{event:'hello'},({payload})=>{ hostVida(payload&&payload.id); hostBroadcastPhase(); hostSaluda(payload&&payload.id); })   // (6-oct-2026) primero se le devuelve lo suyo (si era un sustituido) para que la fase ya lleve su puesto
+    .on('broadcast',{event:'sigo'},({payload})=>hostSigo(payload))
     .subscribe(status=>{ if(status==='SUBSCRIBED'){ hostBroadcastPhase(); } });
 }
+/* =========================================================================
+   (6-oct-2026, Iago) VOLVER A LA PARTIDA CONSERVANDO LOS PUNTOS
+   «Si a un móvil se le va la señal o cambia de wifi, que pueda volver a entrar en la siguiente prueba conservando sus
+    puntos» · «Al pausar, que salga el QR y el código para entrar al momento».
+   Los puntos viven en la pantalla del profe (H.players), colgados del identificador de cada móvil. Antes ese
+   identificador era nuevo en cada carga de la página: quien recargaba o volvía a escanear entraba como otro jugador,
+   a cero, y el de antes se quedaba en el ranking como un fantasma. Ahora:
+     1 · El móvil GUARDA su identificador y su nombre para ESA sala (localStorage, 6 h): si recarga o vuelve a
+         escanear en el mismo navegador, entra solo, sin escribir nada, y es el mismo jugador.
+     2 · Si entra con OTRO navegador (identificador nuevo) y escribe el mismo nombre que alguien que tenía puntos y ya
+         no está conectado, hereda sus puntos (hostAdoptar).
+     3 · Si ese alguien todavía figura conectado (Supabase tarda en dar por caído un móvil), el profe le pregunta
+         «¿estás?» y, si en 4 s no contesta, se da por caído y el nuevo hereda sus puntos (hostSondear). Si contesta,
+         son dos personas con el mismo nombre y no se toca nada.
+   Las reglas 2 y 3 solo se miran con la partida empezada y solo para identificadores que no se habían visto antes.
+   Los puntos son de quien los ganó: si el móvil de antes vuelve a dar señales de vida (saluda, contesta o responde),
+   RECUPERA lo que se le había pasado al otro y cada uno sigue con lo suyo (hostVida). Así, si dos alumnos se llaman
+   igual y uno hereda por error los puntos del otro, se arregla solo en cuanto el primero reaparece.
+   Para volver a lo de antes: borrar este bloque, devolver «st[id][0]» en hostSyncRoster y hostArmPhase2 y quitar las
+   llamadas marcadas «(6-oct-2026)».
+   ========================================================================= */
+function aliasNorm(a){ let t=String(a==null?'':a).trim().toLowerCase(); try{ t=t.normalize('NFD').replace(/[\u0300-\u036f]/g,''); }catch(_){} return t.replace(/\s+/g,' '); }
+/* de las presencias de un mismo identificador (dos pestañas, o una vieja que aún no ha caducado), la que vale */
+function hostMeta(arr){ arr=arr||[];
+  for(let i=arr.length-1;i>=0;i--){ const x=arr[i]||{}; if(x.rid===H.roundId && (x.ans||x.mans||x.tans||x.cans||x.mos||x.aans!=null||x.atiple!=null)) return x; }
+  return arr[arr.length-1]||{}; }
+function hostEnPartida(){ return H.phase==='round'||H.phase==='reveal'; }
+/* un identificador nunca visto entra con la partida empezada: ¿es alguien que vuelve? */
+function hostVuelve(id){ const yo=H.players[id]; if(!yo) return; const a=aliasNorm(yo.alias); if(!a||a==='—') return;
+  const cand=Object.keys(H.players).filter(o=>o!==id && !(H.sust&&H.sust[o]) && (H.players[o].points>0) && aliasNorm(H.players[o].alias)===a);
+  if(!cand.length) return;
+  const fuera=cand.filter(o=>!H.roster[o]).sort((x,y)=>(H.players[y].fuera||0)-(H.players[x].fuera||0));
+  if(fuera.length){ hostAdoptar(id,fuera[0]); return; }   // el de antes ya no está conectado: es él, que vuelve
+  hostSondear(id,cand[0]);                                // el de antes figura conectado: ¿de verdad?
+}
+function hostAdoptar(id,o){ const v=H.players[o]; if(!v||id===o) return; const n=H.players[id]||{alias:v.alias,points:0}; if(n.adoptado) return;
+  n.points=(n.points||0)+(v.points||0); n.totalMs=(n.totalMs||0)+(v.totalMs||0);
+  if(n.lastPct==null){ n.lastPct=v.lastPct; n.lastMs=v.lastMs; n.lpDe=o; }
+  n.adoptado=o; H.players[id]=n; delete H.players[o];
+  if(H.answers[o]){ if(!H.answers[id]) H.answers[id]=H.answers[o]; delete H.answers[o]; }
+  if(H.armP1&&H.armP1[o]){ if(!H.armP1[id]) H.armP1[id]=H.armP1[o]; delete H.armP1[o]; }
+  H.sust=H.sust||{}; H.sust[o]={por:id,pts:v.points||0,ms:v.totalMs||0,lastPct:v.lastPct,lastMs:v.lastMs,alias:v.alias}; delete H.roster[o];
+  renderRoster(); updateCounter(); hostPausaEstado([id]);
+  if(H.phase==='reveal'){ try{ renderRanking(H.rankMode,false); }catch(_){} }
+  hostAvisarVuelta(id,true);
+}
+function hostSondear(id,o){ H.sondas=H.sondas||{}; if(H.sondas[o]||!H.channel) return; const tok=genId(); H.sondas[o]={por:id,tok:tok};
+  try{ H.channel.send({type:'broadcast',event:'estas',payload:{id:o,tok:tok}}); }catch(_){}
+  setTimeout(()=>{ const s=H.sondas&&H.sondas[o]; if(!s||s.tok!==tok) return; delete H.sondas[o]; if(H.players[o]&&H.players[id]) hostAdoptar(id,o); }, 4000); }
+function hostSigo(p){ p=p||{}; if(H.sondas&&H.sondas[p.id]&&H.sondas[p.id].tok===p.tok) delete H.sondas[p.id]; hostVida(p.id); }
+/* señal de vida de un identificador que se había dado por sustituido: recupera sus puntos y vuelve a contar como jugador aparte */
+function hostVida(id){ const s=id && H.sust && H.sust[id]; if(!s) return; delete H.sust[id];
+  let por=s.por, tope=0; while(H.sust[por] && tope++<20) por=H.sust[por].por;   // si quien heredó también fue sustituido, los puntos están en el último
+  const n=H.players[por];
+  if(n){ n.points=Math.max(0,(n.points||0)-(s.pts||0)); n.totalMs=Math.max(0,(n.totalMs||0)-(s.ms||0)); if(n.adoptado===id) delete n.adoptado;
+    if(n.lpDe===id){ delete n.lastPct; delete n.lastMs; delete n.lpDe; } }
+  H.players[id]={alias:s.alias,points:s.pts||0,totalMs:s.ms||0,lastPct:s.lastPct,lastMs:s.lastMs};
+  try{ hostSyncRoster(); }catch(_){}
+  if(H.phase==='reveal'){ try{ renderRanking(H.rankMode,false); }catch(_){} }
+}
+/* el móvil que saluda (entra, recarga o se reconecta): si hay pausa, que la vea; y que sepa que está dentro y con cuántos puntos */
+function hostSaluda(id){ if(!H.channel) return;
+  if(H.paused){ try{ H.channel.send({type:'broadcast',event:'pause',payload:{on:true}}); }catch(_){} }
+  if(!id) return; hostVida(id);
+  if(hostEnPartida()) setTimeout(()=>hostAvisarVuelta(id,false), 700);   // deja llegar antes la presencia (y la herencia de puntos)
+}
+function hostAvisarVuelta(id,forzar){ const p=H.players[id]; if(!p||!H.channel||!hostEnPartida()) return;
+  try{ H.channel.send({type:'broadcast',event:'vuelta',payload:{id:id,puntos:p.points||0,fase:H.phase,forzar:!!forzar}}); }catch(_){} }
+/* línea bajo el QR de la pausa: cuántos hay y quién acaba de entrar */
+function hostPausaEstado(entran){ const el=$('#pauseEstado'); if(!el) return;
+  H._pqIds=H._pqIds||[];
+  if(entran && entran.length && H.paused) entran.forEach(id=>{ if(H._pqIds.indexOf(id)<0) H._pqIds.push(id); });
+  const ns=H._pqIds.filter(id=>H.roster[id]).map(id=>{ const p=H.players[id]||{}, r=H.roster[id]||{}; return escapeHtml(r.alias||p.alias||'—')+(p.points>0?' ('+p.points+' pts)':''); });
+  const n=Object.keys(H.roster).length;
+  el.innerHTML=n+' conectado'+(n===1?'':'s')+(ns.length?' · <i class="pq-dot"></i><b>'+ns.slice(-4).join(', ')+'</b> '+(ns.length>1?'han entrado':'ha entrado'):''); }
+
 function hostSyncRoster(){
   const st=H.channel.presenceState(); const prev=new Set(Object.keys(H.roster)); H.roster={};
-  Object.keys(st).forEach(id=>{ const meta=(st[id]&&st[id][0])||{}; H.roster[id]={alias:meta.alias||'—'};
+  H.vistos=H.vistos||{}; H.sust=H.sust||{};
+  Object.keys(st).forEach(id=>{ if(H.sust[id]) return;   // (6-oct-2026) presencia vieja de quien ya volvió con otro identificador
+    const meta=hostMeta(st[id]); H.roster[id]={alias:meta.alias||'—'};
     if(!H.players[id]) H.players[id]={alias:meta.alias||'—',points:0}; else H.players[id].alias=meta.alias||H.players[id].alias;
+    delete H.players[id].fuera;
     // respuesta transportada por presence (fiable): si trae 'ans'/'mans' de esta ronda, la registramos
     if(H.phase==='round' && meta.rid===H.roundId && !H.answers[id]){
       if(meta.ans) H.answers[id]={placedIds:meta.ans, ms:meta.ms, alias:meta.alias||'—'};
@@ -1798,9 +1911,14 @@ function hostSyncRoster(){
       else if(meta.atiple!=null) H.answers[id]={atiple:meta.atiple, abajo:meta.abajo, ainv:meta.ainv, ms:meta.ms, alias:meta.alias||'—'};
     }
   });
-  const nuevos=Object.keys(H.roster).some(id=>!prev.has(id));
+  // (6-oct-2026) quién se ha ido (y cuándo) y quién entra; el que entra por primera vez a media partida puede ser alguien que vuelve
+  const _ahora=Date.now(); prev.forEach(id=>{ if(!H.roster[id] && H.players[id]) H.players[id].fuera=_ahora; });
+  const entran=Object.keys(H.roster).filter(id=>!prev.has(id));
+  const nuevos=entran.length>0;
   renderRoster(); updateCounter();
   if(nuevos && H.phase==='lobby') sfx('join');
+  entran.forEach(id=>{ const visto=!!H.vistos[id]; H.vistos[id]=1; if(!visto && hostEnPartida()) hostVuelve(id); });
+  hostPausaEstado(entran);
 }
 function renderRoster(){
   const ids=Object.keys(H.roster);
@@ -1841,7 +1959,7 @@ function shuffleArr(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.r
 function buildQueue(){ const types=['ritmico','melodico','toncom','cadencias','modos','armonico'];
   const dr=document.getElementById('diceRandom'); const order=(!dr||dr.checked)?shuffleArr(types.slice()):types;   // 🎲 tipos en orden aleatorio; rondas del mismo tipo van seguidas
   const q=[]; order.forEach(x=>{ for(let i=0;i<(H.setlist[x]||0);i++) q.push(x); }); return q; }
-function hostStartGame(){ H.queue=buildQueue(); if(!H.queue.length) return; H.qIndex=0; H.gameDone=false; H.finalShown=false; H.players={}; H.answers={}; hostStartRound(); }
+function hostStartGame(){ H.queue=buildQueue(); if(!H.queue.length) return; H.qIndex=0; H.gameDone=false; H.finalShown=false; H.players={}; H.answers={}; H.sust={}; H.sondas={}; hostStartRound(); }
 // botón único "Continuar": ranking del ejercicio → ranking general (animación) → siguiente ejercicio
 function hostContinue(){
   if(H.finalShown){ hostReset(); return; }                                  // tras el podio → volver al lobby
@@ -1863,7 +1981,7 @@ function hostIntro(x, done){ const ov=$('#exIntro'); if(!ov){ done&&done(); retu
   setTimeout(()=>{ if(center) center.innerHTML='<div class="intro-name swap-in">'+exDisplayName(x)+'</div><div class="intro-sub">'+exSubtitle(x)+'</div>'; }, 1100);   // el texto se cambia por el ejercicio, dentro de la espiral girando
   setTimeout(()=>ov.classList.add('out'), 2500);
   setTimeout(()=>{ ov.classList.remove('on','out'); done&&done(); }, 3050); }
-function hostOnAnswer(p){ if(H.phase!=='round')return; H.answers[p.id]={placedIds:p.placedIds,midis:p.midis,tans:p.tans,cans:p.cans,mos:p.mos,aans:p.aans,atiple:p.atiple,abajo:p.abajo,ainv:p.ainv,ms:p.ms,alias:p.alias};
+function hostOnAnswer(p){ hostVida(p&&p.id); if(H.phase!=='round')return; H.answers[p.id]={placedIds:p.placedIds,midis:p.midis,tans:p.tans,cans:p.cans,mos:p.mos,aans:p.aans,atiple:p.atiple,abajo:p.abajo,ainv:p.ainv,ms:p.ms,alias:p.alias};
   if(!H.players[p.id])H.players[p.id]={alias:p.alias,points:0}; updateCounter(); }
 function updateCounter(){
   const conn=Object.keys(H.roster).length, resp=Object.keys(H.answers).length;
@@ -2097,7 +2215,7 @@ function hostArmPhase2(){ if(H.phase!=='round') return; const rid=H.roundId; H.a
   // FASE 1 fiable: leer la última elección desde presence (estado), no de una carrera de broadcast
   const st=(H.channel&&H.channel.presenceState)?H.channel.presenceState():{};
   H.armP1={};
-  Object.keys(st).forEach(id=>{ const m=(st[id]&&st[id][0])||{}; if(m.aans!=null && m.rid===H.roundId) H.armP1[id]={aans:m.aans, alias:m.alias||(H.roster[id]&&H.roster[id].alias)||'—', ms:m.ms}; });
+  Object.keys(st).forEach(id=>{ if(H.sust&&H.sust[id]) return; const m=hostMeta(st[id]); if(m.aans!=null && m.rid===H.roundId) H.armP1[id]={aans:m.aans, alias:m.alias||(H.roster[id]&&H.roster[id].alias)||'—', ms:m.ms}; });
   Object.keys(H.answers).forEach(id=>{ if(!H.armP1[id] && H.answers[id].aans!=null) H.armP1[id]={aans:H.answers[id].aans, alias:H.answers[id].alias, ms:H.answers[id].ms}; });   // respaldo por broadcast
   H.answers={}; updateCounter();
   const D=H.exercise.p2; const all=D.notes.map(n=>n.midi), g=D.given.midi, top=D.top.midi, bass=D.bass.midi;
@@ -2323,7 +2441,7 @@ function hostFinalPodium(){ H.finalShown=true; H.phase='final'; autoClear(); hos
   sfx('winner'); setTimeout(()=>confettiBurst(), 420);
   try{ if(H.channel) H.channel.send({type:'broadcast',event:'phase',payload:{phase:'final',ranking:arr}}); }catch(_){}
 }
-function hostReset(){ hostCancelAutoCorrect(); autoClear(); H.paused=false; hostShowPause(false); H.finalShown=false; H.players={}; H.answers={}; H.phase='lobby'; H.queue=[]; H.qIndex=0; H.gameDone=false;
+function hostReset(){ hostCancelAutoCorrect(); autoClear(); H.paused=false; hostShowPause(false); H.finalShown=false; H.players={}; H.answers={}; H.sust={}; H.sondas={}; H.phase='lobby'; H.queue=[]; H.qIndex=0; H.gameDone=false;
   $('#s-host-round').classList.remove('mel','toncom'); $('#s-host-reveal').classList.remove('mel','toncom','cad');
   const rm=$('#btnRankMode'); if(rm) rm.style.display='';
   showScreen('s-host-lobby'); renderRoster(); hostBroadcastPhase(); }
@@ -2334,8 +2452,8 @@ function hostBroadcastPhase(){
     if(H.exercise.type==='melodico') payload={phase:'round',ex:'melodico',roundId:H.roundId,first:H.exercise.first};
     else if(H.exercise.type==='toncom') payload={phase:'round',ex:'toncom',roundId:H.roundId};
     else if(H.exercise.type==='cadencias') payload={phase:'round',ex:'cadencias',roundId:H.roundId};
-    else if(H.exercise.type==='modos') payload={phase:'round',ex:'modos',roundId:H.roundId};
-    else if(H.exercise.type==='armonico') payload={phase:'round',ex:'armonico',roundId:H.roundId,pro:H.exercise.pro};
+    else if(H.exercise.type==='modos') payload={phase:'round',ex:'modos',roundId:H.roundId,receta:(H.listens<=0)};   // (6-oct-2026) quien entra tarde ve la receta si ya se enseñó
+    else if(H.exercise.type==='armonico') payload={phase:'round',ex:'armonico',roundId:H.roundId,pro:H.exercise.pro,armPhase:H.armPhase,given:(H.armPhase===2&&H.exercise.p2)?H.exercise.p2.given:null};   // (6-oct-2026) …y entra en la fase en la que esté
     else payload={phase:'round',ex:'ritmico',roundId:H.roundId,compound:H.exercise.compound};
   } else if(H.phase==='reveal'){
     if(H.exercise.type==='melodico') payload={phase:'reveal',ex:'melodico',roundId:H.roundId,sol:H.exercise.sol,ranking:rankingArr('exercise')};
@@ -2347,7 +2465,8 @@ function hostBroadcastPhase(){
       payload={phase:'reveal',ex:'armonico',roundId:H.roundId,armTipo:H.exercise.tipo,armName:ARM_TIPOS[H.exercise.tipo].name,armSym:ARM_TIPOS[H.exercise.tipo].sym,
         p2:{topPc:p2.top.pc,topSolf:p2.top.solf,bassPc:p2.bass.pc,bassSolf:p2.bass.solf,inv:p2.inv,invCif:p2.invCif,typeLabel:p2.typeLabel,givenSolf:p2.given.solf},ranking:rankingArr('exercise')}; }
     else payload={phase:'reveal',ex:'ritmico',roundId:H.roundId,compound:H.exercise.compound,solutionIds:H.exercise.solution.map(c=>c.id),ranking:rankingArr('exercise')};
-  } else payload={phase:'lobby'};
+  } else if(H.phase==='final') payload={phase:'final',ranking:rankingArr('general')};   // (6-oct-2026) quien vuelve con el podio ya en pantalla ve la clasificación (antes: «esperando al profe»)
+  else payload={phase:'lobby'};
   H.channel.send({type:'broadcast',event:'phase',payload});
 }
 
@@ -2357,23 +2476,48 @@ function hostBroadcastPhase(){
 let PL={code:null, channel:null, id:genId(), alias:'', compound:false, placed:new Array(8).fill(null),
         current:0, sent:false, roundStart:0, roundId:0, exType:'ritmico', melMidis:null, melCur:1, melFirst:null};
 
-function initPlayer(code){
+/* (6-oct-2026, Iago) VOLVER A LA PARTIDA: el móvil recuerda quién era en ESTA sala (ver el bloque de hostVuelve) */
+const YO_KEY='pcarrusel_yo', YO_HORAS=6;
+function yoLeer(code){ try{ const o=JSON.parse(localStorage.getItem(YO_KEY)||'null'); if(o && o.code===code && o.id && o.alias && (Date.now()-(o.t||0))<YO_HORAS*3600000) return o; }catch(_){} return null; }
+function yoGuardar(){ try{ if(PL.code&&PL.id&&PL.alias) localStorage.setItem(YO_KEY, JSON.stringify({code:PL.code,id:PL.id,alias:PL.alias,t:Date.now()})); }catch(_){} }
+function yoOlvidar(){ try{ localStorage.removeItem(YO_KEY); }catch(_){} }
+function playerEsperaTxt(t){ const w=document.querySelector('#s-player-wait .waitmsg'); if(!w) return; if(PL._espera0==null) PL._espera0=w.textContent; w.textContent=(t==null?PL._espera0:t); }
+function playerNota(t){ let n=document.getElementById('rejoinNote');
+  if(!n){ n=document.createElement('div'); n.id='rejoinNote'; n.className='rejoin-note'; document.body.appendChild(n); }
+  n.textContent=t; n.classList.add('on'); clearTimeout(_resumeNoteT); _resumeNoteT=setTimeout(()=>n.classList.remove('on'), 5200); }
+/* el profe confirma que estamos dentro (y con cuántos puntos). Solo se avisa al entrar o al reconectar de verdad. */
+function playerVuelta(p){ if(!p||p.id!==PL.id) return; if(!PL._avisar && !p.forzar) return; PL._avisar=false;
+  const n=p.puntos|0, sig=(p.fase==='reveal');
+  if(n>0) playerNota(sig ? ('Has vuelto con tus '+n+' puntos · entras en la siguiente ronda') : ('Has vuelto a la partida · conservas tus '+n+' puntos'));
+  else playerNota(sig ? 'Partida en curso · entras en la siguiente ronda' : 'Partida en curso · ya estás dentro'); }
+function initPlayer(code,enCurso){
   document.addEventListener('pointerdown',()=>ensureAudio(),{once:true});
   const f=document.querySelector('.foot'); if(f) f.style.display='none';   // el móvil no necesita el pie de marca
   PL.code=code; $('#pjCode').textContent=code;
   showScreen('s-player-join');
+  if(enCurso){ const sj=$('#s-player-join'), av=$('#pjEnCurso'), bj=$('#btnJoin'); if(sj) sj.classList.add('encurso'); if(av) av.style.display=''; if(bj) bj.textContent='Sumarse'; }   // (6-oct-2026) llega por el QR de la pausa
   $('#btnJoin').addEventListener('click',playerJoin);
   $('#alias').addEventListener('keydown',e=>{ if(e.key==='Enter') playerJoin(); });
   const home=$('#pjHome'); if(home) home.addEventListener('click',()=>{ location.href=location.pathname; });
   // botón SALIR del juego (siempre disponible) + confirmación
   const eb=$('#exitBtn'); if(eb){ eb.classList.add('on'); eb.onclick=()=>$('#exitConfirm').classList.add('on'); }
-  const ey=$('#exitYes'); if(ey) ey.onclick=()=>{ location.href=location.pathname; };
+  const ey=$('#exitYes'); if(ey) ey.onclick=()=>{ yoOlvidar(); location.href=location.pathname; };   // (6-oct-2026) salir a propósito: este móvil deja de ser «el de antes»
   const en=$('#exitNo'); if(en) en.onclick=()=>$('#exitConfirm').classList.remove('on');
+  // (6-oct-2026) ¿este móvil ya estaba en ESTA sala? Entra solo, con su nombre y su identificador: es el mismo jugador.
+  const yo=yoLeer(code);
+  if(yo){ PL.id=yo.id; PL._solo=true; playerEsperaTxt('Volviendo a la partida…'); showScreen('s-player-wait'); updateFsHint(); playerEntrar(yo.alias);
+    setTimeout(()=>{ if(PL._solo) playerEsperaTxt('No encuentro la partida. Pídele al profe el QR o el código de la sala.'); }, 8000); }
 }
 function playerJoin(){
   const a=$('#alias').value.trim(); if(!a){ $('#alias').focus(); return; }
-  ensureAudio(); sfx('go'); wakeOn(); tryLockLandscape();   // pantalla encendida + intento de horizontal
-  PL.alias=a.slice(0,16); $('#pwAlias').textContent=PL.alias; $('#prAlias').textContent=PL.alias;
+  ensureAudio(); sfx('go'); tryLockLandscape();   // intento de horizontal
+  playerEntrar(a);
+}
+function playerEntrar(alias){
+  if(PL._entrando) return; PL._entrando=true;   // (6-oct-2026) un solo canal aunque se pulse dos veces
+  wakeOn();   // pantalla encendida
+  PL.alias=String(alias).slice(0,16); $('#pwAlias').textContent=PL.alias; $('#prAlias').textContent=PL.alias;
+  yoGuardar();
   playerConnect();
 }
 function isRoundScreenOn(){ const on=document.querySelector('.screen.on'); return !!(on && ['s-landing','s-player-join','s-player-wait'].indexOf(on.id)<0); }
@@ -2414,7 +2558,9 @@ function playerConnect(){
     .on('broadcast',{event:'moderecipe'},()=>playerModosRecipe())
     .on('broadcast',{event:'charpulse'},()=>charGlow())
     .on('broadcast',{event:'armp2'},({payload})=>{ if(PL.exType==='armonico'){ PL.armPhase=2; startPlayerRoundArm2(payload&&payload.given); } })
-    .subscribe(async status=>{ if(status==='SUBSCRIBED'){ await PL.channel.track({alias:PL.alias});
+    .on('broadcast',{event:'estas'},({payload})=>{ if(payload&&payload.id===PL.id){ try{ PL.channel.send({type:'broadcast',event:'sigo',payload:{id:PL.id,tok:payload.tok}}); }catch(_){} } })   // (6-oct-2026) «¿sigues ahí?» del profe
+    .on('broadcast',{event:'vuelta'},({payload})=>playerVuelta(payload))
+    .subscribe(async status=>{ if(status==='SUBSCRIBED'){ PL._avisar=true; await PL.channel.track({alias:PL.alias});
         if(!isRoundScreenOn()) { showScreen('s-player-wait'); updateFsHint(); }
         PL.channel.send({type:'broadcast',event:'hello',payload:{id:PL.id}}); } });
 }
@@ -2423,18 +2569,21 @@ function playerWarn(){ if(PL.sent) return;   // móvil: solo el resplandor del b
   ['btnSend','tcSend','cadSend','modSend','armSend'].forEach(id=>{ const b=document.getElementById(id); if(b) b.classList.add('remind'); }); }
 function clearSendRemind(){ ['btnSend','tcSend','cadSend','modSend','armSend'].forEach(id=>{ const b=document.getElementById(id); if(b) b.classList.remove('remind'); }); }
 function playerOnPhase(p){
+  if(PL._solo){ PL._solo=false; playerEsperaTxt(null); }   // (6-oct-2026) la partida existe: fuera el «volviendo…»
+  yoGuardar();
+  if(p.phase!=='final') PL._finalVisto=false;
   if(p.phase==='round'){ if(p.roundId && p.roundId===PL.roundId) return; PL.roundId=p.roundId||0; PL.exType=p.ex||'ritmico'; clearSendRemind(); PL.lastInputMs=null;
     if(PL.exType==='melodico'){ PL.melFirst=p.first; startPlayerRoundMel(); }
     else if(PL.exType==='toncom'){ startPlayerRoundTon(); }
     else if(PL.exType==='cadencias'){ startPlayerRoundCad(); }
-    else if(PL.exType==='modos'){ startPlayerRoundModos(); }
-    else if(PL.exType==='armonico'){ PL.armPro=!!p.pro; PL.armPhase=1; startPlayerRoundArm(); }
+    else if(PL.exType==='modos'){ startPlayerRoundModos(); if(p.receta) playerModosRecipe(); }
+    else if(PL.exType==='armonico'){ PL.armPro=!!p.pro; if(p.armPhase===2 && p.given){ PL.armPhase=2; startPlayerRoundArm2(p.given); } else { PL.armPhase=1; startPlayerRoundArm(); } }
     else { PL.compound=p.compound; startPlayerRound(); } }
   else if(p.phase==='reveal'){ PL.roundId=p.roundId||PL.roundId; const ex=p.ex||'ritmico';
     if(ex==='melodico') playerRevealMel(p); else if(ex==='toncom') playerRevealTon(p); else if(ex==='cadencias') playerRevealCad(p); else if(ex==='modos') playerRevealModos(p); else if(ex==='armonico') playerRevealArm(p); else playerReveal(p);
     if(PL._resumed && !PL.sent) playerRejoinNote(); }
-  else if(p.phase==='final'){ playerFinal(p); }
-  else if(p.phase==='lobby'){ if(!$('#s-player-join').classList.contains('on')) showScreen('s-player-wait'); }
+  else if(p.phase==='final'){ if(PL._finalVisto) return; PL._finalVisto=true; playerFinal(p); }   // (6-oct-2026) el final puede llegar repetido (a quien vuelve): se pinta una vez
+  else if(p.phase==='lobby'){ PL._avisar=false; if(!$('#s-player-join').classList.contains('on')) showScreen('s-player-wait'); }
 }
 function startPlayerRound(){
   PL.placed=new Array(8).fill(null); PL.current=0; PL.sent=false; PL.roundStart=Date.now();

@@ -1222,10 +1222,15 @@ function genMel8(){
 // intervalo por semitonos -> nombre + dirección
 const IV_NAMES=['1ªJ','2ªm','2ªM','3ªm','3ªM','4ªJ','4ªA','5ªJ','6ªm','6ªM','7ªm','7ªM','8ªJ'];
 function ivLabel(from,to){ const d=to-from, a=Math.abs(d); const nm=IV_NAMES[a]||(a+'st'); return {semi:d,name:nm,dir:d>0?'↑':(d<0?'↓':'='),txt:nm+(d?(d>0?'↑':'↓'):'')}; }
-// puntuación por intervalos (7 intervalos entre 8 notas). primera nota dada.
-function melScoreIntervals(stud, sol){ let ok=0,total=0; for(let i=1;i<sol.length;i++){ total++;
-  if(stud&&stud[i]!=null&&stud[i-1]!=null&&(stud[i]-stud[i-1])===(sol[i]-sol[i-1])) ok++; }
-  return {ok,total,pct:total?Math.round(ok/total*100):0}; }
+// puntuación: (8-oct-2026, Iago) cuentan las NOTAS y los INTERVALOS. 7 notas (la 1.ª es dada) + 7 intervalos = 14.
+// «Si una nota está mal, esa nota se considera incorrecta. Si, por ese error, el intervalo correspondiente también es
+//  incorrecto, tampoco debe puntuar. Sin embargo, si las siguientes notas mantienen entre sí una relación interválica
+//  correcta, esos intervalos sí deben contar, aunque las alturas absolutas no coincidan. Si un intervalo aparece en
+//  verde, también debe sumar.» (Antes solo contaban los 7 intervalos.) En el móvil, lo verde es justo lo que suma.
+function melScoreIntervals(stud, sol){ let ok=0,total=0,notas=0,ivs=0; for(let i=1;i<sol.length;i++){ total+=2;
+  if(stud&&stud[i]!=null&&stud[i]===sol[i]){ ok++; notas++; }
+  if(stud&&stud[i]!=null&&stud[i-1]!=null&&(stud[i]-stud[i-1])===(sol[i]-sol[i-1])){ ok++; ivs++; } }
+  return {ok,total,notas,ivs,pct:total?Math.round(ok/total*100):0}; }
 
 /* ---- PENTAGRAMA melódico: clave de sol + 8 redondas + etiquetas de intervalo ---- */
 function renderMelStaffSVG(midis, W, H, opts){ opts=opts||{};
@@ -1757,7 +1762,17 @@ function hostAutoRun(){ if(H.phase!=='round')return; runCountdown(()=>{ if(H.pha
 /* recoge lo marcado en los móviles y corrige */
 function hostCollectAndScore(){ if(H.phase!=='round')return;
   try{ if(H.channel) H.channel.send({type:'broadcast',event:'collect'}); }catch(_){}   // los móviles registran lo que tengan marcado
-  autoStep(800, ()=>{ if(H.phase==='round') hostShowResults(); }); }
+  /* (8-oct-2026, Iago: «había acertado varios intervalos y le puso un 0 %») La respuesta de un móvil que no pulsó Enviar
+     llega DESPUÉS del «collect», y se corregía a los 0,8 s fijos: con la wifi del aula a veces llegaba tarde, no
+     puntuaba y el móvil la pintaba igual. Ahora se espera a que estén todos los conectados (desde 0,5 s) o, como mucho,
+     2,5 s. */
+  const rid=H.roundId, t0=Date.now();
+  (function espera(){ if(H.phase!=='round'||H.roundId!==rid) return;
+    if(H.paused){ setTimeout(espera,250); return; }
+    const conn=Object.keys(H.roster||{}).filter(id=>!(H.sust&&H.sust[id])), faltan=conn.filter(id=>!H.answers[id]).length, t=Date.now()-t0;
+    if((faltan===0 && t>=500) || t>=2500){ hostShowResults(); return; }
+    setTimeout(espera,150); })();
+}
 /* tras enseñar resultados: ejercicio → (5s) general → (5s) siguiente ronda, todo solo */
 function hostScheduleReveal(){
   autoStep(5500, ()=>{ if(H.phase!=='reveal')return; renderRanking('general','count'); H.rankMode='general'; updateContinueLabel();
@@ -1936,13 +1951,13 @@ function updateStartBtn(){ const b=$('#btnStart'); if(!b)return; const ok=Object
    cuenta atrás, escuchas, cuenta atrás de corrección, resultados y los dos rankings) y varía al
    quitar o añadir rondas, cambiar la velocidad del melódico, el compás del rítmico o el modo PRO. */
 function estimarRondaSeg(x){
-  const OVER = 3.05 + 2.32 + 0.8 + 1.2 + 5.5 + 5.5;           // intro · 3-2-1 · recogida · resultados · ranking ejercicio · ranking general
+  const OVER = 3.05 + 2.32 + 1.2 + 1.2 + 5.5 + 5.5;           // intro · 3-2-1 · recogida · resultados · ranking ejercicio · ranking general  (8-oct: recogida ~1,2 s)
   if(x==='ritmico'){ const simple=(2+8)*(60/60)+0.8, comp=(2+8)*(60/45)+0.8; const esc=H.compMode==='simple'?simple:(H.compMode==='compound'?comp:(simple+comp)/2); return OVER + 2*esc + 6.5 + 5; }
   if(x==='melodico'){ const f=(MEL_SPEEDS[H.melSpeed]||1); return OVER + (8*3+0.4)*f + (8*3*0.5+0.4)*f + 1.5 + 5; }
   if(x==='toncom'){ const dict=(13.7+20.6+24+36)/4; return OVER + 1.65+1.65+4 + 10 + dict + 0.4 + 5; }
   if(x==='cadencias'){ return OVER + 2*10.3 + 1.5 + 5; }
   if(x==='modos'){ return OVER + 2*8.1 + 1.5 + 5; }
-  if(x==='armonico'){ return OVER + 10 + 1.2 + 6*6 + 5; }
+  if(x==='armonico'){ return OVER + (8 + 5 + 1.2 + 5) + 1.2 + 6*6 + 5; }   // (8-oct) fase 1: bloque, arpegiado, cuenta atrás, corrección
   return OVER + 30;
 }
 function estimarPartidaSeg(){ let t=0; Object.keys(H.setlist||{}).forEach(x=>{ t += (H.setlist[x]||0)*estimarRondaSeg(x); }); return t; }
@@ -2203,12 +2218,35 @@ async function hostListenModos(){
   let dur=5; try{ dur=await playModos(H.exercise.notes, {onChar}); }catch(e){}
   armCorrectAfter(rid, dur);
 }
-// ARMÓNICO Fase 1: acorde en bloque (0s), arpegiado (6s), a corregir (10s) — sin temporizador visible
+// ARMÓNICO Fase 1: acorde en bloque (0s), arpegiado (6s) y (8-oct-2026) desde los 8 s la cuenta atrás «CORRECCIÓN»
+// 5-4-3-2-1; al llegar a 0, se recoge, se corrige la 1.ª parte (pantalla y móviles, 5 s) y empieza la 2.ª (otro acorde).
+// Antes, a los 10 s pasaba a la 2.ª parte sin avisar y sin corregir: había quien no llegaba a contestar.
 async function hostListenArm(){ await ensureAudio(); $('#hListen').disabled=true; const D=H.exercise; const m=$('#armMsg'); const rid=H.roundId;
   armPlayBlock(D.notes); if(m) m.innerHTML='Suena el acorde en <b>bloque</b>…';
   setTimeout(()=>{ if(H.phase!=='round'||H.roundId!==rid)return; armPlayArp(D.notes); if(m) m.innerHTML='Ahora <b>arpegiado</b>…'; }, 6000);
-  setTimeout(()=>{ if(H.phase==='round'&&H.roundId===rid){ try{ if(H.channel) H.channel.send({type:'broadcast',event:'collect'}); }catch(_){} } }, 9200);   // recoge el tipo elegido (fase 1)
-  setTimeout(()=>{ if(H.phase==='round'&&H.roundId===rid) hostArmPhase2(); }, 10000);
+  setTimeout(()=>{ if(H.phase==='round'&&H.roundId===rid&&H.armPhase!==2) hostArm1Countdown(rid); }, 8000);
+}
+/* (8-oct-2026, Iago) «Una vez que se hace el primer apartado, que es lo de decir qué tipo de acorde es, también quiero
+   que avise cuando cambia al siguiente apartado, porque algunos alumnos no les ha dado tiempo a contestar […] que ponga
+   corrección 5 4 3 2 1 y que diga ahí qué es. Y luego pasa al siguiente, porque no es el mismo acorde.» */
+function hostArm1Countdown(rid){ hostCancelAutoCorrect();
+  try{ if(H.channel) H.channel.send({type:'broadcast',event:'warn'}); }catch(_){}   // en los móviles, el botón Enviar brilla
+  const br=$('#bigRemind'), bc=$('#bigRemindCount'); let s=5;
+  const show=n=>{ if(bc) bc.textContent=n; if(br) br.classList.add('on'); corrBeep(n); }; show(s);
+  const tick=()=>{ if(H.phase!=='round'||H.roundId!==rid||H.armPhase===2){ hostCancelAutoCorrect(); return; }
+    if(H.paused){ _acTimer=setTimeout(tick,250); return; } s--;
+    if(s<=0){ corrBeep(0); hostCancelAutoCorrect(); hostArm1Correccion(rid); return; } show(s); _acTimer=setTimeout(tick,1000); };
+  _acTimer=setTimeout(tick,1000);
+}
+function hostArm1Correccion(rid){
+  try{ if(H.channel) H.channel.send({type:'broadcast',event:'collect'}); }catch(_){}   // registra el tipo que tenga cada móvil
+  const D=H.exercise, t=ARM_TIPOS[D.tipo]||{name:D.tipo,sym:''};
+  setTimeout(()=>{ if(H.phase!=='round'||H.roundId!==rid||H.armPhase===2) return;
+    const m=$('#armMsg'); if(m) m.innerHTML='Corrección · 1.ª parte: era <b>'+t.name+(t.sym?(' '+t.sym):'')+'</b><span>Ahora, otro acorde distinto: la 2.ª parte</span>';
+    try{ if(H.channel) H.channel.send({type:'broadcast',event:'arm1sol',payload:{tipo:D.tipo,roundId:rid}}); }catch(_){}
+    try{ sfx('reveal'); armPlayBlock(D.notes); }catch(_){}
+    autoStep(5000, ()=>{ if(H.phase==='round'&&H.roundId===rid&&H.armPhase!==2) hostArmPhase2(); });
+  }, 1200);
 }
 // ARMÓNICO Fase 2: nota central dada → secuencia de 8 sonidos (4s c/u, con carteles) → 5s de cuenta atrás
 function hostArmPhase2(){ if(H.phase!=='round') return; const rid=H.roundId; H.armPhase=2;
@@ -2558,6 +2596,7 @@ function playerConnect(){
     .on('broadcast',{event:'moderecipe'},()=>playerModosRecipe())
     .on('broadcast',{event:'charpulse'},()=>charGlow())
     .on('broadcast',{event:'armp2'},({payload})=>{ if(PL.exType==='armonico'){ PL.armPhase=2; startPlayerRoundArm2(payload&&payload.given); } })
+    .on('broadcast',{event:'arm1sol'},({payload})=>playerArm1Sol(payload))   // (8-oct-2026) corrección de la 1.ª parte del armónico
     .on('broadcast',{event:'estas'},({payload})=>{ if(payload&&payload.id===PL.id){ try{ PL.channel.send({type:'broadcast',event:'sigo',payload:{id:PL.id,tok:payload.tok}}); }catch(_){} } })   // (6-oct-2026) «¿sigues ahí?» del profe
     .on('broadcast',{event:'vuelta'},({payload})=>playerVuelta(payload))
     .subscribe(async status=>{ if(status==='SUBSCRIBED'){ PL._avisar=true; await PL.channel.track({alias:PL.alias});
@@ -2914,7 +2953,20 @@ function buildArmUI(){
   const send=$('#armSend'); if(send) send.onclick=playerSend;
 }
 const A2_WHEEL=['Si','La','Sol','Fa','Mi','Re','Do'];
+/* (8-oct-2026) ARMÓNICO · la corrección de la 1.ª parte en el móvil: su respuesta (✓ o ✗) y la buena, hasta la 2.ª */
+function playerArm1Sol(p){ if(PL.exType!=='armonico'||!p) return;
+  let ov=document.getElementById('pArm1Ov');
+  if(!ov){ ov=document.createElement('div'); ov.id='pArm1Ov'; ov.className='pause-ov'; document.body.appendChild(ov); }
+  const nm=id=> id?(((ARM_TIPOS[id]&&ARM_TIPOS[id].name)||id)+((ARM_TIPOS[id]&&ARM_TIPOS[id].sym)?(' '+ARM_TIPOS[id].sym):'')):'—';
+  const mine=PL.armSentAns||PL.armSel||null, ok=(mine===p.tipo);
+  ov.innerHTML='<div class="pause-card"><div class="pc-ico" style="color:'+(ok?'#3fb871':'#e0674a')+'">'+(ok?'✓':'✗')+'</div>1.ª PARTE'+
+    '<span>Era: <b>'+escapeHtml(nm(p.tipo))+'</b> · Tu respuesta: '+escapeHtml(nm(mine))+'</span><span>Ahora, otro acorde</span></div>';
+  ov.classList.add('on'); try{ sfx(ok?'winner':'reveal'); }catch(_){}
+  clearTimeout(PL._arm1T); PL._arm1T=setTimeout(()=>ov.classList.remove('on'), 6500);
+}
+function playerArm1Quitar(){ const ov=document.getElementById('pArm1Ov'); if(ov) ov.classList.remove('on'); clearTimeout(PL._arm1T); }
 function startPlayerRoundArm2(given){
+  playerArm1Quitar();   // (8-oct-2026) fuera la corrección de la 1.ª parte
   PL.arm2={ tipleI:A2_WHEEL.indexOf('Do'), tipleAcc:'', bajoI:A2_WHEEL.indexOf('Do'), bajoAcc:'', inv:null, given:given };
   PL.arm2sent=null; PL.sent=false; PL.roundStart=Date.now();
   if(PL.channel) try{ PL.channel.track({alias:PL.alias, rid:PL.roundId}); }catch(_){}
@@ -2999,12 +3051,16 @@ function playerRevealMel(p){
   const arr=p.ranking||[]; const me=arr.find(r=>r.id===PL.id); const pos=arr.findIndex(r=>r.id===PL.id);
   showScreen('s-player-reveal');
   const sol=p.sol||[]; const mine=(PL.melMidis||new Array(8).fill(null)).slice();
-  const ivColors=[]; for(let i=1;i<sol.length;i++){ ivColors[i-1]=(mine[i]!=null&&mine[i-1]!=null&&(mine[i]-mine[i-1])===(sol[i]-sol[i-1]))?'#2f8f4f':'#c0563a'; }
-  const noteColors=mine.map((m,i)=> i===0?'#b8860b':'#241a06');   // todas negras salvo la 1ª (dada); el acierto lo marca la etiqueta del intervalo
+  // (8-oct-2026) lo que se ve es lo que puntúa: notas e intervalos en verde si suman, en rojo si no. Si la pantalla del
+  // aula no llegó a recibir la respuesta, todo en gris y se dice (antes se pintaba en verde aunque puntuara 0).
+  const llego=!!(me && me.respondio!==false);
+  const ivColors=[]; for(let i=1;i<sol.length;i++){ ivColors[i-1]=!llego?'#8a8170':(mine[i]!=null&&mine[i-1]!=null&&(mine[i]-mine[i-1])===(sol[i]-sol[i-1]))?'#2f8f4f':'#c0563a'; }
+  const noteColors=mine.map((m,i)=> i===0?'#b8860b':(!llego||m==null)?'#8a8170':(m===sol[i]?'#2f8f4f':'#c0563a'));   // la 1.ª, dada (dorada)
   const box=pRevealStaffBox(); if(box) mountMelStaff(box, mine, {given:true, intervals:true, ivColors, colors:noteColors, ivFont:13});
   $('#pScore').textContent='0%'; countUp($('#pScore'), me?me.last:0, 850, '%');
   const emoji = pos===0?'🥇 ¡Ganas!' : pos===1?'🥈 ¡Casi!' : pos===2?'🥉 ¡Podio!' : '';
   $('#pRank').textContent = pos>=0 ? (emoji+'  Puesto '+(pos+1)+' de '+arr.length+' · '+(me?me.points:0)+' pts') : 'Sin respuesta esta ronda';
+  if(me && !llego) $('#pRank').textContent='Tu respuesta no llegó a tiempo a la pantalla · esta ronda no puntúa';
   $('#pMini').innerHTML = arr.slice(0,3).map((r,i)=>['🥇','🥈','🥉'][i]+' '+escapeHtml(r.alias)+' ('+r.points+')').join(' &nbsp; ');
   if(pos===0){ sfx('winner'); confettiBurst(); } else if(pos>=0 && me && me.last>=75){ sfx('winner'); } else sfx('reveal');
 }
